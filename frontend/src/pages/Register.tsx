@@ -13,7 +13,7 @@ import {
     Link,
     Grid,
 } from '@mui/material';
-import axios from 'axios';
+import { authAPI } from '../services/api';
 
 const validationSchema = Yup.object({
     firstName: Yup.string()
@@ -53,11 +53,10 @@ const Register = () => {
 
     const handleSubmit = async (values: RegisterFormValues) => {
         try {
+            setError(null);
             const { confirmPassword, ...registrationData } = values;
-            const response = await axios.post(
-                `http://localhost:5000/api/auth/register`,
-                registrationData
-            );
+            const response = await authAPI.register(registrationData);
+            
             setSuccess('Registration successful! Please verify your email with the OTP sent.');
             setTimeout(() => {
                 navigate('/verify-otp', { state: { email: values.email } });
@@ -100,7 +99,7 @@ const Register = () => {
                         validationSchema={validationSchema}
                         onSubmit={handleSubmit}
                     >
-                        {({ values, handleChange, handleBlur, errors, touched }) => (
+                        {({ values, handleChange, handleBlur, errors, touched, isSubmitting }) => (
                             <Form>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} sm={6}>
@@ -191,9 +190,10 @@ const Register = () => {
                                     variant="contained"
                                     color="primary"
                                     size="large"
+                                    disabled={isSubmitting}
                                     sx={{ mt: 3, mb: 2 }}
                                 >
-                                    Register
+                                    {isSubmitting ? 'Registering...' : 'Register'}
                                 </Button>
                             </Form>
                         )}

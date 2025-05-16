@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { Formik, Form as FormikForm, FormikHelpers, FormikProps } from 'formik';
+import { Formik, Form as FormikForm, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import {
     Container,
@@ -11,9 +11,10 @@ import {
     Button,
     Alert,
     Paper,
+    Link,
 } from '@mui/material';
 import { loginStart, loginSuccess, loginFailure } from '../store/slices/authSlice';
-import axios from 'axios';
+import { authAPI } from '../services/api';
 
 interface LoginValues {
     email: string;
@@ -36,13 +37,17 @@ const Login: React.FC = () => {
     const handleSubmit = async (values: LoginValues, { setSubmitting }: FormikHelpers<LoginValues>) => {
         try {
             dispatch(loginStart());
-            const response = await axios.post(`http://localhost:5000/api/auth/login`, values);
-            dispatch(loginSuccess(response.data));
-            navigate('/dashboard');
-        } catch (err) {
-            const errorMessage = err instanceof Error 
-                ? err.message 
-                : 'An error occurred during login';
+            setError(null);
+            const response = await authAPI.login(values);
+            
+            if (response.data.token) {
+                dispatch(loginSuccess(response.data));
+                navigate('/dashboard');
+            } else if (response.data.message.includes('not verified')) {
+                navigate('/verify-otp', { state: { email: values.email } });
+            }
+        } catch (err: any) {
+            const errorMessage = err.response?.data?.message || 'An error occurred during login';
             dispatch(loginFailure(errorMessage));
             setError(errorMessage);
         } finally {
@@ -51,71 +56,76 @@ const Login: React.FC = () => {
     };
 
     return (
-        <Container component="main" maxWidth="xs">
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                }}
-            >
-                <Paper elevation={3} sx={{ p: 4, width: '100%' }}>
-                    <Typography component="h1" variant="h5" align="center">
-                        Sign In
+        <Container maxWidth="sm">
+            <Box sx={{ mt: 8, mb: 4 }}>
+                <Paper elevation={3} sx={{ p: 4 }}>
+                    <Typography component="h1" variant="h4" align="center" gutterBottom>
+                        Login
                     </Typography>
+
                     {error && (
-                        <Alert severity="error" sx={{ mt: 2 }}>
+                        <Alert severity="error" sx={{ mb: 2 }}>
                             {error}
                         </Alert>
                     )}
+
                     <Formik
-                        initialValues={{ email: '', password: '' }}
+                        initialValues={{
+                            email: '',
+                            password: '',
+                        }}
                         validationSchema={validationSchema}
                         onSubmit={handleSubmit}
                     >
-                        {({ values, handleChange, handleBlur, errors, touched, isSubmitting }: FormikProps<LoginValues>) => (
+                        {({ values, handleChange, handleBlur, errors, touched, isSubmitting }) => (
                             <FormikForm>
                                 <TextField
-                                    margin="normal"
                                     fullWidth
                                     id="email"
-                                    label="Email Address"
                                     name="email"
-                                    autoComplete="email"
-                                    autoFocus
+                                    label="Email"
                                     value={values.email}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                     error={touched.email && Boolean(errors.email)}
                                     helperText={touched.email && errors.email}
-                                />
-                                <TextField
                                     margin="normal"
+                                />
+
+                                <TextField
                                     fullWidth
+                                    id="password"
                                     name="password"
                                     label="Password"
                                     type="password"
-                                    id="password"
-                                    autoComplete="current-password"
                                     value={values.password}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                     error={touched.password && Boolean(errors.password)}
                                     helperText={touched.password && errors.password}
+                                    margin="normal"
                                 />
+
                                 <Button
                                     type="submit"
                                     fullWidth
                                     variant="contained"
-                                    sx={{ mt: 3, mb: 2 }}
+                                    color="primary"
+                                    size="large"
                                     disabled={isSubmitting}
+                                    sx={{ mt: 3, mb: 2 }}
                                 >
-                                    Sign In
+                                    {isSubmitting ? 'Logging in...' : 'Login'}
                                 </Button>
                             </FormikForm>
                         )}
                     </Formik>
+
+                    <Box sx={{ mt: 2, textAlign: 'center' }}>
+                        <Link href="/register" variant="body2">
+                            Don't have an account? Sign up
+                        </Link>
+                    </Box>
                 </Paper>
             </Box>
         </Container>
