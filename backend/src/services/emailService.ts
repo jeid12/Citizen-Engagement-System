@@ -7,21 +7,21 @@ class EmailService {
 
     constructor() {
         this.transporter = nodemailer.createTransport({
-            host: process.env.SMTP_HOST,
-            port: parseInt(process.env.SMTP_PORT || "587"),
-            secure: process.env.SMTP_SECURE === "true",
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false,
             auth: {
-                user: process.env.SMTP_USER,
-                pass: process.env.SMTP_PASS,
+                user: "niyokwizerajd123@gmail.com",
+                pass: "ptup lswr dccy xdat",
             },
         });
     }
 
     async sendVerificationEmail(user: User, token: string) {
-        const verificationUrl = `http://localhost:3000/verify-email/${token}`;
+        const verificationUrl = `http://localhost:5000/verify-email/${token}`;
 
         await this.transporter.sendMail({
-            from: process.env.SMTP_FROM,
+            from: "niyokwizerajd123@gmail.com",
             to: user.email,
             subject: "Verify your email address",
             html: `
@@ -43,7 +43,7 @@ class EmailService {
 
     async sendOTPEmail(user: User, otp: string) {
         await this.transporter.sendMail({
-            from: process.env.SMTP_FROM,
+            from: "niyokwizerajd123@gmail.com",
             to: user.email,
             subject: "Verify your email - CES Rwanda",
             html: `
@@ -62,7 +62,7 @@ class EmailService {
 
     async sendComplaintStatusUpdate(complaint: Complaint) {
         await this.transporter.sendMail({
-            from: process.env.SMTP_FROM,
+            from: "niyokwizerajd123@gmail.com",
             to: complaint.user.email,
             subject: `Complaint Status Update - ${complaint.title}`,
             html: `
@@ -73,7 +73,7 @@ class EmailService {
                 <p><strong>New Status:</strong> ${complaint.status.replace('_', ' ')}</p>
                 <p>You can track your complaint progress by clicking the button below:</p>
                 <p>
-                    <a href="${process.env.FRONTEND_URL}/track-complaints" style="background-color: #1976d2; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                    <a href="http://localhost:5000/track-complaints" style="background-color: #1976d2; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
                         Track Complaint
                     </a>
                 </p>
@@ -84,7 +84,7 @@ class EmailService {
 
     async sendComplaintResponse(complaint: Complaint, response: string) {
         await this.transporter.sendMail({
-            from: process.env.SMTP_FROM,
+            from: "niyokwizerajd123@gmail.com",
             to: complaint.user.email,
             subject: `New Response to Your Complaint - ${complaint.title}`,
             html: `
@@ -98,7 +98,7 @@ class EmailService {
                 </div>
                 <p>You can view the full complaint and response history by clicking the button below:</p>
                 <p>
-                    <a href="${process.env.FRONTEND_URL}/track-complaints" style="background-color: #1976d2; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                    <a href="http://localhost:5000/track-complaints" style="background-color: #1976d2; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
                         View Complaint
                     </a>
                 </p>

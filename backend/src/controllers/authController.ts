@@ -46,8 +46,8 @@ export class AuthController {
                 email,
                 password: hashedPassword,
                 phoneNumber,
-                verificationToken: otp, // Using verificationToken field to store OTP
-                verificationTokenExpiry: otpExpiry,
+                otp,
+                otpExpiry,
                 isEmailVerified: false,
             });
 
@@ -56,20 +56,9 @@ export class AuthController {
             // Send OTP email
             await emailService.sendOTPEmail(user, otp);
 
-            // Generate JWT token
-            const token = AuthController.generateToken(user.id, user.role);
-
             res.status(201).json({
-                message: "Registration successful. Please check your email for OTP verification code.",
-                token,
-                user: {
-                    id: user.id,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    email: user.email,
-                    role: user.role,
-                    isEmailVerified: user.isEmailVerified,
-                },
+                message: "Registration successful. Please check your email for OTP verification.",
+                email: user.email,
             });
         } catch (error) {
             console.error("Registration error:", error);
@@ -84,7 +73,7 @@ export class AuthController {
             const user = await userRepository.findOne({
                 where: {
                     email,
-                    verificationToken: otp,
+                    otp,
                     isEmailVerified: false,
                 },
             });
@@ -93,18 +82,18 @@ export class AuthController {
                 return res.status(400).json({ message: "Invalid OTP" });
             }
 
-            if (user.verificationTokenExpiry && user.verificationTokenExpiry < new Date()) {
+            if (user.otpExpiry && user.otpExpiry < new Date()) {
                 return res.status(400).json({ message: "OTP has expired" });
             }
 
             // Update user verification status
             user.isEmailVerified = true;
-            user.verificationToken = null;
-            user.verificationTokenExpiry = null;
+            user.otp = undefined;
+            user.otpExpiry = undefined;
 
             await userRepository.save(user);
 
-            // Generate new token with verified status
+            // Generate JWT token
             const token = AuthController.generateToken(user.id, user.role);
 
             res.json({
@@ -129,12 +118,13 @@ export class AuthController {
         try {
             const { email } = req.body;
 
-            const user = await userRepository.findOne({
-                where: { email, isEmailVerified: false },
-            });
-
+            const user = await userRepository.findOne({ where: { email } });
             if (!user) {
-                return res.status(404).json({ message: "User not found or already verified" });
+                return res.status(404).json({ message: "User not found" });
+            }
+
+            if (user.isEmailVerified) {
+                return res.status(400).json({ message: "Email is already verified" });
             }
 
             // Generate new OTP
@@ -142,8 +132,8 @@ export class AuthController {
             const otpExpiry = new Date();
             otpExpiry.setMinutes(otpExpiry.getMinutes() + 10);
 
-            user.verificationToken = otp;
-            user.verificationTokenExpiry = otpExpiry;
+            user.otp = otp;
+            user.otpExpiry = otpExpiry;
             await userRepository.save(user);
 
             // Send new OTP email
@@ -179,8 +169,8 @@ export class AuthController {
                 const otpExpiry = new Date();
                 otpExpiry.setMinutes(otpExpiry.getMinutes() + 10);
 
-                user.verificationToken = otp;
-                user.verificationTokenExpiry = otpExpiry;
+                user.otp = otp;
+                user.otpExpiry = otpExpiry;
                 await userRepository.save(user);
 
                 // Send new OTP email
@@ -188,6 +178,7 @@ export class AuthController {
 
                 return res.status(403).json({
                     message: "Email not verified. A new OTP has been sent to your email.",
+                    email: user.email,
                 });
             }
 

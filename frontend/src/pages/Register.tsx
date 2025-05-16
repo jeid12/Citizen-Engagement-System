@@ -58,10 +58,10 @@ const Register = () => {
                 `http://localhost:5000/api/auth/register`,
                 registrationData
             );
-            setSuccess('Registration successful! Please check your email to verify your account.');
+            setSuccess('Registration successful! Please verify your email with the OTP sent.');
             setTimeout(() => {
-                navigate('/login');
-            }, 5000);
+                navigate('/verify-otp', { state: { email: values.email } });
+            }, 2000);
         } catch (err: any) {
             const errorMessage = err.response?.data?.message || 'An error occurred during registration';
             setError(errorMessage);

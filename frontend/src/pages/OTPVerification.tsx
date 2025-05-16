@@ -11,6 +11,7 @@ import {
     Alert,
     Paper,
     Link,
+    CircularProgress,
 } from '@mui/material';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
@@ -28,6 +29,7 @@ const OTPVerification = () => {
     const dispatch = useDispatch();
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     // Get email from location state
     const email = location.state?.email;
@@ -39,8 +41,10 @@ const OTPVerification = () => {
 
     const handleSubmit = async (values: { otp: string }) => {
         try {
+            setIsLoading(true);
+            setError(null);
             const response = await axios.post(
-                `${import.meta.env.VITE_API_URL}/api/auth/verify-otp`,
+                `http://localhost:5000/api/auth/verify-otp`,
                 {
                     email,
                     otp: values.otp,
@@ -50,23 +54,29 @@ const OTPVerification = () => {
             setSuccess('Email verified successfully!');
             dispatch(loginSuccess(response.data));
 
+            // Redirect to dashboard after successful verification
             setTimeout(() => {
                 navigate('/dashboard');
             }, 2000);
         } catch (err: any) {
             const errorMessage = err.response?.data?.message || 'Error verifying OTP';
             setError(errorMessage);
+        } finally {
+            setIsLoading(false);
         }
     };
 
     const handleResendOTP = async () => {
         try {
-            await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/resend-otp`, { email });
-            setSuccess('New OTP has been sent to your email');
+            setIsLoading(true);
             setError(null);
+            await axios.post(`http://localhost:5000/api/auth/resend-otp`, { email });
+            setSuccess('New OTP has been sent to your email');
         } catch (err: any) {
             const errorMessage = err.response?.data?.message || 'Error resending OTP';
             setError(errorMessage);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -116,7 +126,9 @@ const OTPVerification = () => {
                                         maxLength: 6,
                                         inputMode: 'numeric',
                                         pattern: '[0-9]*',
+                                        style: { letterSpacing: '0.5em', textAlign: 'center' }
                                     }}
+                                    disabled={isLoading}
                                 />
 
                                 <Button
@@ -126,19 +138,21 @@ const OTPVerification = () => {
                                     color="primary"
                                     size="large"
                                     sx={{ mt: 3, mb: 2 }}
+                                    disabled={isLoading}
                                 >
-                                    Verify Email
+                                    {isLoading ? <CircularProgress size={24} /> : 'Verify Email'}
                                 </Button>
                             </Form>
                         )}
                     </Formik>
 
-                    <Box sx={{ mt: 2, textAlign: 'center' }}>
+                    <Box sx={{ textAlign: 'center', mt: 2 }}>
                         <Link
                             component="button"
                             variant="body2"
                             onClick={handleResendOTP}
                             sx={{ textDecoration: 'none' }}
+                            disabled={isLoading}
                         >
                             Didn't receive the code? Resend OTP
                         </Link>

@@ -49,7 +49,7 @@ const AdminDashboard = () => {
     const [statistics, setStatistics] = useState({
         total: 0,
         pending: 0,
-        inProgress: 0,
+        in_progress: 0,
         resolved: 0,
         rejected: 0,
     });

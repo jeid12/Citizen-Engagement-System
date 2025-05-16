@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
 import { Complaint } from "./Complaint";
+import { ComplaintResponse } from "./ComplaintResponse";
 
 @Entity()
 export class User {
@@ -21,15 +22,21 @@ export class User {
     @Column({ nullable: true })
     phoneNumber?: string;
 
-    @Column({
+    @Column({ default: false })
+    isEmailVerified!: boolean;
+
+    @Column({ nullable: true })
+    otp?: string;
+
+    @Column({ type: "timestamp", nullable: true })
+    otpExpiry?: Date;
+
+    @Column({ 
         type: "enum",
         enum: ["citizen", "admin", "agency_staff"],
         default: "citizen"
     })
     role!: "citizen" | "admin" | "agency_staff";
-
-    @Column({ default: false })
-    isEmailVerified!: boolean;
 
     @Column({ type: "varchar", nullable: true })
     verificationToken: string | null = null;
@@ -39,6 +46,9 @@ export class User {
 
     @OneToMany(() => Complaint, complaint => complaint.user)
     complaints!: Complaint[];
+
+    @OneToMany(() => ComplaintResponse, response => response.respondedBy)
+    responses!: ComplaintResponse[];
 
     @CreateDateColumn()
     createdAt!: Date;

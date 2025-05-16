@@ -32,20 +32,13 @@ const loginValidation = [
 // OTP validation
 const otpValidation = [
     body("email").isEmail().withMessage("Please enter a valid email"),
-    body("otp")
-        .isLength({ min: 6, max: 6 })
-        .isNumeric()
-        .withMessage("Please enter a valid 6-digit OTP"),
+    body("otp").matches(/^\d{6}$/).withMessage("Please enter a valid 6-digit OTP"),
 ];
 
 // Routes
 router.post("/register", registerValidation, validateRequest, AuthController.register);
 router.post("/login", loginValidation, validateRequest, AuthController.login);
 router.post("/verify-otp", otpValidation, validateRequest, AuthController.verifyOTP);
-router.post("/resend-otp", 
-    [body("email").isEmail().withMessage("Please enter a valid email")],
-    validateRequest,
-    AuthController.resendOTP
-);
+router.post("/resend-otp", body("email").isEmail(), validateRequest, AuthController.resendOTP);
 
 export default router; 

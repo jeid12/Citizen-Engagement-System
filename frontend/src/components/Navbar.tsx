@@ -13,9 +13,11 @@ import {
     Box,
     useTheme,
     useMediaQuery,
+    Divider,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import { logout } from '../store/slices/authSlice';
 
 const Navbar = () => {
@@ -24,6 +26,7 @@ const Navbar = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const { user, isAuthenticated } = useSelector((state: any) => state.auth);
+    const isAdmin = user?.role === 'admin';
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [mobileMenuAnchor, setMobileMenuAnchor] = useState<null | HTMLElement>(null);
@@ -52,14 +55,27 @@ const Navbar = () => {
             <MenuItem onClick={() => { navigate('/dashboard'); handleClose(); }}>
                 Dashboard
             </MenuItem>
-            <MenuItem onClick={() => { navigate('/complaints'); handleClose(); }}>
-                My Complaints
+            <MenuItem onClick={() => { navigate('/submit-complaint'); handleClose(); }}>
+                Submit Complaint
             </MenuItem>
-            {user?.role === 'admin' && (
-                <MenuItem onClick={() => { navigate('/admin'); handleClose(); }}>
-                    Admin Dashboard
-                </MenuItem>
+            <MenuItem onClick={() => { navigate('/track-complaints'); handleClose(); }}>
+                Track Complaints
+            </MenuItem>
+            {isAdmin && (
+                <>
+                    <Divider />
+                    <MenuItem onClick={() => { navigate('/admin'); handleClose(); }}>
+                        Admin Dashboard
+                    </MenuItem>
+                    <MenuItem onClick={() => { navigate('/admin/users'); handleClose(); }}>
+                        Manage Users
+                    </MenuItem>
+                    <MenuItem onClick={() => { navigate('/admin/complaints'); handleClose(); }}>
+                        All Complaints
+                    </MenuItem>
+                </>
             )}
+            <Divider />
             <MenuItem onClick={() => { navigate('/profile'); handleClose(); }}>
                 Profile
             </MenuItem>
@@ -124,18 +140,26 @@ const Navbar = () => {
                                 <Button
                                     color="inherit"
                                     component={Link}
-                                    to="/complaints"
+                                    to="/submit-complaint"
                                 >
-                                    My Complaints
+                                    Submit Complaint
                                 </Button>
-                                {user?.role === 'admin' && (
-                                    <Button
+                                <Button
+                                    color="inherit"
+                                    component={Link}
+                                    to="/track-complaints"
+                                >
+                                    Track Complaints
+                                </Button>
+                                {isAdmin && (
+                                    <IconButton
                                         color="inherit"
-                                        component={Link}
-                                        to="/admin"
+                                        onClick={() => navigate('/admin')}
+                                        sx={{ ml: 1 }}
+                                        title="Admin Dashboard"
                                     >
-                                        Admin Dashboard
-                                    </Button>
+                                        <AdminPanelSettingsIcon />
+                                    </IconButton>
                                 )}
                                 <IconButton
                                     color="inherit"
@@ -152,6 +176,17 @@ const Navbar = () => {
                                     <MenuItem onClick={() => { navigate('/profile'); handleClose(); }}>
                                         Profile
                                     </MenuItem>
+                                    {isAdmin && (
+                                        <>
+                                            <MenuItem onClick={() => { navigate('/admin/users'); handleClose(); }}>
+                                                Manage Users
+                                            </MenuItem>
+                                            <MenuItem onClick={() => { navigate('/admin/complaints'); handleClose(); }}>
+                                                All Complaints
+                                            </MenuItem>
+                                            <Divider />
+                                        </>
+                                    )}
                                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                                 </Menu>
                             </>
