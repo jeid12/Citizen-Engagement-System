@@ -7,18 +7,18 @@ class EmailService {
 
     constructor() {
         this.transporter = nodemailer.createTransport({
-            host: "smtp.gmail.com",
+            host: process.env.SMTP_HOST,
             port: parseInt(process.env.SMTP_PORT || "587"),
             secure: process.env.SMTP_SECURE === "true",
             auth: {
-                user: "niyokwizerajd123@gmail.com",
-                pass: "ptup lswr dccy xdat",
+                user: process.env.SMTP_USER,
+                pass: process.env.SMTP_PASS,
             },
         });
     }
 
     async sendVerificationEmail(user: User, token: string) {
-        const verificationUrl = `http://localhost:3000/api/verify-email/${token}`;
+        const verificationUrl = `http://localhost:3000/verify-email/${token}`;
 
         await this.transporter.sendMail({
             from: process.env.SMTP_FROM,
@@ -36,6 +36,25 @@ class EmailService {
                 <p>If the button doesn't work, you can also copy and paste this link into your browser:</p>
                 <p>${verificationUrl}</p>
                 <p>This link will expire in 24 hours.</p>
+                <p>Best regards,<br>CES Rwanda Team</p>
+            `,
+        });
+    }
+
+    async sendOTPEmail(user: User, otp: string) {
+        await this.transporter.sendMail({
+            from: process.env.SMTP_FROM,
+            to: user.email,
+            subject: "Verify your email - CES Rwanda",
+            html: `
+                <h1>Email Verification</h1>
+                <p>Hello ${user.firstName},</p>
+                <p>Your verification code is:</p>
+                <h2 style="background-color: #f5f5f5; padding: 10px; text-align: center; font-size: 24px; letter-spacing: 5px;">
+                    ${otp}
+                </h2>
+                <p>This code will expire in 10 minutes.</p>
+                <p>If you didn't request this code, please ignore this email.</p>
                 <p>Best regards,<br>CES Rwanda Team</p>
             `,
         });

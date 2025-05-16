@@ -18,7 +18,7 @@ import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import SubmitComplaint from './pages/SubmitComplaint';
 import TrackComplaints from './pages/TrackComplaints';
-import EmailVerification from './pages/EmailVerification';
+import OTPVerification from './pages/OTPVerification';
 
 function App() {
   return (
@@ -34,7 +34,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/verify-email/:token" element={<EmailVerification />} />
+                <Route path="/verify-otp" element={<OTPVerification />} />
 
                 {/* Protected Routes */}
                 <Route

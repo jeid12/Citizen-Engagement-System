@@ -29,9 +29,23 @@ const loginValidation = [
     body("password").notEmpty().withMessage("Password is required"),
 ];
 
+// OTP validation
+const otpValidation = [
+    body("email").isEmail().withMessage("Please enter a valid email"),
+    body("otp")
+        .isLength({ min: 6, max: 6 })
+        .isNumeric()
+        .withMessage("Please enter a valid 6-digit OTP"),
+];
+
 // Routes
 router.post("/register", registerValidation, validateRequest, AuthController.register);
 router.post("/login", loginValidation, validateRequest, AuthController.login);
-router.get("/verify-email/:token", AuthController.verifyEmail);
+router.post("/verify-otp", otpValidation, validateRequest, AuthController.verifyOTP);
+router.post("/resend-otp", 
+    [body("email").isEmail().withMessage("Please enter a valid email")],
+    validateRequest,
+    AuthController.resendOTP
+);
 
 export default router; 
