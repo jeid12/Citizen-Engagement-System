@@ -36,7 +36,7 @@ const Login: React.FC = () => {
     const handleSubmit = async (values: LoginValues, { setSubmitting }: FormikHelpers<LoginValues>) => {
         try {
             dispatch(loginStart());
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, values);
+            const response = await axios.post(`http://localhost:5000/api/auth/login`, values);
             dispatch(loginSuccess(response.data));
             navigate('/dashboard');
         } catch (err) {

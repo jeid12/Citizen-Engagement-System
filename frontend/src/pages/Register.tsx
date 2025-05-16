@@ -55,7 +55,7 @@ const Register = () => {
         try {
             const { confirmPassword, ...registrationData } = values;
             const response = await axios.post(
-                `${import.meta.env.VITE_API_URL}/api/auth/register`,
+                `http://localhost:5000/api/auth/register`,
                 registrationData
             );
             setSuccess('Registration successful! Please check your email to verify your account.');

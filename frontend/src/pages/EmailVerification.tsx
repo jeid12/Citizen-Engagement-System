@@ -24,7 +24,7 @@ const EmailVerification = () => {
     const verifyEmail = async () => {
         try {
             const response = await axios.get(
-                `${import.meta.env.VITE_API_URL}/api/auth/verify-email/${token}`
+                `http://localhost:5000/api/auth/verify-email/${token}`
             );
             setStatus('success');
             setMessage('Email verified successfully! You can now log in.');

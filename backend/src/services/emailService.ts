@@ -7,18 +7,18 @@ class EmailService {
 
     constructor() {
         this.transporter = nodemailer.createTransport({
-            host: process.env.SMTP_HOST,
+            host: "smtp.gmail.com",
             port: parseInt(process.env.SMTP_PORT || "587"),
             secure: process.env.SMTP_SECURE === "true",
             auth: {
-                user: process.env.SMTP_USER,
-                pass: process.env.SMTP_PASS,
+                user: "niyokwizerajd123@gmail.com",
+                pass: "ptup lswr dccy xdat",
             },
         });
     }
 
     async sendVerificationEmail(user: User, token: string) {
-        const verificationUrl = `${process.env.FRONTEND_URL}/verify-email/${token}`;
+        const verificationUrl = `http://localhost:3000/api/verify-email/${token}`;
 
         await this.transporter.sendMail({
             from: process.env.SMTP_FROM,
