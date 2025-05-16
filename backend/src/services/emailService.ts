@@ -1,85 +1,91 @@
 import nodemailer from 'nodemailer';
 import { User } from '../entity/User';
+import { Complaint } from '../entity/Complaint';
 
 class EmailService {
     private transporter: nodemailer.Transporter;
 
     constructor() {
         this.transporter = nodemailer.createTransport({
-            service: process.env.EMAIL_SERVICE || 'gmail',
+            host: process.env.SMTP_HOST,
+            port: parseInt(process.env.SMTP_PORT || "587"),
+            secure: process.env.SMTP_SECURE === "true",
             auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASSWORD
-            }
+                user: process.env.SMTP_USER,
+                pass: process.env.SMTP_PASS,
+            },
         });
     }
 
     async sendVerificationEmail(user: User, token: string) {
-        const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${token}`;
+        const verificationUrl = `${process.env.FRONTEND_URL}/verify-email/${token}`;
 
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
+        await this.transporter.sendMail({
+            from: process.env.SMTP_FROM,
             to: user.email,
-            subject: 'Email Verification - Citizen Engagement System',
+            subject: "Verify your email address",
             html: `
-                <h1>Welcome to Citizen Engagement System</h1>
+                <h1>Welcome to CES Rwanda</h1>
                 <p>Hello ${user.firstName},</p>
-                <p>Thank you for registering. Please verify your email by clicking the link below:</p>
-                <a href="${verificationUrl}" style="
-                    padding: 10px 20px;
-                    background-color: #1976d2;
-                    color: white;
-                    text-decoration: none;
-                    border-radius: 5px;
-                    display: inline-block;
-                    margin: 20px 0;
-                ">Verify Email</a>
-                <p>If you didn't create an account, please ignore this email.</p>
+                <p>Thank you for registering with the Citizen Engagement System. Please verify your email address by clicking the button below:</p>
+                <p>
+                    <a href="${verificationUrl}" style="background-color: #1976d2; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                        Verify Email Address
+                    </a>
+                </p>
+                <p>If the button doesn't work, you can also copy and paste this link into your browser:</p>
+                <p>${verificationUrl}</p>
                 <p>This link will expire in 24 hours.</p>
-                <p>Best regards,<br>CES Team</p>
-            `
-        };
-
-        try {
-            await this.transporter.sendMail(mailOptions);
-        } catch (error) {
-            console.error('Error sending verification email:', error);
-            throw new Error('Failed to send verification email');
-        }
+                <p>Best regards,<br>CES Rwanda Team</p>
+            `,
+        });
     }
 
-    async sendPasswordResetEmail(user: User, token: string) {
-        const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
-
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: user.email,
-            subject: 'Password Reset - Citizen Engagement System',
+    async sendComplaintStatusUpdate(complaint: Complaint) {
+        await this.transporter.sendMail({
+            from: process.env.SMTP_FROM,
+            to: complaint.user.email,
+            subject: `Complaint Status Update - ${complaint.title}`,
             html: `
-                <h1>Password Reset Request</h1>
-                <p>Hello ${user.firstName},</p>
-                <p>You requested to reset your password. Click the link below to set a new password:</p>
-                <a href="${resetUrl}" style="
-                    padding: 10px 20px;
-                    background-color: #1976d2;
-                    color: white;
-                    text-decoration: none;
-                    border-radius: 5px;
-                    display: inline-block;
-                    margin: 20px 0;
-                ">Reset Password</a>
-                <p>If you didn't request this, please ignore this email.</p>
-                <p>This link will expire in 1 hour.</p>
-                <p>Best regards,<br>CES Team</p>
-            `
-        };
+                <h1>Complaint Status Update</h1>
+                <p>Hello ${complaint.user.firstName},</p>
+                <p>There has been an update to your complaint:</p>
+                <p><strong>Title:</strong> ${complaint.title}</p>
+                <p><strong>New Status:</strong> ${complaint.status.replace('_', ' ')}</p>
+                <p>You can track your complaint progress by clicking the button below:</p>
+                <p>
+                    <a href="${process.env.FRONTEND_URL}/track-complaints" style="background-color: #1976d2; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                        Track Complaint
+                    </a>
+                </p>
+                <p>Best regards,<br>CES Rwanda Team</p>
+            `,
+        });
+    }
 
-        try {
-            await this.transporter.sendMail(mailOptions);
-        } catch (error) {
-            console.error('Error sending password reset email:', error);
-            throw new Error('Failed to send password reset email');
-        }
+    async sendComplaintResponse(complaint: Complaint, response: string) {
+        await this.transporter.sendMail({
+            from: process.env.SMTP_FROM,
+            to: complaint.user.email,
+            subject: `New Response to Your Complaint - ${complaint.title}`,
+            html: `
+                <h1>New Response to Your Complaint</h1>
+                <p>Hello ${complaint.user.firstName},</p>
+                <p>A new response has been added to your complaint:</p>
+                <p><strong>Title:</strong> ${complaint.title}</p>
+                <p><strong>Response:</strong></p>
+                <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px;">
+                    ${response}
+                </div>
+                <p>You can view the full complaint and response history by clicking the button below:</p>
+                <p>
+                    <a href="${process.env.FRONTEND_URL}/track-complaints" style="background-color: #1976d2; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                        View Complaint
+                    </a>
+                </p>
+                <p>Best regards,<br>CES Rwanda Team</p>
+            `,
+        });
     }
 }
 

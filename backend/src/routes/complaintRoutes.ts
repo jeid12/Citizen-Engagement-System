@@ -1,32 +1,23 @@
 import { Router } from "express";
 import { ComplaintController } from "../controllers/complaintController";
-import { auth } from "../middleware/auth";
-import { body } from "express-validator";
-import { validateRequest } from "../middleware/validateRequest";
+import { authMiddleware } from "../middleware/authMiddleware";
+import { adminMiddleware } from "../middleware/adminMiddleware";
+import { validateComplaint } from "../middleware/validationMiddleware";
 
 const router = Router();
 
-// Validation middleware
-const createComplaintValidation = [
-    body("title").trim().notEmpty().withMessage("Title is required"),
-    body("description").trim().notEmpty().withMessage("Description is required"),
-    body("location").optional().trim().notEmpty().withMessage("Location cannot be empty if provided"),
-    body("categoryId").trim().notEmpty().withMessage("Category is required"),
-];
+// Public routes
+router.get("/categories", ComplaintController.getCategories);
 
-const updateComplaintValidation = [
-    body("status")
-        .optional()
-        .isIn(["pending", "in_progress", "resolved", "rejected"])
-        .withMessage("Invalid status"),
-    body("response").optional().trim().notEmpty().withMessage("Response cannot be empty if provided"),
-];
+// Protected routes (requires authentication)
+router.use(authMiddleware);
+router.post("/submit", validateComplaint, ComplaintController.submitComplaint);
+router.get("/my-complaints", ComplaintController.getComplaints);
+router.get("/complaint/:id", ComplaintController.getComplaintById);
 
-// Routes
-router.post("/", auth, createComplaintValidation, validateRequest, ComplaintController.createComplaint);
-router.get("/", auth, ComplaintController.getComplaints);
-router.get("/:id", auth, ComplaintController.getComplaintById);
-router.patch("/:id", auth, updateComplaintValidation, validateRequest, ComplaintController.updateComplaint);
-router.delete("/:id", auth, ComplaintController.deleteComplaint);
+// Admin routes
+router.use(adminMiddleware);
+router.get("/all", ComplaintController.getAllComplaints);
+router.post("/complaint/:id/respond", ComplaintController.respondToComplaint);
 
 export default router; 

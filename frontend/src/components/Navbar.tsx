@@ -55,6 +55,11 @@ const Navbar = () => {
             <MenuItem onClick={() => { navigate('/complaints'); handleClose(); }}>
                 My Complaints
             </MenuItem>
+            {user?.role === 'admin' && (
+                <MenuItem onClick={() => { navigate('/admin'); handleClose(); }}>
+                    Admin Dashboard
+                </MenuItem>
+            )}
             <MenuItem onClick={() => { navigate('/profile'); handleClose(); }}>
                 Profile
             </MenuItem>
@@ -123,6 +128,15 @@ const Navbar = () => {
                                 >
                                     My Complaints
                                 </Button>
+                                {user?.role === 'admin' && (
+                                    <Button
+                                        color="inherit"
+                                        component={Link}
+                                        to="/admin"
+                                    >
+                                        Admin Dashboard
+                                    </Button>
+                                )}
                                 <IconButton
                                     color="inherit"
                                     onClick={handleMenu}

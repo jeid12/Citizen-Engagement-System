@@ -9,10 +9,12 @@ import crypto from "crypto";
 const userRepository = AppDataSource.getRepository(User);
 
 export class AuthController {
-    static generateToken = (userId: string): string => {
-        return jwt.sign({ userId }, process.env.JWT_SECRET || "your-secret-key", {
-            expiresIn: "24h",
-        });
+    static generateToken = (userId: string, role: string): string => {
+        return jwt.sign(
+            { userId, role },
+            process.env.JWT_SECRET || "your-secret-key",
+            { expiresIn: "24h" }
+        );
     };
 
     static generateVerificationToken = (): string => {
@@ -55,7 +57,7 @@ export class AuthController {
             await emailService.sendVerificationEmail(user, verificationToken);
 
             // Generate JWT token
-            const token = AuthController.generateToken(user.id);
+            const token = AuthController.generateToken(user.id, user.role);
 
             res.status(201).json({
                 message: "Registration successful. Please verify your email.",
@@ -94,6 +96,7 @@ export class AuthController {
                 return res.status(400).json({ message: "Verification token has expired" });
             }
 
+            // Update user verification status
             user.isEmailVerified = true;
             user.verificationToken = null;
             user.verificationTokenExpiry = null;
@@ -143,7 +146,7 @@ export class AuthController {
             }
 
             // Generate token
-            const token = AuthController.generateToken(user.id);
+            const token = AuthController.generateToken(user.id, user.role);
 
             res.json({
                 token,

@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany } from "typeorm";
 import { User } from "./User";
 import { Category } from "./Category";
 import { Agency } from "./Agency";
+import { ComplaintResponse } from "./ComplaintResponse";
 
 @Entity()
 export class Complaint {
@@ -22,25 +23,31 @@ export class Complaint {
     status!: "pending" | "in_progress" | "resolved" | "rejected";
 
     @Column({ nullable: true })
-    location!: string;
+    location?: string;
 
     @Column("simple-array", { nullable: true })
-    attachments!: string[];
+    attachments?: string[];
 
-    @ManyToOne(() => User, (user: User) => user.complaints)
+    @ManyToOne(() => User, user => user.complaints)
     user!: User;
 
-    @ManyToOne(() => Category, (category: Category) => category.complaints)
+    @ManyToOne(() => Category, category => category.complaints)
     category!: Category;
 
-    @ManyToOne(() => Agency, (agency: Agency) => agency.complaints)
+    @ManyToOne(() => Agency, agency => agency.complaints)
     agency!: Agency;
 
+    @OneToMany(() => ComplaintResponse, response => response.complaint)
+    responses!: ComplaintResponse[];
+
     @Column({ type: "text", nullable: true })
-    response!: string;
+    adminNotes?: string;
 
     @Column({ nullable: true })
-    respondedBy!: string;
+    priority?: "low" | "medium" | "high";
+
+    @Column({ nullable: true })
+    assignedTo?: string;
 
     @CreateDateColumn()
     createdAt!: Date;

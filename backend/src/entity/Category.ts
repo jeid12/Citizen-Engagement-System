@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { Complaint } from "./Complaint";
 
 @Entity()
@@ -9,18 +9,12 @@ export class Category {
     @Column()
     name!: string;
 
-    @Column({ nullable: true })
-    description!: string;
+    @Column({ type: "text", nullable: true })
+    description?: string;
 
     @Column({ default: true })
     isActive!: boolean;
 
-    @OneToMany(() => Complaint, (complaint: Complaint) => complaint.category)
+    @OneToMany(() => Complaint, complaint => complaint.category)
     complaints!: Complaint[];
-
-    @CreateDateColumn()
-    createdAt!: Date;
-
-    @UpdateDateColumn()
-    updatedAt!: Date;
 } 

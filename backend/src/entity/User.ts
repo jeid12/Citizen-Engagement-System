@@ -18,34 +18,26 @@ export class User {
     @Column()
     password!: string;
 
-    @Column({ default: "citizen" })
+    @Column({ nullable: true })
+    phoneNumber?: string;
+
+    @Column({
+        type: "enum",
+        enum: ["citizen", "admin", "agency_staff"],
+        default: "citizen"
+    })
     role!: "citizen" | "admin" | "agency_staff";
-
-    @Column({ nullable: true })
-    phoneNumber!: string;
-
-    @Column({ nullable: true })
-    address!: string;
-
-    @Column({ default: "en" })
-    preferredLanguage!: "en" | "rw";
 
     @Column({ default: false })
     isEmailVerified!: boolean;
 
-    @Column({ nullable: true })
-    verificationToken!: string | null;
+    @Column({ type: "varchar", nullable: true })
+    verificationToken: string | null = null;
 
-    @Column({ nullable: true })
-    verificationTokenExpiry!: Date | null;
+    @Column({ type: "timestamp", nullable: true })
+    verificationTokenExpiry: Date | null = null;
 
-    @Column({ nullable: true })
-    passwordResetToken!: string | null;
-
-    @Column({ nullable: true })
-    passwordResetExpiry!: Date | null;
-
-    @OneToMany(() => Complaint, (complaint: Complaint) => complaint.user)
+    @OneToMany(() => Complaint, complaint => complaint.user)
     complaints!: Complaint[];
 
     @CreateDateColumn()
