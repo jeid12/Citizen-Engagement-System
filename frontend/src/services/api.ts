@@ -28,8 +28,12 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401) {
+            // Clear token and user data
             localStorage.removeItem('token');
-            window.location.href = '/login';
+            // Don't redirect if we're already on the login page
+            if (!window.location.pathname.includes('/login')) {
+                window.location.href = '/login';
+            }
         }
         return Promise.reject(error);
     }
@@ -47,6 +51,17 @@ export const authAPI = {
     }) => api.post('/auth/register', data),
     verifyEmail: (token: string) =>
         api.get(`/auth/verify-email/${token}`),
+    verifyOTP: (data: { email: string; otp: string }) =>
+        api.post('/auth/verify-otp', data),
+    resendOTP: (data: { email: string }) =>
+        api.post('/auth/resend-otp', data),
+};
+
+export const userAPI = {
+    getAll: () => api.get('/users'),
+    updateRole: (userId: string, role: string) => api.patch(`/users/${userId}/role`, { role }),
+    getStats: () => api.get('/users/stats'),
+    verifyUser: (userId: string) => api.post(`/users/${userId}/verify`),
 };
 
 export const complaintAPI = {
@@ -72,12 +87,6 @@ export const categoryAPI = {
 
 export const agencyAPI = {
     getAll: () => api.get('/agencies'),
-};
-
-export const userAPI = {
-    getAll: () => api.get('/users'),
-    updateRole: (userId: string, role: string) => api.patch(`/users/${userId}/role`, { role }),
-    getStats: () => api.get('/users/stats'),
 };
 
 export default api; 

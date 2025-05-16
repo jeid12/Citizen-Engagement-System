@@ -66,6 +66,39 @@ export class UserController {
         }
     };
 
+    static verifyUser = async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+
+            const user = await userRepository.findOne({ where: { id } });
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+
+            // Prevent self-verification
+            if (user.id === (req as any).user.id) {
+                return res.status(403).json({ message: "Cannot verify your own account" });
+            }
+
+            user.isEmailVerified = true;
+            user.otp = undefined;
+            user.otpExpiry = undefined;
+            await userRepository.save(user);
+
+            res.json({
+                message: "User verified successfully",
+                user: {
+                    id: user.id,
+                    email: user.email,
+                    isEmailVerified: true
+                }
+            });
+        } catch (error) {
+            console.error("Error verifying user:", error);
+            res.status(500).json({ message: "Error verifying user" });
+        }
+    };
+
     static getUserStats = async (req: Request, res: Response) => {
         try {
             const totalUsers = await userRepository.count();

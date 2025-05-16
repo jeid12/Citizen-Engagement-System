@@ -20,9 +20,11 @@ import {
     Chip,
     CircularProgress,
     Alert,
+    Stack,
 } from '@mui/material';
 import { useSelector } from 'react-redux';
 import EditIcon from '@mui/icons-material/Edit';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import { userAPI } from '../services/api';
 
 interface User {
@@ -42,6 +44,7 @@ const ManageUsers = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [updateLoading, setUpdateLoading] = useState(false);
+    const [verifyLoading, setVerifyLoading] = useState<string | null>(null);
     const currentUser = useSelector((state: any) => state.auth.user);
 
     useEffect(() => {
@@ -76,6 +79,20 @@ const ManageUsers = () => {
             setError(error.response?.data?.message || 'Failed to update user role. Please try again.');
         } finally {
             setUpdateLoading(false);
+        }
+    };
+
+    const handleVerifyUser = async (userId: string) => {
+        try {
+            setVerifyLoading(userId);
+            setError(null);
+            await userAPI.verifyUser(userId);
+            await fetchUsers(); // Refresh the list
+        } catch (error: any) {
+            console.error('Error verifying user:', error);
+            setError(error.response?.data?.message || 'Failed to verify user. Please try again.');
+        } finally {
+            setVerifyLoading(null);
         }
     };
 
@@ -133,15 +150,32 @@ const ManageUsers = () => {
                                 </TableCell>
                                 <TableCell>
                                     {user.id !== currentUser.id && (
-                                        <IconButton
-                                            onClick={() => {
-                                                setSelectedUser(user);
-                                                setOpenDialog(true);
-                                            }}
-                                            color="primary"
-                                        >
-                                            <EditIcon />
-                                        </IconButton>
+                                        <Stack direction="row" spacing={1}>
+                                            <IconButton
+                                                onClick={() => {
+                                                    setSelectedUser(user);
+                                                    setOpenDialog(true);
+                                                }}
+                                                color="primary"
+                                                title="Change Role"
+                                            >
+                                                <EditIcon />
+                                            </IconButton>
+                                            {!user.isEmailVerified && (
+                                                <IconButton
+                                                    onClick={() => handleVerifyUser(user.id)}
+                                                    color="success"
+                                                    disabled={verifyLoading === user.id}
+                                                    title="Verify User"
+                                                >
+                                                    {verifyLoading === user.id ? (
+                                                        <CircularProgress size={24} />
+                                                    ) : (
+                                                        <VerifiedUserIcon />
+                                                    )}
+                                                </IconButton>
+                                            )}
+                                        </Stack>
                                     )}
                                 </TableCell>
                             </TableRow>

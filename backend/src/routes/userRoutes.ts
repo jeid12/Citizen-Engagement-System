@@ -18,4 +18,7 @@ router.get("/stats", UserController.getUserStats);
 // Update user role
 router.patch("/:id/role", UserController.updateUserRole);
 
+// Verify user
+router.post("/:id/verify", UserController.verifyUser);
+
 export default router; 
