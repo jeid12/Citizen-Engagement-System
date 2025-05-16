@@ -1,0 +1,57 @@
+import "reflect-metadata";
+import express, { Request, Response, NextFunction } from "express";
+import cors from "cors";
+import helmet from "helmet";
+import morgan from "morgan";
+import { AppDataSource } from "./data-source";
+import dotenv from "dotenv";
+import authRoutes from "./routes/authRoutes";
+import complaintRoutes from "./routes/complaintRoutes";
+
+// Load environment variables
+dotenv.config();
+
+// Create Express app
+const app = express();
+
+// Middleware
+app.use(cors());
+app.use(helmet());
+app.use(morgan("dev"));
+app.use(express.json());
+
+// Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/complaints", complaintRoutes);
+
+// Health check route
+app.get("/health", (req: Request, res: Response) => {
+    res.json({ status: "healthy", timestamp: new Date().toISOString() });
+});
+
+// Error handling middleware
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    console.error(err.stack);
+    res.status(500).json({ 
+        message: "Something went wrong!",
+        error: process.env.NODE_ENV === "development" ? err.message : undefined
+    });
+});
+
+// Welcome route
+app.get("/", (req: Request, res: Response) => {
+    res.json({ message: "Welcome to Citizen Engagement System API" });
+});
+
+// Start server
+const PORT = process.env.PORT || 5000;
+
+AppDataSource.initialize().then(() => {
+    console.log("Database connected successfully");
+    
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+}).catch(error => {
+    console.error("Error during Data Source initialization:", error);
+}); 
