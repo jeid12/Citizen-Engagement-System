@@ -7,6 +7,7 @@ const router = Router();
 
 // Public routes
 router.get("/categories", ComplaintController.getCategories);
+router.get("/agencies", ComplaintController.getAgencies);
 
 // Protected routes
 router.use(authMiddleware);
