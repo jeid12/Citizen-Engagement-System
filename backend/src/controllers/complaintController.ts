@@ -4,6 +4,8 @@ import { Complaint } from "../entity/Complaint";
 import { Category } from "../entity/Category";
 import { Agency } from "../entity/Agency";
 import { ComplaintResponse } from "../entity/ComplaintResponse";
+import { User } from "../entity/User";
+import { emailService } from "../services/emailService";
 
 export class ComplaintController {
     static getCategories = async (req: Request, res: Response) => {
@@ -20,16 +22,50 @@ export class ComplaintController {
         }
     };
 
+    static getAgencies = async (req: Request, res: Response) => {
+        try {
+            const agencyRepository = AppDataSource.getRepository(Agency);
+            const agencies = await agencyRepository.find({
+                where: { isActive: true },
+                order: { name: "ASC" }
+            });
+            res.json(agencies);
+        } catch (error) {
+            console.error("Error fetching agencies:", error);
+            res.status(500).json({ message: "Error fetching agencies" });
+        }
+    };
+
     static submitComplaint = async (req: Request, res: Response) => {
         try {
-            const { title, description, location, categoryId, attachments } = req.body;
+            const { title, description, location, categoryId, agencyId, attachments } = req.body;
             const complaintRepository = AppDataSource.getRepository(Complaint);
             const categoryRepository = AppDataSource.getRepository(Category);
+            const agencyRepository = AppDataSource.getRepository(Agency);
+            const userRepository = AppDataSource.getRepository(User);
 
             // Find category
             const category = await categoryRepository.findOne({ where: { id: categoryId } });
             if (!category) {
                 return res.status(404).json({ message: "Category not found" });
+            }
+
+            // Find agency
+            const agency = await agencyRepository.findOne({ 
+                where: { id: agencyId },
+                relations: ['staff'] // Include agency staff for notifications
+            });
+            if (!agency) {
+                return res.status(404).json({ message: "Agency not found" });
+            }
+
+            // Get user
+            const user = await userRepository.findOne({ 
+                where: { id: (req as any).userId },
+                select: ['id', 'firstName', 'lastName', 'email'] 
+            });
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
             }
 
             // Create complaint
@@ -38,13 +74,46 @@ export class ComplaintController {
                 description,
                 location,
                 category,
+                agency,
                 attachments,
-                user: (req as any).user,
+                user,
                 status: "pending",
+                priority: "medium", // Default priority
             });
 
             await complaintRepository.save(complaint);
-            res.status(201).json(complaint);
+
+            // Send email notifications
+            try {
+                // Notify agency staff
+                if (agency.staff && agency.staff.length > 0) {
+                    for (const staffMember of agency.staff) {
+                        await emailService.sendNewComplaintNotification(
+                            staffMember,
+                            complaint,
+                            agency
+                        );
+                    }
+                }
+
+                // Notify user of successful submission
+                await emailService.sendComplaintConfirmation(user, complaint, agency);
+            } catch (emailError) {
+                console.error("Error sending email notifications:", emailError);
+                // Don't fail the request if email fails
+            }
+
+            res.status(201).json({
+                message: "Complaint submitted successfully",
+                complaint: {
+                    id: complaint.id,
+                    title: complaint.title,
+                    status: complaint.status,
+                    category: category.name,
+                    agency: agency.name,
+                    createdAt: complaint.createdAt
+                }
+            });
         } catch (error) {
             console.error("Error creating complaint:", error);
             res.status(500).json({ message: "Error creating complaint" });
@@ -199,7 +268,6 @@ export class ComplaintController {
 
             // Send email notification to the user
             try {
-                const emailService = require("../services/emailService").emailService;
                 await emailService.sendComplaintResponse(complaint, response);
             } catch (emailError) {
                 console.error("Error sending email notification:", emailError);

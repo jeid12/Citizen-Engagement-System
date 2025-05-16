@@ -66,11 +66,14 @@ export const userAPI = {
 };
 
 export const complaintAPI = {
+    getCategories: () => api.get('/complaints/categories'),
+    getAgencies: () => api.get('/complaints/agencies'),
     create: (data: {
         title: string;
         description: string;
         location?: string;
         categoryId: string;
+        agencyId: string;
     }) => api.post('/complaints', data),
     getAll: () => api.get('/complaints'),
     getById: (id: string) => api.get(`/complaints/${id}`),

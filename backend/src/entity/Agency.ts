@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable } from "typeorm";
 import { Complaint } from "./Complaint";
+import { User } from "./User";
 
 @Entity()
 export class Agency {
@@ -23,4 +24,18 @@ export class Agency {
 
     @OneToMany(() => Complaint, complaint => complaint.agency)
     complaints!: Complaint[];
+
+    @ManyToMany(() => User)
+    @JoinTable({
+        name: "agency_staff",
+        joinColumn: {
+            name: "agency_id",
+            referencedColumnName: "id"
+        },
+        inverseJoinColumn: {
+            name: "user_id",
+            referencedColumnName: "id"
+        }
+    })
+    staff!: User[];
 } 

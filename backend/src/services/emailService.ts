@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import { User } from '../entity/User';
 import { Complaint } from '../entity/Complaint';
+import { Agency } from '../entity/Agency';
 
 class EmailService {
     private transporter: nodemailer.Transporter;
@@ -11,8 +12,8 @@ class EmailService {
             port: 587,
             secure: false,
             auth: {
-                user: "niyokwizerajd123@gmail.com",
-                pass: "ptup lswr dccy xdat",
+                user: process.env.EMAIL_USER || "niyokwizerajd123@gmail.com",
+                pass: process.env.EMAIL_PASS || "ptup lswr dccy xdat",
             },
         });
     }
@@ -42,69 +43,84 @@ class EmailService {
     }
 
     async sendOTPEmail(user: User, otp: string) {
-        await this.transporter.sendMail({
-            from: "niyokwizerajd123@gmail.com",
+        const mailOptions = {
+            from: process.env.EMAIL_USER || "niyokwizerajd123@gmail.com",
             to: user.email,
-            subject: "Verify your email - CES Rwanda",
+            subject: "Email Verification OTP",
             html: `
                 <h1>Email Verification</h1>
                 <p>Hello ${user.firstName},</p>
-                <p>Your verification code is:</p>
-                <h2 style="background-color: #f5f5f5; padding: 10px; text-align: center; font-size: 24px; letter-spacing: 5px;">
-                    ${otp}
-                </h2>
-                <p>This code will expire in 10 minutes.</p>
-                <p>If you didn't request this code, please ignore this email.</p>
-                <p>Best regards,<br>CES Rwanda Team</p>
+                <p>Your OTP for email verification is: <strong>${otp}</strong></p>
+                <p>This OTP will expire in 10 minutes.</p>
+                <p>If you didn't request this, please ignore this email.</p>
             `,
-        });
+        };
+
+        await this.transporter.sendMail(mailOptions);
     }
 
-    async sendComplaintStatusUpdate(complaint: Complaint) {
-        await this.transporter.sendMail({
-            from: "niyokwizerajd123@gmail.com",
-            to: complaint.user.email,
-            subject: `Complaint Status Update - ${complaint.title}`,
+    async sendNewComplaintNotification(staffMember: User, complaint: Complaint, agency: Agency) {
+        const mailOptions = {
+            from: process.env.EMAIL_USER || "niyokwizerajd123@gmail.com",
+            to: staffMember.email,
+            subject: `New Complaint Assigned - ${complaint.title}`,
             html: `
-                <h1>Complaint Status Update</h1>
-                <p>Hello ${complaint.user.firstName},</p>
-                <p>There has been an update to your complaint:</p>
-                <p><strong>Title:</strong> ${complaint.title}</p>
-                <p><strong>New Status:</strong> ${complaint.status.replace('_', ' ')}</p>
-                <p>You can track your complaint progress by clicking the button below:</p>
-                <p>
-                    <a href="http://localhost:5000/track-complaints" style="background-color: #1976d2; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
-                        Track Complaint
-                    </a>
-                </p>
-                <p>Best regards,<br>CES Rwanda Team</p>
+                <h1>New Complaint Assigned</h1>
+                <p>Hello ${staffMember.firstName},</p>
+                <p>A new complaint has been assigned to ${agency.name}:</p>
+                <h2>${complaint.title}</h2>
+                <p><strong>Description:</strong> ${complaint.description}</p>
+                <p><strong>Location:</strong> ${complaint.location || 'Not specified'}</p>
+                <p><strong>Category:</strong> ${complaint.category.name}</p>
+                <p><strong>Status:</strong> ${complaint.status}</p>
+                <p><strong>Priority:</strong> ${complaint.priority}</p>
+                <p>Please review and take necessary action.</p>
+                <p>You can view the full details in your dashboard.</p>
             `,
-        });
+        };
+
+        await this.transporter.sendMail(mailOptions);
+    }
+
+    async sendComplaintConfirmation(user: User, complaint: Complaint, agency: Agency) {
+        const mailOptions = {
+            from: process.env.EMAIL_USER || "niyokwizerajd123@gmail.com",
+            to: user.email,
+            subject: `Complaint Submitted Successfully - ${complaint.title}`,
+            html: `
+                <h1>Complaint Submitted Successfully</h1>
+                <p>Hello ${user.firstName},</p>
+                <p>Your complaint has been successfully submitted and assigned to ${agency.name}.</p>
+                <h2>${complaint.title}</h2>
+                <p><strong>Description:</strong> ${complaint.description}</p>
+                <p><strong>Location:</strong> ${complaint.location || 'Not specified'}</p>
+                <p><strong>Category:</strong> ${complaint.category.name}</p>
+                <p><strong>Status:</strong> ${complaint.status}</p>
+                <p>You will be notified of any updates to your complaint.</p>
+                <p>You can track the status of your complaint in your dashboard.</p>
+            `,
+        };
+
+        await this.transporter.sendMail(mailOptions);
     }
 
     async sendComplaintResponse(complaint: Complaint, response: string) {
-        await this.transporter.sendMail({
-            from: "niyokwizerajd123@gmail.com",
+        const mailOptions = {
+            from: process.env.EMAIL_USER || "niyokwizerajd123@gmail.com",
             to: complaint.user.email,
-            subject: `New Response to Your Complaint - ${complaint.title}`,
+            subject: `Update on your complaint - ${complaint.title}`,
             html: `
-                <h1>New Response to Your Complaint</h1>
+                <h1>Complaint Update</h1>
                 <p>Hello ${complaint.user.firstName},</p>
-                <p>A new response has been added to your complaint:</p>
-                <p><strong>Title:</strong> ${complaint.title}</p>
-                <p><strong>Response:</strong></p>
-                <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px;">
-                    ${response}
-                </div>
-                <p>You can view the full complaint and response history by clicking the button below:</p>
-                <p>
-                    <a href="http://localhost:5000/track-complaints" style="background-color: #1976d2; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
-                        View Complaint
-                    </a>
-                </p>
-                <p>Best regards,<br>CES Rwanda Team</p>
+                <p>There has been an update to your complaint:</p>
+                <h2>${complaint.title}</h2>
+                <p><strong>New Response:</strong> ${response}</p>
+                <p><strong>Current Status:</strong> ${complaint.status}</p>
+                <p>You can view the full details in your dashboard.</p>
             `,
-        });
+        };
+
+        await this.transporter.sendMail(mailOptions);
     }
 }
 
