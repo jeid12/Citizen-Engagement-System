@@ -6,8 +6,8 @@ import theme from './theme';
 import store from './store';
 
 // Components
-import Navbar from './components/layout/Navbar';
-import Footer from './components/layout/Footer';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 
 // Pages
 import Home from './pages/Home';

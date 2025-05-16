@@ -7,7 +7,7 @@ import { Agency } from "./entity/Agency";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
-    url: process.env.DATABASE_URL,
+    url: 'postgresql://asm_8k0j_user:NcJkdjdVdfRRJif31Z3rW8JcFKxWgufk@dpg-d0ipqk6uk2gs73alo2ug-a.oregon-postgres.render.com/asm_8k0j',
     ssl: {
         rejectUnauthorized: false
     },

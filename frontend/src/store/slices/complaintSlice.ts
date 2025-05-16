@@ -5,16 +5,9 @@ interface Complaint {
   title: string;
   description: string;
   status: 'pending' | 'in_progress' | 'resolved' | 'rejected';
-  category: {
-    id: string;
-    name: string;
-  };
-  agency?: {
-    id: string;
-    name: string;
-  };
-  location?: string;
-  attachments?: string[];
+  location: string;
+  category: string;
+  attachments: string[];
   createdAt: string;
   updatedAt: string;
 }
@@ -49,7 +42,7 @@ const complaintSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    setSelectedComplaint: (state, action: PayloadAction<Complaint>) => {
+    selectComplaint: (state, action: PayloadAction<Complaint>) => {
       state.selectedComplaint = action.payload;
     },
     clearSelectedComplaint: (state) => {
@@ -58,11 +51,14 @@ const complaintSlice = createSlice({
     addComplaint: (state, action: PayloadAction<Complaint>) => {
       state.complaints.unshift(action.payload);
     },
-    updateComplaintStatus: (state, action: PayloadAction<{ id: string; status: Complaint['status'] }>) => {
-      const complaint = state.complaints.find(c => c.id === action.payload.id);
-      if (complaint) {
-        complaint.status = action.payload.status;
+    updateComplaint: (state, action: PayloadAction<Complaint>) => {
+      const index = state.complaints.findIndex(c => c.id === action.payload.id);
+      if (index !== -1) {
+        state.complaints[index] = action.payload;
       }
+    },
+    deleteComplaint: (state, action: PayloadAction<string>) => {
+      state.complaints = state.complaints.filter(c => c.id !== action.payload);
     },
   },
 });
@@ -71,10 +67,11 @@ export const {
   fetchComplaintsStart,
   fetchComplaintsSuccess,
   fetchComplaintsFailure,
-  setSelectedComplaint,
+  selectComplaint,
   clearSelectedComplaint,
   addComplaint,
-  updateComplaintStatus,
+  updateComplaint,
+  deleteComplaint,
 } = complaintSlice.actions;
 
 export default complaintSlice.reducer; 
