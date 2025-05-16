@@ -21,4 +21,7 @@ router.patch("/:id/role", UserController.updateUserRole);
 // Verify user
 router.post("/:id/verify", UserController.verifyUser);
 
+// Delete user
+router.delete("/:id", UserController.deleteUser);
+
 export default router; 

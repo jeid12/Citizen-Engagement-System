@@ -62,6 +62,7 @@ export const userAPI = {
     updateRole: (userId: string, role: string) => api.patch(`/users/${userId}/role`, { role }),
     getStats: () => api.get('/users/stats'),
     verifyUser: (userId: string) => api.post(`/users/${userId}/verify`),
+    deleteUser: (userId: string) => api.delete(`/users/${userId}`),
 };
 
 export const complaintAPI = {
@@ -87,6 +88,28 @@ export const categoryAPI = {
 
 export const agencyAPI = {
     getAll: () => api.get('/agencies'),
+};
+
+export const profileAPI = {
+    getProfile: () => api.get('/profile'),
+    updateProfile: (data: {
+        firstName?: string;
+        lastName?: string;
+        phoneNumber?: string;
+        bio?: string;
+        address?: string;
+        city?: string;
+        country?: string;
+    }) => api.patch('/profile', data),
+    uploadPhoto: (photo: File) => {
+        const formData = new FormData();
+        formData.append('photo', photo);
+        return api.post('/profile/photo', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+    },
 };
 
 export default api; 

@@ -24,6 +24,7 @@ import {
 } from '@mui/material';
 import { useSelector } from 'react-redux';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import { userAPI } from '../services/api';
 
@@ -41,10 +42,12 @@ const ManageUsers = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [openDialog, setOpenDialog] = useState(false);
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [updateLoading, setUpdateLoading] = useState(false);
     const [verifyLoading, setVerifyLoading] = useState<string | null>(null);
+    const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
     const currentUser = useSelector((state: any) => state.auth.user);
 
     useEffect(() => {
@@ -93,6 +96,23 @@ const ManageUsers = () => {
             setError(error.response?.data?.message || 'Failed to verify user. Please try again.');
         } finally {
             setVerifyLoading(null);
+        }
+    };
+
+    const handleDeleteUser = async () => {
+        if (!selectedUser) return;
+
+        try {
+            setDeleteLoading(selectedUser.id);
+            setError(null);
+            await userAPI.deleteUser(selectedUser.id);
+            setOpenDeleteDialog(false);
+            await fetchUsers(); // Refresh the list
+        } catch (error: any) {
+            console.error('Error deleting user:', error);
+            setError(error.response?.data?.message || 'Failed to delete user. Please try again.');
+        } finally {
+            setDeleteLoading(null);
         }
     };
 
@@ -175,6 +195,23 @@ const ManageUsers = () => {
                                                     )}
                                                 </IconButton>
                                             )}
+                                            {user.role !== 'admin' && (
+                                                <IconButton
+                                                    onClick={() => {
+                                                        setSelectedUser(user);
+                                                        setOpenDeleteDialog(true);
+                                                    }}
+                                                    color="error"
+                                                    disabled={deleteLoading === user.id}
+                                                    title="Delete User"
+                                                >
+                                                    {deleteLoading === user.id ? (
+                                                        <CircularProgress size={24} />
+                                                    ) : (
+                                                        <DeleteIcon />
+                                                    )}
+                                                </IconButton>
+                                            )}
                                         </Stack>
                                     )}
                                 </TableCell>
@@ -214,6 +251,33 @@ const ManageUsers = () => {
                         disabled={updateLoading}
                     >
                         {updateLoading ? 'Updating...' : 'Update Role'}
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={openDeleteDialog} onClose={() => !deleteLoading && setOpenDeleteDialog(false)}>
+                <DialogTitle>Delete User</DialogTitle>
+                <DialogContent>
+                    {selectedUser && (
+                        <Typography>
+                            Are you sure you want to delete the user "{selectedUser.firstName} {selectedUser.lastName}"? This action cannot be undone.
+                        </Typography>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button 
+                        onClick={() => setOpenDeleteDialog(false)} 
+                        disabled={Boolean(deleteLoading)}
+                    >
+                        Cancel
+                    </Button>
+                    <Button 
+                        onClick={handleDeleteUser} 
+                        variant="contained" 
+                        color="error"
+                        disabled={Boolean(deleteLoading)}
+                    >
+                        {deleteLoading ? 'Deleting...' : 'Delete User'}
                     </Button>
                 </DialogActions>
             </Dialog>

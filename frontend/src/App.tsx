@@ -20,6 +20,7 @@ import ManageUsers from './pages/ManageUsers';
 import SubmitComplaint from './pages/SubmitComplaint';
 import TrackComplaints from './pages/TrackComplaints';
 import OTPVerification from './pages/OTPVerification';
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -43,6 +44,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <ProtectedRoute>
+                      <Profile />
                     </ProtectedRoute>
                   }
                 />

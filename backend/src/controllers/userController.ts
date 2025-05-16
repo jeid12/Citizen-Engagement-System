@@ -118,4 +118,35 @@ export class UserController {
             res.status(500).json({ message: "Error fetching user statistics" });
         }
     };
+
+    static deleteUser = async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+
+            const user = await userRepository.findOne({ where: { id } });
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+
+            // Prevent self-deletion
+            if (user.id === (req as any).user.id) {
+                return res.status(403).json({ message: "Cannot delete your own account" });
+            }
+
+            // Prevent deletion of other admin users
+            if (user.role === 'admin') {
+                return res.status(403).json({ message: "Cannot delete admin users" });
+            }
+
+            await userRepository.remove(user);
+
+            res.json({
+                message: "User deleted successfully",
+                userId: id
+            });
+        } catch (error) {
+            console.error("Error deleting user:", error);
+            res.status(500).json({ message: "Error deleting user" });
+        }
+    };
 } 

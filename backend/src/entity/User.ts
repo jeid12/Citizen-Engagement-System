@@ -28,7 +28,7 @@ export class User {
     @Column({ nullable: true })
     otp?: string;
 
-    @Column({ type: "timestamp", nullable: true })
+    @Column({ nullable: true })
     otpExpiry?: Date;
 
     @Column({ 
@@ -38,11 +38,26 @@ export class User {
     })
     role!: "citizen" | "admin" | "agency_staff";
 
-    @Column({ type: "varchar", nullable: true })
-    verificationToken: string | null = null;
+    @Column({ nullable: true })
+    verificationToken?: string;
 
-    @Column({ type: "timestamp", nullable: true })
-    verificationTokenExpiry: Date | null = null;
+    @Column({ nullable: true })
+    verificationTokenExpiry?: Date;
+
+    @Column({ nullable: true })
+    profilePhoto?: string;
+
+    @Column({ nullable: true })
+    bio?: string;
+
+    @Column({ nullable: true })
+    address?: string;
+
+    @Column({ nullable: true })
+    city?: string;
+
+    @Column({ nullable: true })
+    country?: string;
 
     @OneToMany(() => Complaint, complaint => complaint.user)
     complaints!: Complaint[];
