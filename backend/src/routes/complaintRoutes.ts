@@ -2,22 +2,24 @@ import { Router } from "express";
 import { ComplaintController } from "../controllers/complaintController";
 import { authMiddleware } from "../middleware/authMiddleware";
 import { adminMiddleware } from "../middleware/adminMiddleware";
-import { validateComplaint } from "../middleware/validationMiddleware";
 
 const router = Router();
 
 // Public routes
 router.get("/categories", ComplaintController.getCategories);
 
-// Protected routes (requires authentication)
+// Protected routes
 router.use(authMiddleware);
-router.post("/submit", validateComplaint, ComplaintController.submitComplaint);
+
+// User routes
+router.post("/", ComplaintController.submitComplaint);
 router.get("/my-complaints", ComplaintController.getComplaints);
-router.get("/complaint/:id", ComplaintController.getComplaintById);
+router.get("/:id", ComplaintController.getComplaintById);
+router.patch("/:id", ComplaintController.updateComplaint);
+router.delete("/:id", ComplaintController.deleteComplaint);
 
 // Admin routes
-router.use(adminMiddleware);
-router.get("/all", ComplaintController.getAllComplaints);
-router.post("/complaint/:id/respond", ComplaintController.respondToComplaint);
+router.get("/all", adminMiddleware, ComplaintController.getAllComplaints);
+router.post("/:id/respond", adminMiddleware, ComplaintController.respondToComplaint);
 
 export default router; 

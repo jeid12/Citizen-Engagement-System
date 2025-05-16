@@ -7,6 +7,7 @@ import { AppDataSource } from "./data-source";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes";
 import complaintRoutes from "./routes/complaintRoutes";
+import userRoutes from "./routes/userRoutes";
 
 // Load environment variables
 dotenv.config();
@@ -23,6 +24,7 @@ app.use(express.json());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/complaints", complaintRoutes);
+app.use("/api/users", userRoutes);
 
 // Health check route
 app.get("/health", (req: Request, res: Response) => {
@@ -47,7 +49,7 @@ app.get("/", (req: Request, res: Response) => {
 const PORT = process.env.PORT || 5000;
 
 AppDataSource.initialize().then(() => {
-    console.log("Database connected successfully");
+    console.log("Data Source has been initialized!");
     
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);

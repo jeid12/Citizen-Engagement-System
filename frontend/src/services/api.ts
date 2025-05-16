@@ -74,4 +74,10 @@ export const agencyAPI = {
     getAll: () => api.get('/agencies'),
 };
 
+export const userAPI = {
+    getAll: () => api.get('/users'),
+    updateRole: (userId: string, role: string) => api.patch(`/users/${userId}/role`, { role }),
+    getStats: () => api.get('/users/stats'),
+};
+
 export default api; 

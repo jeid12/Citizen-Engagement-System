@@ -157,7 +157,7 @@ export class ComplaintController {
                 order: { createdAt: "DESC" }
             });
 
-            res.json(complaints);
+            res.json(complaints || []);
         } catch (error) {
             console.error("Error fetching all complaints:", error);
             res.status(500).json({ message: "Error fetching all complaints" });

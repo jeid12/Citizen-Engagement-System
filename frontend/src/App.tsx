@@ -16,6 +16,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import ManageUsers from './pages/ManageUsers';
 import SubmitComplaint from './pages/SubmitComplaint';
 import TrackComplaints from './pages/TrackComplaints';
 import OTPVerification from './pages/OTPVerification';
@@ -68,6 +69,14 @@ function App() {
                   element={
                     <ProtectedRoute adminOnly>
                       <AdminDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/users"
+                  element={
+                    <ProtectedRoute adminOnly>
+                      <ManageUsers />
                     </ProtectedRoute>
                   }
                 />

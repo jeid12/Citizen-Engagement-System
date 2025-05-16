@@ -21,6 +21,8 @@ import {
     Grid,
     Card,
     CardContent,
+    CircularProgress,
+    Alert,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
@@ -31,7 +33,9 @@ interface Complaint {
     title: string;
     description: string;
     status: 'pending' | 'in_progress' | 'resolved' | 'rejected';
-    category: string;
+    category: {
+        name: string;
+    };
     createdAt: string;
     user: {
         firstName: string;
@@ -46,6 +50,8 @@ const AdminDashboard = () => {
     const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(null);
     const [responseText, setResponseText] = useState('');
     const [openDialog, setOpenDialog] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [statistics, setStatistics] = useState({
         total: 0,
         pending: 0,
@@ -54,22 +60,37 @@ const AdminDashboard = () => {
         rejected: 0,
     });
     const token = useSelector((state: any) => state.auth.token);
+    const user = useSelector((state: any) => state.auth.user);
 
     useEffect(() => {
+        if (!token) {
+            setError('No authentication token found');
+            setLoading(false);
+            return;
+        }
         fetchComplaints();
-    }, []);
+    }, [token]);
 
     const fetchComplaints = async () => {
         try {
-            const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/complaints/all`, {
+            setLoading(true);
+            setError(null);
+            console.log('Fetching complaints with token:', token);
+            const response = await axios.get(`http://localhost:5000/api/complaints/all`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            setComplaints(response.data);
+            console.log('Complaints response:', response.data);
             
-            // Calculate statistics
-            const stats = response.data.reduce((acc: any, complaint: Complaint) => {
+            // Ensure response.data is an array, if not, set empty array
+            const complaintsData = Array.isArray(response.data) ? response.data : [];
+            setComplaints(complaintsData);
+            
+            // Calculate statistics safely
+            const stats = complaintsData.reduce((acc: any, complaint: Complaint) => {
                 acc.total++;
-                acc[complaint.status]++;
+                if (complaint.status) {
+                    acc[complaint.status]++;
+                }
                 return acc;
             }, {
                 total: 0,
@@ -79,8 +100,23 @@ const AdminDashboard = () => {
                 rejected: 0,
             });
             setStatistics(stats);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error fetching complaints:', error);
+            // Set empty data instead of showing error
+            setComplaints([]);
+            setStatistics({
+                total: 0,
+                pending: 0,
+                in_progress: 0,
+                resolved: 0,
+                rejected: 0,
+            });
+            // Only set error if it's not a 404 (no complaints found)
+            if (error.response?.status !== 404) {
+                setError(error.response?.data?.message || 'Error fetching complaints');
+            }
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -89,7 +125,7 @@ const AdminDashboard = () => {
 
         try {
             await axios.post(
-                `${import.meta.env.VITE_API_URL}/api/complaints/${selectedComplaint.id}/respond`,
+                `http://localhost:5000/api/complaints/${selectedComplaint.id}/respond`,
                 {
                     response: responseText,
                     status: selectedComplaint.status,
@@ -101,8 +137,9 @@ const AdminDashboard = () => {
             setOpenDialog(false);
             setResponseText('');
             fetchComplaints();
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error responding to complaint:', error);
+            setError(error.response?.data?.message || 'Error responding to complaint');
         }
     };
 
@@ -120,6 +157,39 @@ const AdminDashboard = () => {
                 return theme.palette.grey[500];
         }
     };
+
+    if (!user?.role || user.role !== 'admin') {
+        return (
+            <Container maxWidth="xl" sx={{ py: 4 }}>
+                <Alert severity="error">
+                    You do not have permission to access this page.
+                </Alert>
+            </Container>
+        );
+    }
+
+    if (loading) {
+        return (
+            <Container maxWidth="xl" sx={{ py: 4 }}>
+                <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
+                    <CircularProgress />
+                </Box>
+            </Container>
+        );
+    }
+
+    if (error) {
+        return (
+            <Container maxWidth="xl" sx={{ py: 4 }}>
+                <Alert severity="error" sx={{ mb: 3 }}>
+                    {error}
+                </Alert>
+                <Button variant="contained" onClick={fetchComplaints}>
+                    Retry
+                </Button>
+            </Container>
+        );
+    }
 
     return (
         <Container maxWidth="xl" sx={{ py: 4 }}>
@@ -182,58 +252,69 @@ const AdminDashboard = () => {
             </Grid>
 
             {/* Complaints Table */}
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Title</TableCell>
-                            <TableCell>Category</TableCell>
-                            <TableCell>Submitted By</TableCell>
-                            <TableCell>Date</TableCell>
-                            <TableCell>Status</TableCell>
-                            <TableCell>Action</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {complaints.map((complaint) => (
-                            <TableRow key={complaint.id}>
-                                <TableCell>{complaint.title}</TableCell>
-                                <TableCell>{complaint.category}</TableCell>
-                                <TableCell>
-                                    {`${complaint.user.firstName} ${complaint.user.lastName}`}
-                                    <Typography variant="caption" display="block" color="textSecondary">
-                                        {complaint.user.email}
-                                    </Typography>
-                                </TableCell>
-                                <TableCell>
-                                    {new Date(complaint.createdAt).toLocaleDateString()}
-                                </TableCell>
-                                <TableCell>
-                                    <Chip
-                                        label={complaint.status.replace('_', ' ')}
-                                        sx={{
-                                            bgcolor: getStatusColor(complaint.status),
-                                            color: 'white',
-                                        }}
-                                    />
-                                </TableCell>
-                                <TableCell>
-                                    <Button
-                                        variant="contained"
-                                        size="small"
-                                        onClick={() => {
-                                            setSelectedComplaint(complaint);
-                                            setOpenDialog(true);
-                                        }}
-                                    >
-                                        Respond
-                                    </Button>
-                                </TableCell>
+            {complaints.length === 0 ? (
+                <Paper sx={{ p: 4, textAlign: 'center', mt: 4 }}>
+                    <Typography variant="h6" color="text.secondary" gutterBottom>
+                        No Complaints Found
+                    </Typography>
+                    <Typography color="text.secondary">
+                        There are currently no complaints in the system.
+                    </Typography>
+                </Paper>
+            ) : (
+                <TableContainer component={Paper} sx={{ mt: 4 }}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Title</TableCell>
+                                <TableCell>Category</TableCell>
+                                <TableCell>Submitted By</TableCell>
+                                <TableCell>Date</TableCell>
+                                <TableCell>Status</TableCell>
+                                <TableCell>Action</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                            {complaints.map((complaint) => (
+                                <TableRow key={complaint.id}>
+                                    <TableCell>{complaint.title}</TableCell>
+                                    <TableCell>{complaint.category.name}</TableCell>
+                                    <TableCell>
+                                        {`${complaint.user.firstName} ${complaint.user.lastName}`}
+                                        <Typography variant="caption" display="block" color="textSecondary">
+                                            {complaint.user.email}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        {new Date(complaint.createdAt).toLocaleDateString()}
+                                    </TableCell>
+                                    <TableCell>
+                                        <Chip
+                                            label={complaint.status.replace('_', ' ')}
+                                            sx={{
+                                                bgcolor: getStatusColor(complaint.status),
+                                                color: 'white',
+                                            }}
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        <Button
+                                            variant="contained"
+                                            size="small"
+                                            onClick={() => {
+                                                setSelectedComplaint(complaint);
+                                                setOpenDialog(true);
+                                            }}
+                                        >
+                                            Respond
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            )}
 
             {/* Response Dialog */}
             <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="md" fullWidth>
