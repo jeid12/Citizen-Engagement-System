@@ -75,7 +75,8 @@ export const complaintAPI = {
         categoryId: string;
         agencyId: string;
     }) => api.post('/complaints', data),
-    getAll: () => api.get('/complaints'),
+    getAll: () => api.get('/complaints/my-complaints'),
+    getAllAdmin: () => api.get('/complaints/all'),
     getById: (id: string) => api.get(`/complaints/${id}`),
     update: (id: string, data: {
         status?: string;
@@ -83,6 +84,8 @@ export const complaintAPI = {
         agencyId?: string;
     }) => api.patch(`/complaints/${id}`, data),
     delete: (id: string) => api.delete(`/complaints/${id}`),
+    respond: (id: string, data: { response: string; status: string }) => 
+        api.post(`/complaints/${id}/respond`, data),
 };
 
 export const categoryAPI = {

@@ -26,7 +26,7 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
+import { complaintAPI } from '../services/api';
 
 interface Complaint {
     id: string;
@@ -59,27 +59,17 @@ const AdminDashboard = () => {
         resolved: 0,
         rejected: 0,
     });
-    const token = useSelector((state: any) => state.auth.token);
     const user = useSelector((state: any) => state.auth.user);
 
     useEffect(() => {
-        if (!token) {
-            setError('No authentication token found');
-            setLoading(false);
-            return;
-        }
         fetchComplaints();
-    }, [token]);
+    }, []);
 
     const fetchComplaints = async () => {
         try {
             setLoading(true);
             setError(null);
-            console.log('Fetching complaints with token:', token);
-            const response = await axios.get(`http://localhost:5000/api/complaints/all`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            console.log('Complaints response:', response.data);
+            const response = await complaintAPI.getAllAdmin();
             
             // Ensure response.data is an array, if not, set empty array
             const complaintsData = Array.isArray(response.data) ? response.data : [];
@@ -124,16 +114,10 @@ const AdminDashboard = () => {
         if (!selectedComplaint) return;
 
         try {
-            await axios.post(
-                `http://localhost:5000/api/complaints/${selectedComplaint.id}/respond`,
-                {
-                    response: responseText,
-                    status: selectedComplaint.status,
-                },
-                {
-                    headers: { Authorization: `Bearer ${token}` }
-                }
-            );
+            await complaintAPI.respond(selectedComplaint.id, {
+                response: responseText,
+                status: selectedComplaint.status,
+            });
             setOpenDialog(false);
             setResponseText('');
             fetchComplaints();

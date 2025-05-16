@@ -16,6 +16,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminComplaints from './pages/AdminComplaints';
 import ManageUsers from './pages/ManageUsers';
 import SubmitComplaint from './pages/SubmitComplaint';
 import TrackComplaints from './pages/TrackComplaints';
@@ -78,6 +79,14 @@ function App() {
                   element={
                     <ProtectedRoute adminOnly>
                       <AdminDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/complaints"
+                  element={
+                    <ProtectedRoute adminOnly>
+                      <AdminComplaints />
                     </ProtectedRoute>
                   }
                 />
