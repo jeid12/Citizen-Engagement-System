@@ -25,6 +25,7 @@ import {
 import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { categoryAPI } from '../services/api';
+import { useSelector } from 'react-redux';
 
 // Rwanda flag colors
 const RWANDA_COLORS = {
@@ -43,6 +44,8 @@ interface Category {
 const Categories = () => {
     const theme = useTheme();
     const { t } = useTranslation();
+    const { user } = useSelector((state: any) => state.auth);
+    const isAdmin = user?.role === 'admin';
     const [categories, setCategories] = useState<Category[]>([]);
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
@@ -59,8 +62,10 @@ const Categories = () => {
         try {
             const response = await categoryAPI.getCategories();
             setCategories(response.data);
-        } catch (error) {
-            setError(t('categories.messages.error'));
+        } catch (error: any) {
+            const errorMessage = error.response?.data?.message || t('categories.messages.error');
+            setError(errorMessage);
+            console.error('Error fetching categories:', error);
         }
     };
 
@@ -87,6 +92,21 @@ const Categories = () => {
 
     const handleSubmit = async () => {
         try {
+            if (!formData.name.trim()) {
+                setError(t('categories.messages.nameRequired'));
+                return;
+            }
+
+            if (formData.name.length > 100) {
+                setError(t('categories.messages.nameTooLong'));
+                return;
+            }
+
+            if (formData.description && formData.description.length > 500) {
+                setError(t('categories.messages.descriptionTooLong'));
+                return;
+            }
+
             if (selectedCategory) {
                 await categoryAPI.updateCategory(selectedCategory.id, formData);
                 setSuccess(t('categories.messages.updateSuccess'));
@@ -97,8 +117,10 @@ const Categories = () => {
             fetchCategories();
             handleCloseDialog();
             setTimeout(() => setSuccess(null), 3000);
-        } catch (error) {
-            setError(t('categories.messages.error'));
+        } catch (error: any) {
+            const errorMessage = error.response?.data?.message || t('categories.messages.error');
+            setError(errorMessage);
+            console.error('Error submitting category:', error);
         }
     };
 
@@ -109,8 +131,21 @@ const Categories = () => {
             fetchCategories();
             setDeleteConfirmOpen(false);
             setTimeout(() => setSuccess(null), 3000);
-        } catch (error) {
-            setError(t('categories.messages.error'));
+        } catch (error: any) {
+            const errorMessage = error.response?.data?.message || t('categories.messages.error');
+            setError(errorMessage);
+            console.error('Error deleting category:', error);
+        }
+    };
+
+    const handleToggleStatus = async (category: Category) => {
+        try {
+            await categoryAPI.toggleStatus(category.id);
+            fetchCategories();
+        } catch (error: any) {
+            const errorMessage = error.response?.data?.message || t('categories.messages.error');
+            setError(errorMessage);
+            console.error('Error toggling category status:', error);
         }
     };
 
@@ -121,19 +156,21 @@ const Categories = () => {
                     <Typography variant="h4" color={RWANDA_COLORS.blue}>
                         {t('categories.title')}
                     </Typography>
-                    <Button
-                        variant="contained"
-                        startIcon={<AddIcon />}
-                        onClick={() => handleOpenDialog()}
-                        sx={{
-                            backgroundColor: RWANDA_COLORS.green,
-                            '&:hover': {
-                                backgroundColor: RWANDA_COLORS.green + 'dd'
-                            }
-                        }}
-                    >
-                        {t('categories.addCategory')}
-                    </Button>
+                    {isAdmin && (
+                        <Button
+                            variant="contained"
+                            startIcon={<AddIcon />}
+                            onClick={() => handleOpenDialog()}
+                            sx={{
+                                backgroundColor: RWANDA_COLORS.green,
+                                '&:hover': {
+                                    backgroundColor: RWANDA_COLORS.green + 'dd'
+                                }
+                            }}
+                        >
+                            {t('categories.addCategory')}
+                        </Button>
+                    )}
                 </Box>
 
                 {error && (
@@ -155,7 +192,7 @@ const Categories = () => {
                                 <TableCell>{t('categories.labels.name')}</TableCell>
                                 <TableCell>{t('categories.labels.description')}</TableCell>
                                 <TableCell>{t('categories.labels.status')}</TableCell>
-                                <TableCell align="right">Actions</TableCell>
+                                {isAdmin && <TableCell align="right">Actions</TableCell>}
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -166,17 +203,7 @@ const Categories = () => {
                                     <TableCell>
                                         <Switch
                                             checked={category.isActive}
-                                            onChange={async () => {
-                                                try {
-                                                    await categoryAPI.updateCategory(category.id, {
-                                                        ...category,
-                                                        isActive: !category.isActive
-                                                    });
-                                                    fetchCategories();
-                                                } catch (error) {
-                                                    setError(t('categories.messages.error'));
-                                                }
-                                            }}
+                                            onChange={() => handleToggleStatus(category)}
                                             sx={{
                                                 '& .MuiSwitch-switchBase.Mui-checked': {
                                                     color: RWANDA_COLORS.green
@@ -187,23 +214,25 @@ const Categories = () => {
                                             }}
                                         />
                                     </TableCell>
-                                    <TableCell align="right">
-                                        <IconButton
-                                            onClick={() => handleOpenDialog(category)}
-                                            sx={{ color: RWANDA_COLORS.blue }}
-                                        >
-                                            <EditIcon />
-                                        </IconButton>
-                                        <IconButton
-                                            onClick={() => {
-                                                setSelectedCategory(category);
-                                                setDeleteConfirmOpen(true);
-                                            }}
-                                            sx={{ color: theme.palette.error.main }}
-                                        >
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </TableCell>
+                                    {isAdmin && (
+                                        <TableCell align="right">
+                                            <IconButton
+                                                onClick={() => handleOpenDialog(category)}
+                                                sx={{ color: RWANDA_COLORS.blue }}
+                                            >
+                                                <EditIcon />
+                                            </IconButton>
+                                            <IconButton
+                                                onClick={() => {
+                                                    setSelectedCategory(category);
+                                                    setDeleteConfirmOpen(true);
+                                                }}
+                                                sx={{ color: theme.palette.error.main }}
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                    )}
                                 </TableRow>
                             ))}
                         </TableBody>

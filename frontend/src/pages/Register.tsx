@@ -15,6 +15,7 @@ import {
     Grid,
 } from '@mui/material';
 import { authAPI } from '../services/api';
+import { Link as RouterLink } from 'react-router-dom';
 
 interface RegisterFormValues {
     firstName: string;
@@ -70,144 +71,145 @@ const Register = () => {
     };
 
     return (
-        <Container maxWidth="sm">
-            <Box sx={{ mt: 8, mb: 4 }}>
-                <Paper elevation={3} sx={{ p: 4 }}>
-                    <Typography component="h1" variant="h4" align="center" gutterBottom>
-                        {t('auth.register.title')}
-                    </Typography>
+        <Container maxWidth="sm" sx={{ mt: 8 }}>
+            <Paper elevation={3} sx={{ p: 4, backgroundColor: 'white' }}>
+                <Typography variant="h4" align="center" gutterBottom color="primary">
+                    {t('auth.register.title')}
+                </Typography>
 
-                    {error && (
-                        <Alert severity="error" sx={{ mb: 2 }}>
-                            {error}
-                        </Alert>
-                    )}
+                {error && (
+                    <Alert severity="error" sx={{ mb: 2 }}>
+                        {error}
+                    </Alert>
+                )}
 
-                    {success && (
-                        <Alert severity="success" sx={{ mb: 2 }}>
-                            {success}
-                        </Alert>
-                    )}
+                {success && (
+                    <Alert severity="success" sx={{ mb: 2 }}>
+                        {success}
+                    </Alert>
+                )}
 
-                    <Formik
-                        initialValues={{
-                            firstName: '',
-                            lastName: '',
-                            email: '',
-                            password: '',
-                            confirmPassword: '',
-                            phoneNumber: '',
-                        }}
-                        validationSchema={validationSchema}
-                        onSubmit={handleSubmit}
-                    >
-                        {({ values, handleChange, handleBlur, errors, touched, isSubmitting }) => (
-                            <Form>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            fullWidth
-                                            id="firstName"
-                                            name="firstName"
-                                            label={t('auth.register.firstName')}
-                                            value={values.firstName}
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                            error={touched.firstName && Boolean(errors.firstName)}
-                                            helperText={touched.firstName && errors.firstName}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            fullWidth
-                                            id="lastName"
-                                            name="lastName"
-                                            label={t('auth.register.lastName')}
-                                            value={values.lastName}
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                            error={touched.lastName && Boolean(errors.lastName)}
-                                            helperText={touched.lastName && errors.lastName}
-                                        />
-                                    </Grid>
+                <Formik
+                    initialValues={{
+                        firstName: '',
+                        lastName: '',
+                        email: '',
+                        password: '',
+                        confirmPassword: '',
+                        phoneNumber: '',
+                    }}
+                    validationSchema={validationSchema}
+                    onSubmit={handleSubmit}
+                >
+                    {({ values, handleChange, handleBlur, errors, touched, isSubmitting }) => (
+                        <Form>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        fullWidth
+                                        id="firstName"
+                                        name="firstName"
+                                        label={t('auth.register.firstName')}
+                                        value={values.firstName}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        error={touched.firstName && Boolean(errors.firstName)}
+                                        helperText={touched.firstName && errors.firstName}
+                                    />
                                 </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        fullWidth
+                                        id="lastName"
+                                        name="lastName"
+                                        label={t('auth.register.lastName')}
+                                        value={values.lastName}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        error={touched.lastName && Boolean(errors.lastName)}
+                                        helperText={touched.lastName && errors.lastName}
+                                    />
+                                </Grid>
+                            </Grid>
 
-                                <TextField
-                                    fullWidth
-                                    id="email"
-                                    name="email"
-                                    label={t('auth.register.email')}
-                                    value={values.email}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    error={touched.email && Boolean(errors.email)}
-                                    helperText={touched.email && errors.email}
-                                    margin="normal"
-                                />
+                            <TextField
+                                fullWidth
+                                id="email"
+                                name="email"
+                                label={t('auth.register.email')}
+                                value={values.email}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                error={touched.email && Boolean(errors.email)}
+                                helperText={touched.email && errors.email}
+                                margin="normal"
+                            />
 
-                                <TextField
-                                    fullWidth
-                                    id="password"
-                                    name="password"
-                                    label={t('auth.register.password')}
-                                    type="password"
-                                    value={values.password}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    error={touched.password && Boolean(errors.password)}
-                                    helperText={touched.password && errors.password}
-                                    margin="normal"
-                                />
+                            <TextField
+                                fullWidth
+                                id="password"
+                                name="password"
+                                label={t('auth.register.password')}
+                                type="password"
+                                value={values.password}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                error={touched.password && Boolean(errors.password)}
+                                helperText={touched.password && errors.password}
+                                margin="normal"
+                            />
 
-                                <TextField
-                                    fullWidth
-                                    id="confirmPassword"
-                                    name="confirmPassword"
-                                    label={t('auth.register.confirmPassword')}
-                                    type="password"
-                                    value={values.confirmPassword}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    error={touched.confirmPassword && Boolean(errors.confirmPassword)}
-                                    helperText={touched.confirmPassword && errors.confirmPassword}
-                                    margin="normal"
-                                />
+                            <TextField
+                                fullWidth
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                label={t('auth.register.confirmPassword')}
+                                type="password"
+                                value={values.confirmPassword}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                error={touched.confirmPassword && Boolean(errors.confirmPassword)}
+                                helperText={touched.confirmPassword && errors.confirmPassword}
+                                margin="normal"
+                            />
 
-                                <TextField
-                                    fullWidth
-                                    id="phoneNumber"
-                                    name="phoneNumber"
-                                    label={t('auth.register.phoneNumber')}
-                                    value={values.phoneNumber}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    error={touched.phoneNumber && Boolean(errors.phoneNumber)}
-                                    helperText={touched.phoneNumber && errors.phoneNumber}
-                                    margin="normal"
-                                />
+                            <TextField
+                                fullWidth
+                                id="phoneNumber"
+                                name="phoneNumber"
+                                label={t('auth.register.phoneNumber')}
+                                value={values.phoneNumber}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                error={touched.phoneNumber && Boolean(errors.phoneNumber)}
+                                helperText={touched.phoneNumber && errors.phoneNumber}
+                                margin="normal"
+                            />
 
-                                <Button
-                                    type="submit"
-                                    fullWidth
-                                    variant="contained"
-                                    color="primary"
-                                    size="large"
-                                    disabled={isSubmitting}
-                                    sx={{ mt: 3, mb: 2 }}
-                                >
-                                    {isSubmitting ? t('auth.register.buttonLoading') : t('auth.register.button')}
-                                </Button>
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="primary"
+                                size="large"
+                                disabled={isSubmitting}
+                                sx={{ mt: 3, mb: 2 }}
+                            >
+                                {isSubmitting ? t('auth.register.buttonLoading') : t('auth.register.button')}
+                            </Button>
+                        </Form>
+                    )}
+                </Formik>
 
-                                <Box sx={{ mt: 2, textAlign: 'center' }}>
-                                    <Link href="/login" variant="body2">
-                                        {t('auth.register.haveAccount')}
-                                    </Link>
-                                </Box>
-                            </Form>
-                        )}
-                    </Formik>
-                </Paper>
-            </Box>
+                <Box textAlign="center" mt={2}>
+                    <Typography variant="body2">
+                        {t('auth.haveAccount')}{' '}
+                        <Link component={RouterLink} to="/login">
+                            {t('auth.login.title')}
+                        </Link>
+                    </Typography>
+                </Box>
+            </Paper>
         </Container>
     );
 };

@@ -1,0 +1,85 @@
+{
+    "auth": {
+        "login": {
+            "title": "Injira",
+            "email": "Imeyili",
+            "password": "Ijambo ry'ibanga",
+            "button": "Injira",
+            "buttonLoading": "Urimo kwinjira...",
+            "noAccount": "Nta konti ufite? Iyandikishe hano"
+        },
+        "register": {
+            "title": "Iyandikishe",
+            "firstName": "Izina rya mbere",
+            "lastName": "Izina rya nyuma",
+            "email": "Imeyili",
+            "password": "Ijambo ry'ibanga",
+            "confirmPassword": "Emeza ijambo ry'ibanga",
+            "phoneNumber": "Telefoni",
+            "button": "Iyandikishe",
+            "buttonLoading": "Urimo kwiyandikisha...",
+            "firstNameRequired": "Izina rya mbere rirakenewe",
+            "firstNameMin": "Izina rya mbere rigomba kugira inyuguti 2 byibuze",
+            "lastNameRequired": "Izina rya nyuma rirakenewe",
+            "lastNameMin": "Izina rya nyuma rigomba kugira inyuguti 2 byibuze",
+            "passwordMin": "Ijambo ry'ibanga rigomba kugira inyuguti 6 byibuze",
+            "passwordNumber": "Ijambo ry'ibanga rigomba kugira umubare umwe byibuze",
+            "passwordUppercase": "Ijambo ry'ibanga rigomba kugira inyuguti nkuru imwe byibuze",
+            "passwordsMatch": "Amagambo y'ibanga agomba guhura",
+            "confirmPasswordRequired": "Emeza ijambo ry'ibanga birakenewe",
+            "invalidPhone": "Numero ya telefoni ntiyemewe",
+            "successMessage": "Kwiyandikisha byagenze neza! Nyamuneka emeza imeyili yawe ukoresheje kode yoherejwe.",
+            "error": "Hari ikibazo cyabaye mu gihe cyo kwiyandikisha"
+        },
+        "logout": "Sohoka",
+        "email": "Imeyili",
+        "password": "Ijambo ry'ibanga",
+        "firstName": "Izina rya mbere",
+        "lastName": "Izina rya nyuma",
+        "phoneNumber": "Telefoni",
+        "haveAccount": "Ufite konti? Injira hano",
+        "backToLogin": "Garuka ku Kwinjira",
+        "newPassword": "Ijambo ry'ibanga rishya",
+        "confirmPassword": "Emeza ijambo ry'ibanga",
+        "forgotPassword": {
+            "title": "Wibagiwe Ijambo ry'ibanga",
+            "description": "Andika imeyili yawe maze tuzakoherereze link yo guhindura ijambo ry'ibanga.",
+            "submit": "Ohereza Link",
+            "success": "Link yo guhindura ijambo ry'ibanga yoherejwe kuri imeyili yawe.",
+            "error": "Ntabwo twashoboye kohereza link. Nyamuneka ongera ugerageze.",
+            "link": "Wibagiwe ijambo ry'ibanga?"
+        },
+        "resetPassword": {
+            "title": "Hindura Ijambo ry'ibanga",
+            "description": "Andika ijambo ry'ibanga rishya hepfo.",
+            "submit": "Hindura Ijambo ry'ibanga",
+            "success": "Ijambo ry'ibanga ryahinduwe neza. Nyamuneka injira ukoresheje ijambo ry'ibanga rishya.",
+            "error": "Ntabwo twashoboye guhindura ijambo ry'ibanga. Link ishobora kuba itakiri nyayo cyangwa yarangije igihe.",
+            "passwordMismatch": "Amagambo y'ibanga ntabwo ahura."
+        },
+        "messages": {
+            "loginSuccess": "Kwinjira byagenze neza",
+            "loginError": "Imeyili cyangwa ijambo ry'ibanga sibyo",
+            "registerSuccess": "Kwiyandikisha byagenze neza. Nyamuneka reba imeyili yawe kugira ngo wemeze konti yawe.",
+            "registerError": "Hari ikibazo mu kwiyandikisha",
+            "logoutSuccess": "Gusohoka byagenze neza",
+            "unauthorized": "Nyamuneka injira kugira ngo ukomeze",
+            "emailVerified": "Imeyili yemejwe neza",
+            "emailVerificationError": "Hari ikibazo mu kwemeza imeyili",
+            "invalidToken": "Link ntiyemewe cyangwa yarangije igihe"
+        }
+    },
+    "navigation": {
+        "home": "Ahabanza",
+        "dashboard": "Ikibaho",
+        "adminDashboard": "Ikibaho cy'Umuyobozi",
+        "agencyDashboard": "Ikibaho cy'Ikigo",
+        "submitComplaint": "Tanga Ikibazo",
+        "trackComplaints": "Kurikirana Ibibazo",
+        "manageUsers": "Gucunga Abakoresha",
+        "manageAgencies": "Gucunga Ibigo",
+        "manageCategories": "Gucunga Ibyiciro",
+        "profile": "Umwirondoro",
+        "allComplaints": "Ibibazo Byose"
+    }
+} 

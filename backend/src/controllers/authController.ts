@@ -4,7 +4,9 @@ import { User } from "../entity/User";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { emailService } from "../services/emailService";
+import { sendEmail } from "../services/emailService";
 import crypto from "crypto";
+import { MoreThan } from "typeorm";
 
 const userRepository = AppDataSource.getRepository(User);
 
@@ -199,6 +201,91 @@ export class AuthController {
         } catch (error) {
             console.error("Login error:", error);
             res.status(500).json({ message: "Error logging in" });
+        }
+    };
+
+    static forgotPassword = async (req: Request, res: Response) => {
+        try {
+            const { email } = req.body;
+
+            if (!email) {
+                return res.status(400).json({ message: "Email is required" });
+            }
+
+            const userRepository = AppDataSource.getRepository(User);
+            const user = await userRepository.findOne({ where: { email } });
+
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+
+            // Generate reset token
+            const resetToken = crypto.randomBytes(32).toString('hex');
+            const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour from now
+
+            // Save hashed token to database
+            user.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+            user.resetPasswordExpiry = resetTokenExpiry;
+            await userRepository.save(user);
+
+            // Create reset URL
+            const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password/${resetToken}`;
+
+            // Send email
+            const emailContent = `
+                <h1>Password Reset Request</h1>
+                <p>You requested to reset your password. Click the link below to reset it:</p>
+                <a href="${resetUrl}">Reset Password</a>
+                <p>This link will expire in 1 hour.</p>
+                <p>If you didn't request this, please ignore this email.</p>
+            `;
+
+            await sendEmail({
+                to: user.email,
+                subject: 'Password Reset Request',
+                html: emailContent
+            });
+
+            res.json({ message: "Password reset link sent to email" });
+        } catch (error) {
+            console.error("Forgot password error:", error);
+            res.status(500).json({ message: "Error processing forgot password request" });
+        }
+    };
+
+    static resetPassword = async (req: Request, res: Response) => {
+        try {
+            const { token, newPassword } = req.body;
+
+            if (!token || !newPassword) {
+                return res.status(400).json({ message: "Token and new password are required" });
+            }
+
+            // Hash token to compare with stored hash
+            const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+            const userRepository = AppDataSource.getRepository(User);
+            const user = await userRepository.findOne({
+                where: {
+                    resetPasswordToken: hashedToken,
+                    resetPasswordExpiry: MoreThan(new Date())
+                }
+            });
+
+            if (!user) {
+                return res.status(400).json({ message: "Invalid or expired reset token" });
+            }
+
+            // Update password and clear reset token fields
+            user.password = await bcrypt.hash(newPassword, 12);
+            user.resetPasswordToken = undefined;
+            user.resetPasswordExpiry = undefined;
+            await userRepository.save(user);
+
+            res.json({ message: "Password reset successful" });
+        } catch (error) {
+            console.error("Reset password error:", error);
+            res.status(500).json({ message: "Error resetting password" });
         }
     };
 } 

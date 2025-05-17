@@ -215,7 +215,12 @@
       "addSuccess": "Icyiciro cyongewemo neza",
       "updateSuccess": "Icyiciro kivuguruwe neza",
       "deleteSuccess": "Icyiciro gisibwe neza",
-      "error": "Hari ikibazo cyabaye mu gihe cyo gucunga icyiciro"
+      "error": "Hari ikibazo cyabaye mu gihe cyo gucunga icyiciro",
+      "nameRequired": "Izina ry'icyiciro rirakenewe",
+      "nameTooLong": "Izina ry'icyiciro ntirirenga inyuguti 100",
+      "descriptionTooLong": "Ibisobanuro ntibirenga inyuguti 500",
+      "duplicateName": "Icyiciro gifite iri zina kirabaho",
+      "hasComplaints": "Ntushobora gusiba icyiciro gifite ibibazo. Ushobora kugihindura ngo kitagikoreshwa."
     },
     "confirmDelete": "Uremeza ko ushaka gusiba iki cyiciro?",
     "active": "Gikoreshwa",

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import categoryAPI from './api/categoryAPI';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -89,9 +90,7 @@ export const complaintAPI = {
         api.post(`/complaints/${id}/respond`, data),
 };
 
-export const categoryAPI = {
-    getAll: () => api.get('/categories'),
-};
+export { categoryAPI };
 
 export const agencyAPI = {
     getAll: () => api.get('/agencies'),

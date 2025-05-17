@@ -215,7 +215,12 @@
       "addSuccess": "Category added successfully",
       "updateSuccess": "Category updated successfully",
       "deleteSuccess": "Category deleted successfully",
-      "error": "An error occurred while processing your request"
+      "error": "An error occurred while processing your request",
+      "nameRequired": "Category name is required",
+      "nameTooLong": "Category name must not exceed 100 characters",
+      "descriptionTooLong": "Description must not exceed 500 characters",
+      "duplicateName": "A category with this name already exists",
+      "hasComplaints": "Cannot delete category with associated complaints. Consider deactivating it instead."
     },
     "confirmDelete": "Are you sure you want to delete this category?",
     "active": "Active",

@@ -1,4 +1,4 @@
-import axios from '../axios';
+import api from '../axios';
 
 interface CategoryData {
     name: string;
@@ -7,11 +7,13 @@ interface CategoryData {
 }
 
 const categoryAPI = {
-    getCategories: () => axios.get('/api/categories'),
-    getCategory: (id: string) => axios.get(`/api/categories/${id}`),
-    createCategory: (data: CategoryData) => axios.post('/api/categories', data),
-    updateCategory: (id: string, data: CategoryData) => axios.put(`/api/categories/${id}`, data),
-    deleteCategory: (id: string) => axios.delete(`/api/categories/${id}`)
+    getCategories: () => api.get('/categories'),
+    getActiveCategories: () => api.get('/categories/active'),
+    getCategory: (id: string) => api.get(`/categories/${id}`),
+    createCategory: (data: CategoryData) => api.post('/categories', data),
+    updateCategory: (id: string, data: CategoryData) => api.put(`/categories/${id}`, data),
+    deleteCategory: (id: string) => api.delete(`/categories/${id}`),
+    toggleStatus: (id: string) => api.patch(`/categories/${id}/toggle-status`)
 };
 
 export default categoryAPI; 

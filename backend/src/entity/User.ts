@@ -46,6 +46,12 @@ export class User {
     verificationTokenExpiry?: Date;
 
     @Column({ nullable: true })
+    resetPasswordToken?: string;
+
+    @Column({ type: "timestamp", nullable: true })
+    resetPasswordExpiry?: Date;
+
+    @Column({ nullable: true })
     profilePhoto?: string;
 
     @Column({ type: "text", nullable: true })
