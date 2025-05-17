@@ -57,7 +57,8 @@
     "manageUsers": "Manage Users",
     "manageAgencies": "Manage Agencies",
     "allComplaints": "All Complaints",
-    "openSettings": "Open settings"
+    "openSettings": "Open settings",
+    "manageCategories": "Manage Categories"
   },
   "dashboard": {
     "adminDashboard": "Admin Dashboard",
@@ -119,9 +120,22 @@
       "email": "Email",
       "password": "Password",
       "confirmPassword": "Confirm Password",
+      "phoneNumber": "Phone Number",
       "button": "Register",
       "buttonLoading": "Registering...",
-      "haveAccount": "Already have an account? Login"
+      "haveAccount": "Already have an account? Sign in",
+      "firstNameRequired": "First name is required",
+      "firstNameMin": "First name must be at least 2 characters",
+      "lastNameRequired": "Last name is required",
+      "lastNameMin": "Last name must be at least 2 characters",
+      "passwordMin": "Password must be at least 6 characters",
+      "passwordNumber": "Password must contain at least one number",
+      "passwordUppercase": "Password must contain at least one uppercase letter",
+      "passwordsMatch": "Passwords must match",
+      "confirmPasswordRequired": "Confirm password is required",
+      "invalidPhone": "Invalid phone number format",
+      "successMessage": "Registration successful! Please verify your email with the OTP sent.",
+      "error": "An error occurred during registration"
     },
     "verification": {
       "title": "Verify Email",
@@ -131,5 +145,80 @@
       "buttonLoading": "Verifying...",
       "resend": "Resend Code"
     }
+  },
+  "home": {
+    "title": "Welcome to CES Rwanda",
+    "subtitle": "Your voice matters in building a better Rwanda. Connect, engage, and make a difference in your community.",
+    "submitComplaints": {
+      "title": "Submit Complaints",
+      "description": "Report issues in your community directly to the relevant government agencies. Your feedback helps improve public services.",
+      "button": "Submit Now"
+    },
+    "trackProgress": {
+      "title": "Track Progress",
+      "description": "Monitor the status of your submitted complaints and receive real-time updates on actions taken by authorities.",
+      "button": "Track Complaints"
+    },
+    "getInvolved": {
+      "title": "Get Involved",
+      "description": "Join our growing community of active citizens. Together, we can make Rwanda an even better place for everyone.",
+      "button": "Join Now"
+    }
+  },
+  "profile": {
+    "title": "My Profile",
+    "uploadPhoto": "Upload Photo",
+    "verified": "Verified",
+    "labels": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "phoneNumber": "Phone Number",
+      "bio": "Bio",
+      "address": "Address",
+      "city": "City",
+      "country": "Country"
+    },
+    "placeholders": {
+      "bio": "Tell us about yourself...",
+      "address": "Enter your address",
+      "city": "Enter your city",
+      "country": "Enter your country"
+    },
+    "buttons": {
+      "save": "Save Changes",
+      "saving": "Saving..."
+    },
+    "messages": {
+      "updateSuccess": "Profile updated successfully",
+      "updateError": "Failed to update profile",
+      "photoSuccess": "Profile photo updated successfully",
+      "photoError": "Failed to upload photo",
+      "fetchError": "Failed to fetch profile"
+    }
+  },
+  "categories": {
+    "title": "Manage Categories",
+    "addCategory": "Add Category",
+    "editCategory": "Edit Category",
+    "deleteCategory": "Delete Category",
+    "labels": {
+      "name": "Category Name",
+      "description": "Description",
+      "status": "Status"
+    },
+    "placeholders": {
+      "name": "Enter category name",
+      "description": "Enter category description"
+    },
+    "messages": {
+      "addSuccess": "Category added successfully",
+      "updateSuccess": "Category updated successfully",
+      "deleteSuccess": "Category deleted successfully",
+      "error": "An error occurred while processing your request"
+    },
+    "confirmDelete": "Are you sure you want to delete this category?",
+    "active": "Active",
+    "inactive": "Inactive"
   }
 } 

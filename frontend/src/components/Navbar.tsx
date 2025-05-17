@@ -51,6 +51,40 @@ const Navbar = () => {
         navigate('/login');
     };
 
+    const renderMenu = () => {
+        if (isAuthenticated) {
+            const menuItems = [
+                { text: t('navigation.home'), path: '/' },
+                { text: t('navigation.submitComplaint'), path: '/submit-complaint' },
+                { text: t('navigation.trackComplaints'), path: '/track-complaints' },
+            ];
+
+            if (user?.role === 'admin') {
+                menuItems.push(
+                    { text: t('navigation.adminDashboard'), path: '/admin-dashboard' },
+                    { text: t('navigation.manageUsers'), path: '/admin/users' },
+                    { text: t('navigation.manageAgencies'), path: '/admin/agencies' },
+                    { text: t('navigation.manageCategories'), path: '/categories' }
+                );
+            }
+
+            if (user?.role === 'agency_staff') {
+                menuItems.push(
+                    { text: t('navigation.agencyDashboard'), path: '/agency-dashboard' },
+                    { text: t('navigation.manageCategories'), path: '/categories' }
+                );
+            }
+
+            return menuItems;
+        }
+
+        return [
+            { text: t('navigation.home'), path: '/' },
+            { text: t('navigation.login'), path: '/login' },
+            { text: t('navigation.register'), path: '/register' }
+        ];
+    };
+
     // Menu items based on user role
     const getMenuItems = () => (
         <>
@@ -72,49 +106,11 @@ const Navbar = () => {
                 </Box>
             )}
             <Divider />
-            <MenuItem onClick={() => { navigate('/'); handleClose(); }}>
-                {t('navigation.home')}
-            </MenuItem>
-            {isAuthenticated && (
-                <MenuItem onClick={() => { navigate('/dashboard'); handleClose(); }}>
-                    {t('navigation.dashboard')}
+            {renderMenu().map((item, index) => (
+                <MenuItem key={index} onClick={() => { navigate(item.path); handleClose(); }}>
+                    {item.text}
                 </MenuItem>
-            )}
-            {isAdmin && (
-                <>
-                    <Divider />
-                    <MenuItem onClick={() => { navigate('/admin'); handleClose(); }}>
-                        {t('navigation.adminDashboard')}
-                    </MenuItem>
-                    <MenuItem onClick={() => { navigate('/admin/complaints'); handleClose(); }}>
-                        {t('navigation.allComplaints')}
-                    </MenuItem>
-                    <MenuItem onClick={() => { navigate('/admin/users'); handleClose(); }}>
-                        {t('navigation.manageUsers')}
-                    </MenuItem>
-                    <MenuItem onClick={() => { navigate('/admin/agencies'); handleClose(); }}>
-                        {t('navigation.manageAgencies')}
-                    </MenuItem>
-                </>
-            )}
-            {isAgencyStaff && (
-                <>
-                    <Divider />
-                    <MenuItem onClick={() => { navigate('/agency'); handleClose(); }}>
-                        {t('navigation.agencyDashboard')}
-                    </MenuItem>
-                </>
-            )}
-            {isAuthenticated && !isAdmin && !isAgencyStaff && (
-                <>
-                    <MenuItem onClick={() => { navigate('/submit-complaint'); handleClose(); }}>
-                        {t('navigation.submitComplaint')}
-                    </MenuItem>
-                    <MenuItem onClick={() => { navigate('/track-complaints'); handleClose(); }}>
-                        {t('navigation.trackComplaints')}
-                    </MenuItem>
-                </>
-            )}
+            ))}
             {isAuthenticated ? (
                 <>
                     <Divider />
@@ -173,10 +169,16 @@ const Navbar = () => {
                                         <>
                                             <Button
                                                 color="inherit"
-                                                onClick={() => navigate('/admin')}
+                                                onClick={() => navigate('/admin-dashboard')}
                                                 startIcon={<AdminPanelSettingsIcon />}
                                             >
                                                 {t('navigation.adminDashboard')}
+                                            </Button>
+                                            <Button
+                                                color="inherit"
+                                                onClick={() => navigate('/categories')}
+                                            >
+                                                {t('navigation.manageCategories')}
                                             </Button>
                                             <Button
                                                 color="inherit"
@@ -200,12 +202,20 @@ const Navbar = () => {
                                     )}
 
                                     {isAgencyStaff && (
-                                        <Button
-                                            color="inherit"
-                                            onClick={() => navigate('/agency')}
-                                        >
-                                            {t('navigation.agencyDashboard')}
-                                        </Button>
+                                        <>
+                                            <Button
+                                                color="inherit"
+                                                onClick={() => navigate('/agency-dashboard')}
+                                            >
+                                                {t('navigation.agencyDashboard')}
+                                            </Button>
+                                            <Button
+                                                color="inherit"
+                                                onClick={() => navigate('/categories')}
+                                            >
+                                                {t('navigation.manageCategories')}
+                                            </Button>
+                                        </>
                                     )}
 
                                     {!isAdmin && !isAgencyStaff && (

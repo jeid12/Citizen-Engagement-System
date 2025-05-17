@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 import {
     Container,
     Box,
@@ -14,28 +15,6 @@ import {
     Grid,
 } from '@mui/material';
 import { authAPI } from '../services/api';
-
-const validationSchema = Yup.object({
-    firstName: Yup.string()
-        .required('First name is required')
-        .min(2, 'First name must be at least 2 characters'),
-    lastName: Yup.string()
-        .required('Last name is required')
-        .min(2, 'Last name must be at least 2 characters'),
-    email: Yup.string()
-        .email('Invalid email address')
-        .required('Email is required'),
-    password: Yup.string()
-        .required('Password is required')
-        .min(6, 'Password must be at least 6 characters')
-        .matches(/[0-9]/, 'Password must contain at least one number')
-        .matches(/[A-Z]/, 'Password must contain at least one uppercase letter'),
-    confirmPassword: Yup.string()
-        .oneOf([Yup.ref('password')], 'Passwords must match')
-        .required('Confirm password is required'),
-    phoneNumber: Yup.string()
-        .matches(/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/, 'Invalid phone number format'),
-});
 
 interface RegisterFormValues {
     firstName: string;
@@ -50,6 +29,29 @@ const Register = () => {
     const navigate = useNavigate();
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
+    const { t } = useTranslation();
+
+    const validationSchema = Yup.object({
+        firstName: Yup.string()
+            .required(t('auth.register.firstNameRequired'))
+            .min(2, t('auth.register.firstNameMin')),
+        lastName: Yup.string()
+            .required(t('auth.register.lastNameRequired'))
+            .min(2, t('auth.register.lastNameMin')),
+        email: Yup.string()
+            .email(t('errors.invalidEmail'))
+            .required(t('errors.emailRequired')),
+        password: Yup.string()
+            .required(t('errors.passwordRequired'))
+            .min(6, t('auth.register.passwordMin'))
+            .matches(/[0-9]/, t('auth.register.passwordNumber'))
+            .matches(/[A-Z]/, t('auth.register.passwordUppercase')),
+        confirmPassword: Yup.string()
+            .oneOf([Yup.ref('password')], t('auth.register.passwordsMatch'))
+            .required(t('auth.register.confirmPasswordRequired')),
+        phoneNumber: Yup.string()
+            .matches(/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/, t('auth.register.invalidPhone')),
+    });
 
     const handleSubmit = async (values: RegisterFormValues) => {
         try {
@@ -57,12 +59,12 @@ const Register = () => {
             const { confirmPassword, ...registrationData } = values;
             const response = await authAPI.register(registrationData);
             
-            setSuccess('Registration successful! Please verify your email with the OTP sent.');
+            setSuccess(t('auth.register.successMessage'));
             setTimeout(() => {
                 navigate('/verify-otp', { state: { email: values.email } });
             }, 2000);
         } catch (err: any) {
-            const errorMessage = err.response?.data?.message || 'An error occurred during registration';
+            const errorMessage = err.response?.data?.message || t('auth.register.error');
             setError(errorMessage);
         }
     };
@@ -72,7 +74,7 @@ const Register = () => {
             <Box sx={{ mt: 8, mb: 4 }}>
                 <Paper elevation={3} sx={{ p: 4 }}>
                     <Typography component="h1" variant="h4" align="center" gutterBottom>
-                        Register
+                        {t('auth.register.title')}
                     </Typography>
 
                     {error && (
@@ -107,7 +109,7 @@ const Register = () => {
                                             fullWidth
                                             id="firstName"
                                             name="firstName"
-                                            label="First Name"
+                                            label={t('auth.register.firstName')}
                                             value={values.firstName}
                                             onChange={handleChange}
                                             onBlur={handleBlur}
@@ -120,7 +122,7 @@ const Register = () => {
                                             fullWidth
                                             id="lastName"
                                             name="lastName"
-                                            label="Last Name"
+                                            label={t('auth.register.lastName')}
                                             value={values.lastName}
                                             onChange={handleChange}
                                             onBlur={handleBlur}
@@ -134,7 +136,7 @@ const Register = () => {
                                     fullWidth
                                     id="email"
                                     name="email"
-                                    label="Email"
+                                    label={t('auth.register.email')}
                                     value={values.email}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -147,7 +149,7 @@ const Register = () => {
                                     fullWidth
                                     id="password"
                                     name="password"
-                                    label="Password"
+                                    label={t('auth.register.password')}
                                     type="password"
                                     value={values.password}
                                     onChange={handleChange}
@@ -161,7 +163,7 @@ const Register = () => {
                                     fullWidth
                                     id="confirmPassword"
                                     name="confirmPassword"
-                                    label="Confirm Password"
+                                    label={t('auth.register.confirmPassword')}
                                     type="password"
                                     value={values.confirmPassword}
                                     onChange={handleChange}
@@ -175,7 +177,7 @@ const Register = () => {
                                     fullWidth
                                     id="phoneNumber"
                                     name="phoneNumber"
-                                    label="Phone Number"
+                                    label={t('auth.register.phoneNumber')}
                                     value={values.phoneNumber}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -193,17 +195,17 @@ const Register = () => {
                                     disabled={isSubmitting}
                                     sx={{ mt: 3, mb: 2 }}
                                 >
-                                    {isSubmitting ? 'Registering...' : 'Register'}
+                                    {isSubmitting ? t('auth.register.buttonLoading') : t('auth.register.button')}
                                 </Button>
+
+                                <Box sx={{ mt: 2, textAlign: 'center' }}>
+                                    <Link href="/login" variant="body2">
+                                        {t('auth.register.haveAccount')}
+                                    </Link>
+                                </Box>
                             </Form>
                         )}
                     </Formik>
-
-                    <Box sx={{ mt: 2, textAlign: 'center' }}>
-                        <Link href="/login" variant="body2">
-                            Already have an account? Sign in
-                        </Link>
-                    </Box>
                 </Paper>
             </Box>
         </Container>

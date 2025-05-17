@@ -57,7 +57,8 @@
     "manageUsers": "Gucunga Abakoresha",
     "manageAgencies": "Gucunga Ibigo",
     "allComplaints": "Ibibazo Byose",
-    "openSettings": "Fungura Igenamiterere"
+    "openSettings": "Fungura Igenamiterere",
+    "manageCategories": "Gucunga Ibyiciro"
   },
   "dashboard": {
     "adminDashboard": "Ikibaho cy'Umuyobozi",
@@ -119,9 +120,22 @@
       "email": "Imeri",
       "password": "Ijambo ryibanga",
       "confirmPassword": "Emeza ijambo ryibanga",
+      "phoneNumber": "Numero ya telefoni",
       "button": "Iyandikishe",
       "buttonLoading": "Urimo kwiyandikisha...",
-      "haveAccount": "Usanzwe ufite konti? Injira"
+      "haveAccount": "Usanzwe ufite konti? Injira",
+      "firstNameRequired": "Izina rirakenewe",
+      "firstNameMin": "Izina rigomba kugira inyuguti 2 byibuze",
+      "lastNameRequired": "Izina ry'umuryango rirakenewe",
+      "lastNameMin": "Izina ry'umuryango rigomba kugira inyuguti 2 byibuze",
+      "passwordMin": "Ijambo ryibanga rigomba kugira inyuguti 6 byibuze",
+      "passwordNumber": "Ijambo ryibanga rigomba kugira umubare umwe byibuze",
+      "passwordUppercase": "Ijambo ryibanga rigomba kugira inyuguti nkuru imwe byibuze",
+      "passwordsMatch": "Amagambo yibanga agomba guhura",
+      "confirmPasswordRequired": "Kwemeza ijambo ryibanga birakenewe",
+      "invalidPhone": "Numero ya telefoni ntiyemewe",
+      "successMessage": "Kwiyandikisha byagenze neza! Nyamuneka emeza imeri yawe ukoresheje kode yoherejwe.",
+      "error": "Hari ikibazo cyabaye mu gihe cyo kwiyandikisha"
     },
     "verification": {
       "title": "Emeza Imeri",
@@ -131,5 +145,80 @@
       "buttonLoading": "Urimo kwemeza...",
       "resend": "Rongera wohereze kode"
     }
+  },
+  "home": {
+    "title": "Murakaza neza kuri CES Rwanda",
+    "subtitle": "Ijwi ryawe rifite agaciro mu kubaka u Rwanda rwiza. Fatanije natwe, ufatanye, kandi ugire uruhare mu iterambere ry'abaturage.",
+    "submitComplaints": {
+      "title": "Tanga Ibibazo",
+      "description": "Menyesha ibibazo biri mu muryango wawe ku biro bya leta bireba. Ibitekerezo byawe bifasha guteza imbere serivisi rusange.",
+      "button": "Tanga Nonaha"
+    },
+    "trackProgress": {
+      "title": "Kurikirana Iterambere",
+      "description": "Kurikirana uko ibibazo byawe bihagaze kandi uhabwe amakuru ku gihe ku byemezo byafashwe n'abayobozi.",
+      "button": "Kurikirana Ibibazo"
+    },
+    "getInvolved": {
+      "title": "Fatanije Natwe",
+      "description": "Injira mu muryango wacu w'abaturage bagira uruhare. Hamwe, dushobora gutuma u Rwanda ruba ahantu heza kurushaho kuri bose.",
+      "button": "Injira Nonaha"
+    }
+  },
+  "profile": {
+    "title": "Umwirondoro Wanjye",
+    "uploadPhoto": "Shyiraho Ifoto",
+    "verified": "Byemejwe",
+    "labels": {
+      "firstName": "Izina",
+      "lastName": "Izina ry'Umuryango",
+      "email": "Imeri",
+      "phoneNumber": "Numero ya Telefoni",
+      "bio": "Umwirondoro",
+      "address": "Aderesi",
+      "city": "Umujyi",
+      "country": "Igihugu"
+    },
+    "placeholders": {
+      "bio": "Tubwire ibyawe...",
+      "address": "Andika aderesi yawe",
+      "city": "Andika umujyi wawe",
+      "country": "Andika igihugu cyawe"
+    },
+    "buttons": {
+      "save": "Bika Impinduka",
+      "saving": "Irabikwa..."
+    },
+    "messages": {
+      "updateSuccess": "Umwirondoro wavuguruwe neza",
+      "updateError": "Kuvugurura umwirondoro ntibyakunze",
+      "photoSuccess": "Ifoto y'umwirondoro yavuguruwe neza",
+      "photoError": "Gushyiraho ifoto ntibyakunze",
+      "fetchError": "Kuzana umwirondoro ntibyakunze"
+    }
+  },
+  "categories": {
+    "title": "Gucunga Ibyiciro",
+    "addCategory": "Ongeraho Icyiciro",
+    "editCategory": "Hindura Icyiciro",
+    "deleteCategory": "Siba Icyiciro",
+    "labels": {
+      "name": "Izina ry'Icyiciro",
+      "description": "Ibisobanuro",
+      "status": "Imiterere"
+    },
+    "placeholders": {
+      "name": "Andika izina ry'icyiciro",
+      "description": "Andika ibisobanuro by'icyiciro"
+    },
+    "messages": {
+      "addSuccess": "Icyiciro cyongewemo neza",
+      "updateSuccess": "Icyiciro kivuguruwe neza",
+      "deleteSuccess": "Icyiciro gisibwe neza",
+      "error": "Hari ikibazo cyabaye mu gihe cyo gucunga icyiciro"
+    },
+    "confirmDelete": "Uremeza ko ushaka gusiba iki cyiciro?",
+    "active": "Gikoreshwa",
+    "inactive": "Ntigikoreshwa"
   }
 } 

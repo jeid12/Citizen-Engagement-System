@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import {
     Container,
     Paper,
@@ -45,6 +46,7 @@ const Profile = () => {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const { t } = useTranslation();
 
     useEffect(() => {
         if (currentUser) {
@@ -73,7 +75,7 @@ const Profile = () => {
             }));
         } catch (error: any) {
             console.error('Error fetching profile:', error);
-            setError(error.response?.data?.message || 'Failed to fetch profile');
+            setError(t('profile.messages.fetchError'));
         } finally {
             setLoading(false);
         }
@@ -96,14 +98,14 @@ const Profile = () => {
                 country: profile.country,
             });
 
-            setSuccess('Profile updated successfully');
+            setSuccess(t('profile.messages.updateSuccess'));
             dispatch(updateUser(response.data.user));
 
             // Clear success message after 3 seconds
             setTimeout(() => setSuccess(null), 3000);
         } catch (error: any) {
             console.error('Error updating profile:', error);
-            setError(error.response?.data?.message || 'Failed to update profile');
+            setError(t('profile.messages.updateError'));
         } finally {
             setSaving(false);
         }
@@ -119,13 +121,13 @@ const Profile = () => {
             const response = await profileAPI.uploadPhoto(file);
             setProfile(prev => prev ? { ...prev, profilePhoto: response.data.profilePhoto } : null);
             dispatch(updateUser({ ...currentUser, profilePhoto: response.data.profilePhoto }));
-            setSuccess('Profile photo updated successfully');
+            setSuccess(t('profile.messages.photoSuccess'));
 
             // Clear success message after 3 seconds
             setTimeout(() => setSuccess(null), 3000);
         } catch (error: any) {
             console.error('Error uploading photo:', error);
-            setError(error.response?.data?.message || 'Failed to upload photo');
+            setError(t('profile.messages.photoError'));
         } finally {
             setUploading(false);
             if (fileInputRef.current) {
@@ -146,7 +148,7 @@ const Profile = () => {
         <Container maxWidth="md" sx={{ py: 4 }}>
             <Paper elevation={3} sx={{ p: 4 }}>
                 <Typography variant="h4" gutterBottom color="primary" align="center">
-                    My Profile
+                    {t('profile.title')}
                 </Typography>
 
                 {error && (
@@ -174,10 +176,11 @@ const Profile = () => {
                             style={{ display: 'none' }}
                             ref={fileInputRef}
                             onChange={handlePhotoUpload}
+                            aria-label={t('profile.uploadPhoto')}
                         />
                         <IconButton
                             color="primary"
-                            aria-label="upload picture"
+                            aria-label={t('profile.uploadPhoto')}
                             component="span"
                             onClick={() => fileInputRef.current?.click()}
                             disabled={uploading}
@@ -200,8 +203,9 @@ const Profile = () => {
                         {profile?.isEmailVerified && (
                             <Chip
                                 icon={<VerifiedIcon />}
-                                label="Verified"
+                                label={t('profile.verified')}
                                 color="success"
+                                variant="outlined"
                             />
                         )}
                     </Box>
@@ -209,11 +213,11 @@ const Profile = () => {
 
                 {profile && (
                     <form onSubmit={handleSubmit}>
-                        <Grid container spacing={3}>
+                        <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
                                 <TextField
                                     fullWidth
-                                    label="First Name"
+                                    label={t('profile.labels.firstName')}
                                     value={profile.firstName}
                                     onChange={(e) => setProfile({ ...profile, firstName: e.target.value })}
                                     required
@@ -222,7 +226,7 @@ const Profile = () => {
                             <Grid item xs={12} sm={6}>
                                 <TextField
                                     fullWidth
-                                    label="Last Name"
+                                    label={t('profile.labels.lastName')}
                                     value={profile.lastName}
                                     onChange={(e) => setProfile({ ...profile, lastName: e.target.value })}
                                     required
@@ -231,7 +235,7 @@ const Profile = () => {
                             <Grid item xs={12}>
                                 <TextField
                                     fullWidth
-                                    label="Email"
+                                    label={t('profile.labels.email')}
                                     value={profile.email}
                                     disabled
                                 />
@@ -239,7 +243,7 @@ const Profile = () => {
                             <Grid item xs={12}>
                                 <TextField
                                     fullWidth
-                                    label="Phone Number"
+                                    label={t('profile.labels.phoneNumber')}
                                     value={profile.phoneNumber || ''}
                                     onChange={(e) => setProfile({ ...profile, phoneNumber: e.target.value })}
                                 />
@@ -247,51 +251,54 @@ const Profile = () => {
                             <Grid item xs={12}>
                                 <TextField
                                     fullWidth
-                                    label="Bio"
-                                    value={profile.bio || ''}
-                                    onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
                                     multiline
                                     rows={4}
-                                    helperText="Tell us about yourself"
+                                    label={t('profile.labels.bio')}
+                                    value={profile.bio || ''}
+                                    onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
+                                    placeholder={t('profile.placeholders.bio')}
                                 />
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
                                     fullWidth
-                                    label="Address"
+                                    label={t('profile.labels.address')}
                                     value={profile.address || ''}
                                     onChange={(e) => setProfile({ ...profile, address: e.target.value })}
+                                    placeholder={t('profile.placeholders.address')}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
                                     fullWidth
-                                    label="City"
+                                    label={t('profile.labels.city')}
                                     value={profile.city || ''}
                                     onChange={(e) => setProfile({ ...profile, city: e.target.value })}
+                                    placeholder={t('profile.placeholders.city')}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField
                                     fullWidth
-                                    label="Country"
+                                    label={t('profile.labels.country')}
                                     value={profile.country || ''}
                                     onChange={(e) => setProfile({ ...profile, country: e.target.value })}
+                                    placeholder={t('profile.placeholders.country')}
                                 />
                             </Grid>
-                            <Grid item xs={12}>
-                                <Button
-                                    type="submit"
-                                    variant="contained"
-                                    color="primary"
-                                    fullWidth
-                                    size="large"
-                                    disabled={saving}
-                                >
-                                    {saving ? 'Saving...' : 'Save Changes'}
-                                </Button>
-                            </Grid>
                         </Grid>
+
+                        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                size="large"
+                                disabled={saving}
+                            >
+                                {saving ? t('profile.buttons.saving') : t('profile.buttons.save')}
+                            </Button>
+                        </Box>
                     </form>
                 )}
             </Paper>

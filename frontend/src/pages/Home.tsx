@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container, Typography, Button, Box, Grid, Paper, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import SendIcon from '@mui/icons-material/Send';
 import TrackChangesIcon from '@mui/icons-material/TrackChanges';
 import PeopleIcon from '@mui/icons-material/People';
@@ -8,6 +9,7 @@ import PeopleIcon from '@mui/icons-material/People';
 const Home = () => {
     const navigate = useNavigate();
     const theme = useTheme();
+    const { t } = useTranslation();
 
     return (
         <Box sx={{ 
@@ -32,7 +34,7 @@ const Home = () => {
                             textShadow: '2px 2px 4px rgba(0,0,0,0.2)'
                         }}
                     >
-                        Welcome to CES Rwanda
+                        {t('home.title')}
                     </Typography>
                     <Typography 
                         variant="h5" 
@@ -45,7 +47,7 @@ const Home = () => {
                             mb: 4
                         }}
                     >
-                        Your voice matters in building a better Rwanda. Connect, engage, and make a difference in your community.
+                        {t('home.subtitle')}
                     </Typography>
                 </Box>
 
@@ -66,10 +68,10 @@ const Home = () => {
                                 <SendIcon sx={{ fontSize: 40 }} />
                             </Box>
                             <Typography variant="h5" gutterBottom sx={{ color: theme.palette.primary.main }}>
-                                Submit Complaints
+                                {t('home.submitComplaints.title')}
                             </Typography>
                             <Typography paragraph color="text.secondary" sx={{ mb: 3 }}>
-                                Report issues in your community directly to the relevant government agencies. Your feedback helps improve public services.
+                                {t('home.submitComplaints.description')}
                             </Typography>
                             <Button
                                 variant="contained"
@@ -77,7 +79,7 @@ const Home = () => {
                                 onClick={() => navigate('/submit-complaint')}
                                 fullWidth
                             >
-                                Submit Now
+                                {t('home.submitComplaints.button')}
                             </Button>
                         </Paper>
                     </Grid>
@@ -98,10 +100,10 @@ const Home = () => {
                                 <TrackChangesIcon sx={{ fontSize: 40 }} />
                             </Box>
                             <Typography variant="h5" gutterBottom sx={{ color: theme.palette.secondary.main }}>
-                                Track Progress
+                                {t('home.trackProgress.title')}
                             </Typography>
                             <Typography paragraph color="text.secondary" sx={{ mb: 3 }}>
-                                Monitor the status of your submitted complaints and receive real-time updates on actions taken by authorities.
+                                {t('home.trackProgress.description')}
                             </Typography>
                             <Button
                                 variant="contained"
@@ -109,7 +111,7 @@ const Home = () => {
                                 onClick={() => navigate('/track-complaints')}
                                 fullWidth
                             >
-                                Track Complaints
+                                {t('home.trackProgress.button')}
                             </Button>
                         </Paper>
                     </Grid>
@@ -130,10 +132,10 @@ const Home = () => {
                                 <PeopleIcon sx={{ fontSize: 40 }} />
                             </Box>
                             <Typography variant="h5" gutterBottom sx={{ color: theme.palette.warning.main }}>
-                                Get Involved
+                                {t('home.getInvolved.title')}
                             </Typography>
                             <Typography paragraph color="text.secondary" sx={{ mb: 3 }}>
-                                Join our growing community of active citizens. Together, we can make Rwanda an even better place for everyone.
+                                {t('home.getInvolved.description')}
                             </Typography>
                             <Button
                                 variant="contained"
@@ -147,7 +149,7 @@ const Home = () => {
                                 onClick={() => navigate('/register')}
                                 fullWidth
                             >
-                                Join Now
+                                {t('home.getInvolved.button')}
                             </Button>
                         </Paper>
                     </Grid>

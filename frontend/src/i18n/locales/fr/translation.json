@@ -57,7 +57,8 @@
     "manageUsers": "Gérer les Utilisateurs",
     "manageAgencies": "Gérer les Agences",
     "allComplaints": "Toutes les Plaintes",
-    "openSettings": "Ouvrir les paramètres"
+    "openSettings": "Ouvrir les paramètres",
+    "manageCategories": "Gérer les Catégories"
   },
   "dashboard": {
     "adminDashboard": "Tableau de Bord Administrateur",
@@ -119,9 +120,22 @@
       "email": "E-mail",
       "password": "Mot de passe",
       "confirmPassword": "Confirmer le mot de passe",
+      "phoneNumber": "Numéro de téléphone",
       "button": "S'inscrire",
       "buttonLoading": "Inscription en cours...",
-      "haveAccount": "Vous avez déjà un compte ? Connectez-vous"
+      "haveAccount": "Vous avez déjà un compte ? Connectez-vous",
+      "firstNameRequired": "Le prénom est requis",
+      "firstNameMin": "Le prénom doit contenir au moins 2 caractères",
+      "lastNameRequired": "Le nom est requis",
+      "lastNameMin": "Le nom doit contenir au moins 2 caractères",
+      "passwordMin": "Le mot de passe doit contenir au moins 6 caractères",
+      "passwordNumber": "Le mot de passe doit contenir au moins un chiffre",
+      "passwordUppercase": "Le mot de passe doit contenir au moins une majuscule",
+      "passwordsMatch": "Les mots de passe doivent correspondre",
+      "confirmPasswordRequired": "La confirmation du mot de passe est requise",
+      "invalidPhone": "Format de numéro de téléphone invalide",
+      "successMessage": "Inscription réussie ! Veuillez vérifier votre e-mail avec le code OTP envoyé.",
+      "error": "Une erreur s'est produite lors de l'inscription"
     },
     "verification": {
       "title": "Vérifier l'e-mail",
@@ -131,5 +145,80 @@
       "buttonLoading": "Vérification en cours...",
       "resend": "Renvoyer le code"
     }
+  },
+  "home": {
+    "title": "Bienvenue sur CES Rwanda",
+    "subtitle": "Votre voix compte dans la construction d'un meilleur Rwanda. Connectez-vous, engagez-vous et faites la différence dans votre communauté.",
+    "submitComplaints": {
+      "title": "Soumettre des Plaintes",
+      "description": "Signalez les problèmes de votre communauté directement aux agences gouvernementales concernées. Vos commentaires aident à améliorer les services publics.",
+      "button": "Soumettre Maintenant"
+    },
+    "trackProgress": {
+      "title": "Suivre le Progrès",
+      "description": "Suivez l'état de vos plaintes soumises et recevez des mises à jour en temps réel sur les actions prises par les autorités.",
+      "button": "Suivre les Plaintes"
+    },
+    "getInvolved": {
+      "title": "Participez",
+      "description": "Rejoignez notre communauté grandissante de citoyens actifs. Ensemble, nous pouvons faire du Rwanda un endroit encore meilleur pour tous.",
+      "button": "Rejoindre Maintenant"
+    }
+  },
+  "profile": {
+    "title": "Mon Profil",
+    "uploadPhoto": "Télécharger une Photo",
+    "verified": "Vérifié",
+    "labels": {
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "email": "E-mail",
+      "phoneNumber": "Numéro de Téléphone",
+      "bio": "Biographie",
+      "address": "Adresse",
+      "city": "Ville",
+      "country": "Pays"
+    },
+    "placeholders": {
+      "bio": "Parlez-nous de vous...",
+      "address": "Entrez votre adresse",
+      "city": "Entrez votre ville",
+      "country": "Entrez votre pays"
+    },
+    "buttons": {
+      "save": "Enregistrer les Modifications",
+      "saving": "Enregistrement..."
+    },
+    "messages": {
+      "updateSuccess": "Profil mis à jour avec succès",
+      "updateError": "Échec de la mise à jour du profil",
+      "photoSuccess": "Photo de profil mise à jour avec succès",
+      "photoError": "Échec du téléchargement de la photo",
+      "fetchError": "Échec de la récupération du profil"
+    }
+  },
+  "categories": {
+    "title": "Gérer les Catégories",
+    "addCategory": "Ajouter une Catégorie",
+    "editCategory": "Modifier la Catégorie",
+    "deleteCategory": "Supprimer la Catégorie",
+    "labels": {
+      "name": "Nom de la Catégorie",
+      "description": "Description",
+      "status": "Statut"
+    },
+    "placeholders": {
+      "name": "Entrez le nom de la catégorie",
+      "description": "Entrez la description de la catégorie"
+    },
+    "messages": {
+      "addSuccess": "Catégorie ajoutée avec succès",
+      "updateSuccess": "Catégorie mise à jour avec succès",
+      "deleteSuccess": "Catégorie supprimée avec succès",
+      "error": "Une erreur s'est produite lors du traitement de votre demande"
+    },
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer cette catégorie ?",
+    "active": "Active",
+    "inactive": "Inactive"
   }
 } 

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import Layout from '../components/Layout';
 import ProtectedRoute from '../components/ProtectedRoute';
 
 // Pages
@@ -18,101 +17,109 @@ import SubmitComplaint from '../pages/SubmitComplaint';
 import TrackComplaints from '../pages/TrackComplaints';
 import OTPVerification from '../pages/OTPVerification';
 import Profile from '../pages/Profile';
+import Categories from '../pages/Categories';
 
-const AppRoutes: React.FC = () => {
-  return (
-    <div className="App" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <Navbar />
-      <main style={{ flex: 1 }}>
+const AppRoutes = () => {
+    return (
         <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/verify-otp" element={<OTPVerification />} />
+            <Route element={<Layout />}>
+                <Route index element={<Home />} />
+                <Route path="login" element={<Login />} />
+                <Route path="register" element={<Register />} />
+                <Route path="verify-otp" element={<OTPVerification />} />
+                
+                <Route
+                    path="profile"
+                    element={
+                        <ProtectedRoute>
+                            <Profile />
+                        </ProtectedRoute>
+                    }
+                />
 
-          {/* Protected Routes */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/submit-complaint"
-            element={
-              <ProtectedRoute>
-                <SubmitComplaint />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/track-complaints"
-            element={
-              <ProtectedRoute>
-                <TrackComplaints />
-              </ProtectedRoute>
-            }
-          />
+                <Route
+                    path="dashboard"
+                    element={
+                        <ProtectedRoute>
+                            <Dashboard />
+                        </ProtectedRoute>
+                    }
+                />
 
-          {/* Admin Routes */}
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute adminOnly>
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/complaints"
-            element={
-              <ProtectedRoute adminOnly>
-                <AdminComplaints />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/users"
-            element={
-              <ProtectedRoute adminOnly>
-                <ManageUsers />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/agencies"
-            element={
-              <ProtectedRoute adminOnly>
-                <ManageAgencies />
-              </ProtectedRoute>
-            }
-          />
+                <Route
+                    path="submit-complaint"
+                    element={
+                        <ProtectedRoute>
+                            <SubmitComplaint />
+                        </ProtectedRoute>
+                    }
+                />
 
-          {/* Agency Routes */}
-          <Route
-            path="/agency"
-            element={
-              <ProtectedRoute agencyOnly>
-                <AgencyDashboard />
-              </ProtectedRoute>
-            }
-          />
+                <Route
+                    path="track-complaints"
+                    element={
+                        <ProtectedRoute>
+                            <TrackComplaints />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="admin-dashboard"
+                    element={
+                        <ProtectedRoute allowedRoles={['admin']}>
+                            <AdminDashboard />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="admin/complaints"
+                    element={
+                        <ProtectedRoute allowedRoles={['admin']}>
+                            <AdminComplaints />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="admin/users"
+                    element={
+                        <ProtectedRoute allowedRoles={['admin']}>
+                            <ManageUsers />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="admin/agencies"
+                    element={
+                        <ProtectedRoute allowedRoles={['admin']}>
+                            <ManageAgencies />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="agency-dashboard"
+                    element={
+                        <ProtectedRoute allowedRoles={['agency_staff']}>
+                            <AgencyDashboard />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="categories"
+                    element={
+                        <ProtectedRoute allowedRoles={['admin', 'agency_staff']}>
+                            <Categories />
+                        </ProtectedRoute>
+                    }
+                />
+            </Route>
         </Routes>
-      </main>
-      <Footer />
-    </div>
-  );
+    );
 };
 
 export default AppRoutes; 

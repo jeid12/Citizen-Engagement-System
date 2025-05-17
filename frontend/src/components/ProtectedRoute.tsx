@@ -4,22 +4,17 @@ import { useSelector } from 'react-redux';
 
 interface ProtectedRouteProps {
     children: React.ReactElement;
-    adminOnly?: boolean;
-    agencyOnly?: boolean;
+    allowedRoles?: string[];
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, adminOnly, agencyOnly }) => {
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles }) => {
     const { isAuthenticated, user } = useSelector((state: any) => state.auth);
 
     if (!isAuthenticated) {
         return <Navigate to="/login" />;
     }
 
-    if (adminOnly && user?.role !== 'admin') {
-        return <Navigate to="/" />;
-    }
-
-    if (agencyOnly && user?.role !== 'agency_staff') {
+    if (allowedRoles && !allowedRoles.includes(user?.role)) {
         return <Navigate to="/" />;
     }
 
