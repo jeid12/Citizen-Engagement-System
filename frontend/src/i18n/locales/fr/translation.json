@@ -1,0 +1,46 @@
+{
+  "welcome": {
+    "greeting": "Bienvenue",
+    "message": "Bienvenue dans le Système d'Engagement Citoyen. Ensemble, nous construisons un meilleur Rwanda grâce à une participation active et une communication transparente."
+  },
+  "quickActions": {
+    "title": "Actions Rapides",
+    "submitComplaint": {
+      "title": "Soumettre une Nouvelle Plainte",
+      "button": "Soumettre une Plainte"
+    },
+    "trackComplaints": {
+      "title": "Suivre les Plaintes",
+      "button": "Suivre vos Plaintes"
+    }
+  },
+  "statistics": {
+    "title": "Votre Activité",
+    "total": "Total",
+    "pending": "En Attente",
+    "resolved": "Résolu",
+    "responseRate": "Taux de Réponse"
+  },
+  "recentComplaints": {
+    "title": "Plaintes Récentes",
+    "noComplaints": "Aucune plainte soumise pour le moment",
+    "viewAll": "Voir Toutes les Plaintes"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "profile": "Profil",
+    "logout": "Déconnexion",
+    "language": "Langue",
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "dashboard": "Tableau de Bord",
+    "adminDashboard": "Tableau de Bord Admin",
+    "agencyDashboard": "Tableau de Bord Agence",
+    "submitComplaint": "Soumettre une Plainte",
+    "trackComplaints": "Suivre les Plaintes",
+    "manageUsers": "Gérer les Utilisateurs",
+    "manageAgencies": "Gérer les Agences",
+    "allComplaints": "Toutes les Plaintes",
+    "openSettings": "Ouvrir les paramètres"
+  }
+} 

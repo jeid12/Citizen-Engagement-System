@@ -1,33 +1,30 @@
-import { useState } from 'react';
-import type { SyntheticEvent } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import {
     AppBar,
-    Toolbar,
-    Typography,
-    Button,
-    IconButton,
-    Menu,
-    MenuItem,
     Box,
-    useTheme,
-    useMediaQuery,
-    Divider,
+    Toolbar,
+    IconButton,
+    Typography,
+    Menu,
+    Container,
     Avatar,
-    ListItemIcon,
-    ListItemText,
+    Button,
+    MenuItem,
+    Divider,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import { logout } from '../store/slices/authSlice';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const Navbar = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const { user, isAuthenticated } = useSelector((state: any) => state.auth);
     const isAdmin = user?.role === 'admin';
     const isAgencyStaff = user?.role === 'agency_staff';
@@ -35,12 +32,12 @@ const Navbar = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [mobileMenuAnchor, setMobileMenuAnchor] = useState<null | HTMLElement>(null);
 
-    const handleMenu = (event: SyntheticEvent) => {
-        setAnchorEl(event.currentTarget as HTMLElement);
+    const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
     };
 
-    const handleMobileMenu = (event: SyntheticEvent) => {
-        setMobileMenuAnchor(event.currentTarget as HTMLElement);
+    const handleMobileMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setMobileMenuAnchor(event.currentTarget);
     };
 
     const handleClose = () => {
@@ -54,7 +51,8 @@ const Navbar = () => {
         navigate('/login');
     };
 
-    const menuItems = isAuthenticated ? (
+    // Menu items based on user role
+    const getMenuItems = () => (
         <>
             {isAuthenticated && (
                 <Box sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -74,158 +72,182 @@ const Navbar = () => {
                 </Box>
             )}
             <Divider />
-            <MenuItem onClick={() => { navigate('/dashboard'); handleClose(); }}>
-                Dashboard
+            <MenuItem onClick={() => { navigate('/'); handleClose(); }}>
+                {t('navigation.home')}
             </MenuItem>
-            {isAdmin ? (
+            {isAuthenticated && (
+                <MenuItem onClick={() => { navigate('/dashboard'); handleClose(); }}>
+                    {t('navigation.dashboard')}
+                </MenuItem>
+            )}
+            {isAdmin && (
                 <>
                     <Divider />
                     <MenuItem onClick={() => { navigate('/admin'); handleClose(); }}>
-                        Admin Dashboard
+                        {t('navigation.adminDashboard')}
                     </MenuItem>
                     <MenuItem onClick={() => { navigate('/admin/complaints'); handleClose(); }}>
-                        All Complaints
+                        {t('navigation.allComplaints')}
                     </MenuItem>
                     <MenuItem onClick={() => { navigate('/admin/users'); handleClose(); }}>
-                        Manage Users
+                        {t('navigation.manageUsers')}
                     </MenuItem>
                     <MenuItem onClick={() => { navigate('/admin/agencies'); handleClose(); }}>
-                        Manage Agencies
+                        {t('navigation.manageAgencies')}
                     </MenuItem>
                 </>
-            ) : isAgencyStaff ? (
+            )}
+            {isAgencyStaff && (
                 <>
                     <Divider />
                     <MenuItem onClick={() => { navigate('/agency'); handleClose(); }}>
-                        Agency Dashboard
+                        {t('navigation.agencyDashboard')}
+                    </MenuItem>
+                </>
+            )}
+            {isAuthenticated && !isAdmin && !isAgencyStaff && (
+                <>
+                    <MenuItem onClick={() => { navigate('/submit-complaint'); handleClose(); }}>
+                        {t('navigation.submitComplaint')}
+                    </MenuItem>
+                    <MenuItem onClick={() => { navigate('/track-complaints'); handleClose(); }}>
+                        {t('navigation.trackComplaints')}
+                    </MenuItem>
+                </>
+            )}
+            {isAuthenticated ? (
+                <>
+                    <Divider />
+                    <MenuItem onClick={() => { navigate('/profile'); handleClose(); }}>
+                        {t('navigation.profile')}
+                    </MenuItem>
+                    <MenuItem onClick={handleLogout}>
+                        {t('navigation.logout')}
                     </MenuItem>
                 </>
             ) : (
                 <>
-                    <MenuItem onClick={() => { navigate('/submit-complaint'); handleClose(); }}>
-                        Submit Complaint
+                    <MenuItem onClick={() => { navigate('/login'); handleClose(); }}>
+                        {t('navigation.login')}
                     </MenuItem>
-                    <MenuItem onClick={() => { navigate('/track-complaints'); handleClose(); }}>
-                        Track Complaints
+                    <MenuItem onClick={() => { navigate('/register'); handleClose(); }}>
+                        {t('navigation.register')}
                     </MenuItem>
                 </>
             )}
-            <Divider />
-            <MenuItem onClick={() => { navigate('/profile'); handleClose(); }}>
-                Profile
-            </MenuItem>
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
-        </>
-    ) : (
-        <>
-            <MenuItem onClick={() => { navigate('/login'); handleClose(); }}>
-                Login
-            </MenuItem>
-            <MenuItem onClick={() => { navigate('/register'); handleClose(); }}>
-                Register
-            </MenuItem>
         </>
     );
 
     return (
         <AppBar position="static">
-            <Toolbar>
-                <Typography
-                    variant="h6"
-                    component={Link}
-                    to="/"
-                    sx={{
-                        flexGrow: 1,
-                        textDecoration: 'none',
-                        color: 'inherit',
-                    }}
-                >
-                    CES Rwanda
-                </Typography>
+            <Container maxWidth="xl">
+                <Toolbar>
+                    <Typography
+                        variant="h6"
+                        component={Link}
+                        to="/"
+                        sx={{
+                            flexGrow: 1,
+                            textDecoration: 'none',
+                            color: 'inherit',
+                        }}
+                    >
+                        CES Rwanda
+                    </Typography>
 
-                {isMobile ? (
-                    <>
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="menu"
-                            onClick={handleMobileMenu}
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Menu
-                            anchorEl={mobileMenuAnchor}
-                            open={Boolean(mobileMenuAnchor)}
-                            onClose={handleClose}
-                            PaperProps={{
-                                sx: { width: '100%', maxWidth: 320 }
-                            }}
-                        >
-                            {menuItems}
-                        </Menu>
-                    </>
-                ) : (
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        {isAuthenticated ? (
-                            <>
-                                <Button
-                                    color="inherit"
-                                    component={Link}
-                                    to="/dashboard"
-                                >
-                                    Dashboard
-                                </Button>
-                                {isAdmin ? (
-                                    <>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <LanguageSwitcher />
+
+                        {/* Desktop Navigation */}
+                        <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1 }}>
+                            {isAuthenticated && (
+                                <>
+                                    <Button
+                                        color="inherit"
+                                        onClick={() => navigate('/dashboard')}
+                                    >
+                                        {t('navigation.dashboard')}
+                                    </Button>
+
+                                    {isAdmin && (
                                         <IconButton
                                             color="inherit"
                                             onClick={() => navigate('/admin')}
-                                            sx={{ ml: 1 }}
-                                            title="Admin Dashboard"
+                                            title={t('navigation.adminDashboard')}
                                         >
                                             <AdminPanelSettingsIcon />
                                         </IconButton>
-                                    </>
-                                ) : isAgencyStaff ? (
+                                    )}
+
+                                    {isAgencyStaff && (
+                                        <Button
+                                            color="inherit"
+                                            onClick={() => navigate('/agency')}
+                                        >
+                                            {t('navigation.agencyDashboard')}
+                                        </Button>
+                                    )}
+
+                                    {!isAdmin && !isAgencyStaff && (
+                                        <>
+                                            <Button
+                                                color="inherit"
+                                                onClick={() => navigate('/submit-complaint')}
+                                            >
+                                                {t('navigation.submitComplaint')}
+                                            </Button>
+                                            <Button
+                                                color="inherit"
+                                                onClick={() => navigate('/track-complaints')}
+                                            >
+                                                {t('navigation.trackComplaints')}
+                                            </Button>
+                                        </>
+                                    )}
+                                </>
+                            )}
+
+                            {!isAuthenticated && (
+                                <>
                                     <Button
                                         color="inherit"
-                                        component={Link}
-                                        to="/agency"
+                                        onClick={() => navigate('/login')}
                                     >
-                                        Agency Dashboard
+                                        {t('navigation.login')}
                                     </Button>
-                                ) : (
-                                    <>
-                                        <Button
-                                            color="inherit"
-                                            component={Link}
-                                            to="/submit-complaint"
-                                        >
-                                            Submit Complaint
-                                        </Button>
-                                        <Button
-                                            color="inherit"
-                                            component={Link}
-                                            to="/track-complaints"
-                                        >
-                                            Track Complaints
-                                        </Button>
-                                    </>
-                                )}
+                                    <Button
+                                        color="inherit"
+                                        onClick={() => navigate('/register')}
+                                    >
+                                        {t('navigation.register')}
+                                    </Button>
+                                </>
+                            )}
+                        </Box>
+
+                        {/* Mobile Menu Icon */}
+                        <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+                            <IconButton
+                                color="inherit"
+                                onClick={handleMobileMenu}
+                            >
+                                <MenuIcon />
+                            </IconButton>
+                        </Box>
+
+                        {/* User Menu (Desktop) */}
+                        {isAuthenticated && (
+                            <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                                 <IconButton
-                                    color="inherit"
                                     onClick={handleMenu}
-                                    sx={{ ml: 1 }}
+                                    color="inherit"
+                                    size="small"
                                 >
                                     {user?.profilePhoto ? (
-                                        <Avatar 
+                                        <Avatar
                                             src={user.profilePhoto}
                                             alt={`${user.firstName} ${user.lastName}`}
-                                            sx={{ 
-                                                width: 32, 
-                                                height: 32,
-                                                border: '2px solid white' 
-                                            }}
+                                            sx={{ width: 32, height: 32, border: '2px solid white' }}
                                         />
                                     ) : (
                                         <AccountCircleIcon />
@@ -235,39 +257,31 @@ const Navbar = () => {
                                     anchorEl={anchorEl}
                                     open={Boolean(anchorEl)}
                                     onClose={handleClose}
-                                    anchorOrigin={{
-                                        vertical: 'bottom',
-                                        horizontal: 'right',
-                                    }}
-                                    transformOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'right',
-                                    }}
                                 >
-                                    {menuItems}
+                                    <MenuItem onClick={() => { navigate('/profile'); handleClose(); }}>
+                                        {t('navigation.profile')}
+                                    </MenuItem>
+                                    <MenuItem onClick={handleLogout}>
+                                        {t('navigation.logout')}
+                                    </MenuItem>
                                 </Menu>
-                            </>
-                        ) : (
-                            <>
-                                <Button
-                                    color="inherit"
-                                    component={Link}
-                                    to="/login"
-                                >
-                                    Login
-                                </Button>
-                                <Button
-                                    color="inherit"
-                                    component={Link}
-                                    to="/register"
-                                >
-                                    Register
-                                </Button>
-                            </>
+                            </Box>
                         )}
+
+                        {/* Mobile Menu */}
+                        <Menu
+                            anchorEl={mobileMenuAnchor}
+                            open={Boolean(mobileMenuAnchor)}
+                            onClose={handleClose}
+                            PaperProps={{
+                                sx: { width: '100%', maxWidth: 320 }
+                            }}
+                        >
+                            {getMenuItems()}
+                        </Menu>
                     </Box>
-                )}
-            </Toolbar>
+                </Toolbar>
+            </Container>
         </AppBar>
     );
 };

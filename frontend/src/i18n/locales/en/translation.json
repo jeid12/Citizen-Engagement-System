@@ -1,0 +1,46 @@
+{
+  "welcome": {
+    "greeting": "Welcome",
+    "message": "Welcome to the Citizen Engagement System. Together, we build a better Rwanda through active participation and transparent communication."
+  },
+  "quickActions": {
+    "title": "Quick Actions",
+    "submitComplaint": {
+      "title": "Submit New Complaint",
+      "button": "Submit Complaint"
+    },
+    "trackComplaints": {
+      "title": "Track Complaints",
+      "button": "Track Your Complaints"
+    }
+  },
+  "statistics": {
+    "title": "Your Activity",
+    "total": "Total",
+    "pending": "Pending",
+    "resolved": "Resolved",
+    "responseRate": "Response Rate"
+  },
+  "recentComplaints": {
+    "title": "Recent Complaints",
+    "noComplaints": "No complaints submitted yet",
+    "viewAll": "View All Complaints"
+  },
+  "navigation": {
+    "home": "Home",
+    "profile": "Profile",
+    "logout": "Logout",
+    "language": "Language",
+    "login": "Login",
+    "register": "Register",
+    "dashboard": "Dashboard",
+    "adminDashboard": "Admin Dashboard",
+    "agencyDashboard": "Agency Dashboard",
+    "submitComplaint": "Submit Complaint",
+    "trackComplaints": "Track Complaints",
+    "manageUsers": "Manage Users",
+    "manageAgencies": "Manage Agencies",
+    "allComplaints": "All Complaints",
+    "openSettings": "Open settings"
+  }
+} 

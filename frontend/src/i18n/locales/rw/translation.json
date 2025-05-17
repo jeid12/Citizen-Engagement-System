@@ -1,0 +1,46 @@
+{
+  "welcome": {
+    "greeting": "Murakaza neza",
+    "message": "Murakaza neza kuri Sisitemu y'Ubufatanye bw'Abaturage. Hamwe, twubaka u Rwanda rurusha ubusanzwe kuba rwiza binyuze mu bufatanye n'itumanaho risobanutse."
+  },
+  "quickActions": {
+    "title": "Ibikorwa Byihuse",
+    "submitComplaint": {
+      "title": "Tanga Ikibazo Gishya",
+      "button": "Tanga Ikibazo"
+    },
+    "trackComplaints": {
+      "title": "Gukurikirana Ibirego",
+      "button": "Gukurikirana Ibirego Byawe"
+    }
+  },
+  "statistics": {
+    "title": "Imibare Yawe",
+    "total": "Igiteranyo",
+    "pending": "Bitegerejwe",
+    "resolved": "Byakemutse",
+    "responseRate": "Igipimo cy'Ibisubizo"
+  },
+  "recentComplaints": {
+    "title": "Ibirego Bishya",
+    "noComplaints": "Nta birego byatanzwe",
+    "viewAll": "Reba Ibirego Byose"
+  },
+  "navigation": {
+    "home": "Ahabanza",
+    "profile": "Umwirondoro",
+    "logout": "Sohoka",
+    "language": "Ururimi",
+    "login": "Injira",
+    "register": "Iyandikishe",
+    "dashboard": "Ikibaho",
+    "adminDashboard": "Ikibaho ry'Umuyobozi",
+    "agencyDashboard": "Ikibaho ry'Ikigo",
+    "submitComplaint": "Tanga Ikibazo",
+    "trackComplaints": "Gukurikirana Ibirego",
+    "manageUsers": "Gucunga Abakoresha",
+    "manageAgencies": "Gucunga Ibigo",
+    "allComplaints": "Ibirego Byose",
+    "openSettings": "Fungura Igenamiterere"
+  }
+} 

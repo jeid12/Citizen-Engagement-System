@@ -11,6 +11,7 @@ import userRoutes from "./routes/userRoutes";
 import agencyRoutes from "./routes/agencyRoutes";
 import categoryRoutes from "./routes/categoryRoutes";
 import profileRoutes from "./routes/profileRoutes";
+import dashboardRoutes from "./routes/dashboardRoutes";
 
 // Load environment variables
 dotenv.config();
@@ -33,6 +34,8 @@ app.use("/api/users", userRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/agencies", agencyRoutes);
 app.use("/api/profile", profileRoutes);
+
+app.use("/api/dashboard", dashboardRoutes);
 
 // Health check route
 app.get("/health", (req: Request, res: Response) => {

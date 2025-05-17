@@ -146,4 +146,8 @@ export const profileAPI = {
     },
 };
 
+export const dashboardAPI = {
+    getStats: () => api.get('/dashboard/stats'),
+};
+
 export default api; 
