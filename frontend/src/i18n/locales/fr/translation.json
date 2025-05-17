@@ -144,6 +144,14 @@
       "button": "Vérifier",
       "buttonLoading": "Vérification en cours...",
       "resend": "Renvoyer le code"
+    },
+    "forgotPassword": {
+      "title": "Mot de passe oublié",
+      "description": "Entrez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+      "submit": "Envoyer le lien de réinitialisation",
+      "success": "Le lien de réinitialisation du mot de passe a été envoyé à votre e-mail.",
+      "error": "Échec de l'envoi du lien. Veuillez réessayer.",
+      "link": "Mot de passe oublié ?"
     }
   },
   "home": {

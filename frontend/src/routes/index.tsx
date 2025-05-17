@@ -18,6 +18,8 @@ import TrackComplaints from '../pages/TrackComplaints';
 import OTPVerification from '../pages/OTPVerification';
 import Profile from '../pages/Profile';
 import Categories from '../pages/Categories';
+import ForgotPassword from '../pages/ForgotPassword';
+import ResetPassword from '../pages/ResetPassword';
 
 const AppRoutes = () => {
     return (
@@ -27,6 +29,8 @@ const AppRoutes = () => {
                 <Route path="login" element={<Login />} />
                 <Route path="register" element={<Register />} />
                 <Route path="verify-otp" element={<OTPVerification />} />
+                <Route path="forgot-password" element={<ForgotPassword />} />
+                <Route path="reset-password/:token" element={<ResetPassword />} />
                 
                 <Route
                     path="profile"
