@@ -77,6 +77,7 @@ export const complaintAPI = {
     }) => api.post('/complaints', data),
     getAll: () => api.get('/complaints/my-complaints'),
     getAllAdmin: () => api.get('/complaints/all'),
+    getAgencyComplaints: () => api.get('/complaints/agency'),
     getById: (id: string) => api.get(`/complaints/${id}`),
     update: (id: string, data: {
         status?: string;

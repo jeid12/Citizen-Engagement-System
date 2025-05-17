@@ -27,6 +27,7 @@ const Navbar = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const { user, isAuthenticated } = useSelector((state: any) => state.auth);
     const isAdmin = user?.role === 'admin';
+    const isAgencyStaff = user?.role === 'agency_staff';
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [mobileMenuAnchor, setMobileMenuAnchor] = useState<null | HTMLElement>(null);
@@ -55,23 +56,33 @@ const Navbar = () => {
             <MenuItem onClick={() => { navigate('/dashboard'); handleClose(); }}>
                 Dashboard
             </MenuItem>
-            <MenuItem onClick={() => { navigate('/submit-complaint'); handleClose(); }}>
-                Submit Complaint
-            </MenuItem>
-            <MenuItem onClick={() => { navigate('/track-complaints'); handleClose(); }}>
-                Track Complaints
-            </MenuItem>
-            {isAdmin && (
+            {isAdmin ? (
                 <>
                     <Divider />
                     <MenuItem onClick={() => { navigate('/admin'); handleClose(); }}>
                         Admin Dashboard
                     </MenuItem>
+                    <MenuItem onClick={() => { navigate('/admin/complaints'); handleClose(); }}>
+                        All Complaints
+                    </MenuItem>
                     <MenuItem onClick={() => { navigate('/admin/users'); handleClose(); }}>
                         Manage Users
                     </MenuItem>
-                    <MenuItem onClick={() => { navigate('/admin/complaints'); handleClose(); }}>
-                        All Complaints
+                </>
+            ) : isAgencyStaff ? (
+                <>
+                    <Divider />
+                    <MenuItem onClick={() => { navigate('/agency'); handleClose(); }}>
+                        Agency Dashboard
+                    </MenuItem>
+                </>
+            ) : (
+                <>
+                    <MenuItem onClick={() => { navigate('/submit-complaint'); handleClose(); }}>
+                        Submit Complaint
+                    </MenuItem>
+                    <MenuItem onClick={() => { navigate('/track-complaints'); handleClose(); }}>
+                        Track Complaints
                     </MenuItem>
                 </>
             )}
@@ -137,29 +148,42 @@ const Navbar = () => {
                                 >
                                     Dashboard
                                 </Button>
-                                <Button
-                                    color="inherit"
-                                    component={Link}
-                                    to="/submit-complaint"
-                                >
-                                    Submit Complaint
-                                </Button>
-                                <Button
-                                    color="inherit"
-                                    component={Link}
-                                    to="/track-complaints"
-                                >
-                                    Track Complaints
-                                </Button>
-                                {isAdmin && (
-                                    <IconButton
+                                {isAdmin ? (
+                                    <>
+                                        <IconButton
+                                            color="inherit"
+                                            onClick={() => navigate('/admin')}
+                                            sx={{ ml: 1 }}
+                                            title="Admin Dashboard"
+                                        >
+                                            <AdminPanelSettingsIcon />
+                                        </IconButton>
+                                    </>
+                                ) : isAgencyStaff ? (
+                                    <Button
                                         color="inherit"
-                                        onClick={() => navigate('/admin')}
-                                        sx={{ ml: 1 }}
-                                        title="Admin Dashboard"
+                                        component={Link}
+                                        to="/agency"
                                     >
-                                        <AdminPanelSettingsIcon />
-                                    </IconButton>
+                                        Agency Dashboard
+                                    </Button>
+                                ) : (
+                                    <>
+                                        <Button
+                                            color="inherit"
+                                            component={Link}
+                                            to="/submit-complaint"
+                                        >
+                                            Submit Complaint
+                                        </Button>
+                                        <Button
+                                            color="inherit"
+                                            component={Link}
+                                            to="/track-complaints"
+                                        >
+                                            Track Complaints
+                                        </Button>
+                                    </>
                                 )}
                                 <IconButton
                                     color="inherit"

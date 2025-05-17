@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne } from "typeorm";
 import { Complaint } from "./Complaint";
 import { ComplaintResponse } from "./ComplaintResponse";
+import { Agency } from "./Agency";
 
 @Entity()
 export class User {
@@ -28,10 +29,10 @@ export class User {
     @Column({ nullable: true })
     otp?: string;
 
-    @Column({ nullable: true })
+    @Column({ type: "timestamp", nullable: true })
     otpExpiry?: Date;
 
-    @Column({ 
+    @Column({
         type: "enum",
         enum: ["citizen", "admin", "agency_staff"],
         default: "citizen"
@@ -41,13 +42,13 @@ export class User {
     @Column({ nullable: true })
     verificationToken?: string;
 
-    @Column({ nullable: true })
+    @Column({ type: "timestamp", nullable: true })
     verificationTokenExpiry?: Date;
 
     @Column({ nullable: true })
     profilePhoto?: string;
 
-    @Column({ nullable: true })
+    @Column({ type: "text", nullable: true })
     bio?: string;
 
     @Column({ nullable: true })
@@ -64,6 +65,9 @@ export class User {
 
     @OneToMany(() => ComplaintResponse, response => response.respondedBy)
     responses!: ComplaintResponse[];
+
+    @ManyToOne(() => Agency, agency => agency.staff, { nullable: true })
+    agency?: Agency;
 
     @CreateDateColumn()
     createdAt!: Date;

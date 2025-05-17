@@ -17,6 +17,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminComplaints from './pages/AdminComplaints';
+import AgencyDashboard from './pages/AgencyDashboard';
 import ManageUsers from './pages/ManageUsers';
 import SubmitComplaint from './pages/SubmitComplaint';
 import TrackComplaints from './pages/TrackComplaints';
@@ -95,6 +96,16 @@ function App() {
                   element={
                     <ProtectedRoute adminOnly>
                       <ManageUsers />
+                    </ProtectedRoute>
+                  }
+                />
+
+                {/* Agency Routes */}
+                <Route
+                  path="/agency"
+                  element={
+                    <ProtectedRoute agencyOnly>
+                      <AgencyDashboard />
                     </ProtectedRoute>
                   }
                 />

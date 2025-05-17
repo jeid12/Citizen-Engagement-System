@@ -284,4 +284,22 @@ export class ComplaintController {
             res.status(500).json({ message: "Error responding to complaint" });
         }
     };
+
+    static getAgencyComplaints = async (req: Request, res: Response) => {
+        try {
+            const agencyId = (req as any).agencyId;
+            const complaintRepository = AppDataSource.getRepository(Complaint);
+            
+            const complaints = await complaintRepository.find({
+                where: { agency: { id: agencyId } },
+                relations: ["user", "category", "agency", "responses", "responses.respondedBy"],
+                order: { createdAt: "DESC" }
+            });
+
+            res.json(complaints);
+        } catch (error) {
+            console.error("Error fetching agency complaints:", error);
+            res.status(500).json({ message: "Error fetching agency complaints" });
+        }
+    };
 } 

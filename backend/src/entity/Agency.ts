@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToMany, JoinTable } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
 import { Complaint } from "./Complaint";
 import { User } from "./User";
 
@@ -10,8 +10,8 @@ export class Agency {
     @Column()
     name!: string;
 
-    @Column({ type: "text", nullable: true })
-    description?: string;
+    @Column("text")
+    description!: string;
 
     @Column({ nullable: true })
     contactEmail?: string;
@@ -19,23 +19,21 @@ export class Agency {
     @Column({ nullable: true })
     contactPhone?: string;
 
+    @Column({ nullable: true })
+    address?: string;
+
     @Column({ default: true })
     isActive!: boolean;
 
     @OneToMany(() => Complaint, complaint => complaint.agency)
     complaints!: Complaint[];
 
-    @ManyToMany(() => User)
-    @JoinTable({
-        name: "agency_staff",
-        joinColumn: {
-            name: "agency_id",
-            referencedColumnName: "id"
-        },
-        inverseJoinColumn: {
-            name: "user_id",
-            referencedColumnName: "id"
-        }
-    })
+    @OneToMany(() => User, user => user.agency)
     staff!: User[];
+
+    @CreateDateColumn()
+    createdAt!: Date;
+
+    @UpdateDateColumn()
+    updatedAt!: Date;
 } 

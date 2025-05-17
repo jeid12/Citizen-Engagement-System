@@ -3,11 +3,12 @@ import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 interface ProtectedRouteProps {
-    children: React.ReactNode;
+    children: React.ReactElement;
     adminOnly?: boolean;
+    agencyOnly?: boolean;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, adminOnly = false }) => {
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, adminOnly, agencyOnly }) => {
     const { isAuthenticated, user } = useSelector((state: any) => state.auth);
 
     if (!isAuthenticated) {
@@ -15,10 +16,14 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, adminOnly = f
     }
 
     if (adminOnly && user?.role !== 'admin') {
-        return <Navigate to="/dashboard" replace />;
+        return <Navigate to="/" />;
     }
 
-    return <>{children}</>;
+    if (agencyOnly && user?.role !== 'agency_staff') {
+        return <Navigate to="/" />;
+    }
+
+    return children;
 };
 
 export default ProtectedRoute; 
