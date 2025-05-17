@@ -152,7 +152,18 @@
       "success": "Le lien de réinitialisation du mot de passe a été envoyé à votre e-mail.",
       "error": "Échec de l'envoi du lien. Veuillez réessayer.",
       "link": "Mot de passe oublié ?"
-    }
+    },
+    "resetPassword": {
+      "title": "Réinitialiser le mot de passe",
+      "description": "Veuillez entrer votre nouveau mot de passe.",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "submit": "Réinitialiser le mot de passe",
+      "success": "Votre mot de passe a été réinitialisé avec succès. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.",
+      "error": "Échec de la réinitialisation du mot de passe. Veuillez réessayer."
+    },
+    "email": "E-mail",
+    "backToLogin": "Retour à la connexion"
   },
   "home": {
     "title": "Bienvenue sur CES Rwanda",
@@ -228,5 +239,8 @@
     "confirmDelete": "Êtes-vous sûr de vouloir supprimer cette catégorie ?",
     "active": "Active",
     "inactive": "Inactive"
+  },
+  "common": {
+    "loading": "Chargement..."
   }
 } 

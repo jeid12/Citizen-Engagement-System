@@ -20,15 +20,6 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// Verify transporter connection
-transporter.verify((error) => {
-    if (error) {
-        console.error('SMTP connection error:', error);
-    } else {
-        console.log('SMTP server is ready to send emails');
-    }
-});
-
 export const sendEmail = async (options: EmailOptions): Promise<void> => {
     try {
         // Send mail with defined transport object

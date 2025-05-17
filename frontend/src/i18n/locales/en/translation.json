@@ -144,6 +144,17 @@
       "button": "Verify",
       "buttonLoading": "Verifying...",
       "resend": "Resend Code"
+    },
+    "email": "Email",
+    "backToLogin": "Back to Login",
+    "resetPassword": {
+      "title": "Reset Password",
+      "description": "Please enter your new password.",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm Password",
+      "submit": "Reset Password",
+      "success": "Your password has been reset successfully. You can now login with your new password.",
+      "error": "Failed to reset password. Please try again."
     }
   },
   "home": {
@@ -225,5 +236,8 @@
     "confirmDelete": "Are you sure you want to delete this category?",
     "active": "Active",
     "inactive": "Inactive"
+  },
+  "common": {
+    "loading": "Loading..."
   }
 } 

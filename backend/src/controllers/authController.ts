@@ -229,7 +229,7 @@ export class AuthController {
             await userRepository.save(user);
 
             // Create reset URL
-            const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password/${resetToken}`;
+            const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password/${resetToken}`;
 
             // Send email
             const emailContent = `

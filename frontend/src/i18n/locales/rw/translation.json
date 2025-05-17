@@ -151,7 +151,18 @@
       "success": "Link yo guhindura ijambo ry'ibanga yoherejwe kuri imeyili yawe.",
       "error": "Ntabwo twashoboye kohereza link. Nyamuneka ongera ugerageze.",
       "link": "Wibagiwe ijambo ry'ibanga?"
-    }
+    },
+    "resetPassword": {
+      "title": "Guhindura Ijambo ry'ibanga",
+      "description": "Nyamuneka andika ijambo ry'ibanga rishya.",
+      "newPassword": "Ijambo ry'ibanga rishya",
+      "confirmPassword": "Emeza ijambo ry'ibanga",
+      "submit": "Hindura ijambo ry'ibanga",
+      "success": "Ijambo ry'ibanga ryawe ryahinduwe neza. Ubu ushobora kwinjira ukoresheje ijambo ry'ibanga rishya.",
+      "error": "Guhindura ijambo ry'ibanga ntibyakunze. Nyamuneka ongera ugerageze."
+    },
+    "email": "Imeyili",
+    "backToLogin": "Subira ku Kwinjira"
   },
   "home": {
     "title": "Murakaza neza kuri CES Rwanda",
@@ -232,5 +243,8 @@
     "confirmDelete": "Uremeza ko ushaka gusiba iki cyiciro?",
     "active": "Gikoreshwa",
     "inactive": "Ntigikoreshwa"
+  },
+  "common": {
+    "loading": "Biratunganywa..."
   }
 } 
