@@ -5,13 +5,14 @@ import { adminMiddleware } from "../middleware/adminMiddleware";
 
 const router = Router();
 
-// Public routes
+// Public routes - No authentication needed
 router.get("/", AgencyController.getAllAgencies);
 
-// Protected routes - Admin only
+// Protected routes - Require authentication
 router.use(authMiddleware);
-router.use(adminMiddleware);
 
+// Admin-only routes
+router.use(adminMiddleware);
 router.post("/", AgencyController.createAgency);
 router.get("/:id", AgencyController.getAgencyById);
 router.patch("/:id", AgencyController.updateAgency);

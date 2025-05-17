@@ -3,42 +3,48 @@ import {
     Container,
     Typography,
     Paper,
+    Button,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
     TableRow,
-    Button,
     Dialog,
     DialogTitle,
     DialogContent,
     DialogActions,
     TextField,
-    Grid,
     IconButton,
-    Box,
     Alert,
-    MenuItem,
-    CircularProgress,
+    Box,
+    Chip,
+    List,
+    ListItem,
+    ListItemText,
+    ListItemSecondaryAction,
+    FormControlLabel,
+    Switch,
 } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import {
+    Edit as EditIcon,
+    Delete as DeleteIcon,
+    Add as AddIcon,
+    Group as GroupIcon,
+} from '@mui/icons-material';
 import { agencyAPI, userAPI } from '../services/api';
 
 interface Agency {
     id: string;
     name: string;
     description: string;
-    contactEmail: string;
-    contactPhone: string;
-    address: string;
-    website: string;
-    jurisdiction: string;
-    operatingHours: string;
+    contactEmail?: string;
+    contactPhone?: string;
+    address?: string;
+    website?: string;
+    jurisdiction?: string;
+    operatingHours?: string;
     isActive: boolean;
-    staff: User[];
 }
 
 interface User {
@@ -54,10 +60,11 @@ const ManageAgencies = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [selectedAgency, setSelectedAgency] = useState<Agency | null>(null);
     const [openDialog, setOpenDialog] = useState(false);
-    const [openAssignDialog, setOpenAssignDialog] = useState(false);
-    const [selectedUser, setSelectedUser] = useState<string>('');
-    const [loading, setLoading] = useState(true);
+    const [openStaffDialog, setOpenStaffDialog] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
+    const [agencyStaff, setAgencyStaff] = useState<User[]>([]);
+
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -67,6 +74,17 @@ const ManageAgencies = () => {
         website: '',
         jurisdiction: '',
         operatingHours: '',
+        isActive: true,
+    } as {
+        name: string;
+        description: string;
+        contactEmail?: string;
+        contactPhone?: string;
+        address?: string;
+        website?: string;
+        jurisdiction?: string;
+        operatingHours?: string;
+        isActive: boolean;
     });
 
     useEffect(() => {
@@ -76,38 +94,37 @@ const ManageAgencies = () => {
 
     const fetchAgencies = async () => {
         try {
-            setLoading(true);
             const response = await agencyAPI.getAll();
             setAgencies(response.data);
-        } catch (error: any) {
-            setError(error.response?.data?.message || 'Error fetching agencies');
-        } finally {
-            setLoading(false);
+        } catch (err) {
+            setError('Failed to fetch agencies');
         }
     };
 
     const fetchUsers = async () => {
         try {
             const response = await userAPI.getAll();
-            setUsers(response.data.filter((user: User) => user.role !== 'admin' && user.role !== 'agency_staff'));
-        } catch (error: any) {
-            console.error('Error fetching users:', error);
+            setUsers(response.data.filter((user: User) => 
+                user.role === 'user' || user.role === 'agency_staff'
+            ));
+        } catch (err) {
+            setError('Failed to fetch users');
+        }
+    };
+
+    const fetchAgencyStaff = async (agencyId: string) => {
+        try {
+            const response = await agencyAPI.getStaff(agencyId);
+            setAgencyStaff(response.data);
+        } catch (err) {
+            setError('Failed to fetch agency staff');
         }
     };
 
     const handleOpenDialog = (agency?: Agency) => {
         if (agency) {
             setSelectedAgency(agency);
-            setFormData({
-                name: agency.name,
-                description: agency.description,
-                contactEmail: agency.contactEmail || '',
-                contactPhone: agency.contactPhone || '',
-                address: agency.address || '',
-                website: agency.website || '',
-                jurisdiction: agency.jurisdiction || '',
-                operatingHours: agency.operatingHours || '',
-            });
+            setFormData(agency);
         } else {
             setSelectedAgency(null);
             setFormData({
@@ -119,37 +136,44 @@ const ManageAgencies = () => {
                 website: '',
                 jurisdiction: '',
                 operatingHours: '',
+                isActive: true,
             });
         }
         setOpenDialog(true);
     };
 
+    const handleOpenStaffDialog = async (agency: Agency) => {
+        setSelectedAgency(agency);
+        await fetchAgencyStaff(agency.id);
+        setOpenStaffDialog(true);
+    };
+
     const handleCloseDialog = () => {
         setOpenDialog(false);
+        setOpenStaffDialog(false);
         setSelectedAgency(null);
-        setFormData({
-            name: '',
-            description: '',
-            contactEmail: '',
-            contactPhone: '',
-            address: '',
-            website: '',
-            jurisdiction: '',
-            operatingHours: '',
-        });
+        setError(null);
+        setSuccess(null);
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async () => {
         try {
             if (selectedAgency) {
                 await agencyAPI.update(selectedAgency.id, formData);
+                setSuccess('Agency updated successfully');
             } else {
                 await agencyAPI.create(formData);
+                setSuccess('Agency created successfully');
             }
             fetchAgencies();
-            handleCloseDialog();
-        } catch (error: any) {
-            setError(error.response?.data?.message || 'Error saving agency');
+            setTimeout(handleCloseDialog, 1500);
+        } catch (err) {
+            setError('Failed to save agency');
         }
     };
 
@@ -157,72 +181,57 @@ const ManageAgencies = () => {
         if (window.confirm('Are you sure you want to delete this agency?')) {
             try {
                 await agencyAPI.delete(id);
+                setSuccess('Agency deleted successfully');
                 fetchAgencies();
-            } catch (error: any) {
-                setError(error.response?.data?.message || 'Error deleting agency');
+            } catch (err) {
+                setError('Failed to delete agency');
             }
         }
     };
 
-    const handleOpenAssignDialog = (agency: Agency) => {
-        setSelectedAgency(agency);
-        setOpenAssignDialog(true);
-    };
-
-    const handleAssignUser = async () => {
-        if (!selectedAgency || !selectedUser) return;
-
+    const handleAssignStaff = async (userId: string) => {
+        if (!selectedAgency) return;
         try {
-            await agencyAPI.assignUser(selectedAgency.id, selectedUser);
-            fetchAgencies();
+            await agencyAPI.assignUser(selectedAgency.id, userId);
+            await userAPI.updateRole(userId, 'agency_staff');
+            setSuccess('User assigned to agency successfully');
+            await fetchAgencyStaff(selectedAgency.id);
             fetchUsers();
-            setOpenAssignDialog(false);
-            setSelectedUser('');
-        } catch (error: any) {
-            setError(error.response?.data?.message || 'Error assigning user to agency');
+        } catch (err) {
+            setError('Failed to assign user to agency');
         }
     };
 
-    const handleRemoveUser = async (agencyId: string, userId: string) => {
-        if (window.confirm('Are you sure you want to remove this user from the agency?')) {
-            try {
-                await agencyAPI.removeUser(agencyId, userId);
-                fetchAgencies();
-                fetchUsers();
-            } catch (error: any) {
-                setError(error.response?.data?.message || 'Error removing user from agency');
-            }
+    const handleRemoveStaff = async (userId: string) => {
+        if (!selectedAgency) return;
+        try {
+            await agencyAPI.removeUser(selectedAgency.id, userId);
+            await userAPI.updateRole(userId, 'user');
+            setSuccess('User removed from agency successfully');
+            await fetchAgencyStaff(selectedAgency.id);
+            fetchUsers();
+        } catch (err) {
+            setError('Failed to remove user from agency');
         }
     };
-
-    if (loading) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
-                <CircularProgress />
-            </Box>
-        );
-    }
 
     return (
-        <Container maxWidth="xl" sx={{ py: 4 }}>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
                 <Typography variant="h4" component="h1">
                     Manage Agencies
                 </Typography>
                 <Button
                     variant="contained"
-                    color="primary"
+                    startIcon={<AddIcon />}
                     onClick={() => handleOpenDialog()}
                 >
-                    Add New Agency
+                    Add Agency
                 </Button>
             </Box>
 
-            {error && (
-                <Alert severity="error" sx={{ mb: 3 }}>
-                    {error}
-                </Alert>
-            )}
+            {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+            {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
 
             <TableContainer component={Paper}>
                 <Table>
@@ -231,48 +240,51 @@ const ManageAgencies = () => {
                             <TableCell>Name</TableCell>
                             <TableCell>Description</TableCell>
                             <TableCell>Contact</TableCell>
-                            <TableCell>Staff</TableCell>
+                            <TableCell>Location</TableCell>
+                            <TableCell>Status</TableCell>
                             <TableCell>Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {agencies.map((agency) => (
-                            <TableRow key={agency.id}>
+                            <TableRow 
+                                key={agency.id}
+                                sx={{ 
+                                    opacity: agency.isActive ? 1 : 0.5,
+                                    backgroundColor: agency.isActive ? 'inherit' : 'action.hover'
+                                }}
+                            >
                                 <TableCell>{agency.name}</TableCell>
                                 <TableCell>{agency.description}</TableCell>
                                 <TableCell>
-                                    <Typography variant="body2">
-                                        {agency.contactEmail}<br />
-                                        {agency.contactPhone}
-                                    </Typography>
+                                    {agency.contactEmail}<br />
+                                    {agency.contactPhone}
+                                </TableCell>
+                                <TableCell>{agency.address}</TableCell>
+                                <TableCell>
+                                    <Chip 
+                                        label={agency.isActive ? 'Active' : 'Inactive'}
+                                        color={agency.isActive ? 'success' : 'default'}
+                                    />
                                 </TableCell>
                                 <TableCell>
-                                    {agency.staff?.map((user) => (
-                                        <Box key={user.id} display="flex" alignItems="center" mb={1}>
-                                            <Typography variant="body2">
-                                                {user.firstName} {user.lastName}
-                                            </Typography>
-                                            <IconButton
-                                                size="small"
-                                                onClick={() => handleRemoveUser(agency.id, user.id)}
-                                            >
-                                                <DeleteIcon fontSize="small" />
-                                            </IconButton>
-                                        </Box>
-                                    ))}
-                                    <Button
-                                        startIcon={<PersonAddIcon />}
-                                        size="small"
-                                        onClick={() => handleOpenAssignDialog(agency)}
+                                    <IconButton
+                                        onClick={() => handleOpenDialog(agency)}
+                                        color="primary"
                                     >
-                                        Assign Staff
-                                    </Button>
-                                </TableCell>
-                                <TableCell>
-                                    <IconButton onClick={() => handleOpenDialog(agency)}>
                                         <EditIcon />
                                     </IconButton>
-                                    <IconButton onClick={() => handleDelete(agency.id)}>
+                                    <IconButton
+                                        onClick={() => handleOpenStaffDialog(agency)}
+                                        color="primary"
+                                        disabled={!agency.isActive}
+                                    >
+                                        <GroupIcon />
+                                    </IconButton>
+                                    <IconButton
+                                        onClick={() => handleDelete(agency.id)}
+                                        color="error"
+                                    >
                                         <DeleteIcon />
                                     </IconButton>
                                 </TableCell>
@@ -285,77 +297,88 @@ const ManageAgencies = () => {
             {/* Agency Form Dialog */}
             <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
                 <DialogTitle>
-                    {selectedAgency ? 'Edit Agency' : 'Add New Agency'}
+                    {selectedAgency ? 'Edit Agency' : 'Add Agency'}
                 </DialogTitle>
                 <DialogContent>
-                    <Grid container spacing={2} sx={{ mt: 1 }}>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                fullWidth
-                                label="Name"
-                                value={formData.name}
-                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    <TextField
+                        fullWidth
+                        label="Name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        margin="normal"
+                        required
+                    />
+                    <TextField
+                        fullWidth
+                        label="Description"
+                        name="description"
+                        value={formData.description}
+                        onChange={handleInputChange}
+                        margin="normal"
+                        multiline
+                        rows={3}
+                        required
+                    />
+                    <TextField
+                        fullWidth
+                        label="Contact Email"
+                        name="contactEmail"
+                        value={formData.contactEmail}
+                        onChange={handleInputChange}
+                        margin="normal"
+                    />
+                    <TextField
+                        fullWidth
+                        label="Contact Phone"
+                        name="contactPhone"
+                        value={formData.contactPhone}
+                        onChange={handleInputChange}
+                        margin="normal"
+                    />
+                    <TextField
+                        fullWidth
+                        label="Address"
+                        name="address"
+                        value={formData.address}
+                        onChange={handleInputChange}
+                        margin="normal"
+                    />
+                    <TextField
+                        fullWidth
+                        label="Website"
+                        name="website"
+                        value={formData.website}
+                        onChange={handleInputChange}
+                        margin="normal"
+                    />
+                    <TextField
+                        fullWidth
+                        label="Jurisdiction"
+                        name="jurisdiction"
+                        value={formData.jurisdiction}
+                        onChange={handleInputChange}
+                        margin="normal"
+                    />
+                    <TextField
+                        fullWidth
+                        label="Operating Hours"
+                        name="operatingHours"
+                        value={formData.operatingHours}
+                        onChange={handleInputChange}
+                        margin="normal"
+                    />
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                checked={formData.isActive}
+                                onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
+                                name="isActive"
                             />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                fullWidth
-                                label="Contact Email"
-                                value={formData.contactEmail}
-                                onChange={(e) => setFormData({ ...formData, contactEmail: e.target.value })}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                fullWidth
-                                label="Contact Phone"
-                                value={formData.contactPhone}
-                                onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                fullWidth
-                                multiline
-                                rows={3}
-                                label="Description"
-                                value={formData.description}
-                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                fullWidth
-                                label="Address"
-                                value={formData.address}
-                                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                fullWidth
-                                label="Website"
-                                value={formData.website}
-                                onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                fullWidth
-                                label="Jurisdiction"
-                                value={formData.jurisdiction}
-                                onChange={(e) => setFormData({ ...formData, jurisdiction: e.target.value })}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                fullWidth
-                                label="Operating Hours"
-                                value={formData.operatingHours}
-                                onChange={(e) => setFormData({ ...formData, operatingHours: e.target.value })}
-                            />
-                        </Grid>
-                    </Grid>
+                        }
+                        label="Agency Active"
+                        sx={{ mt: 2 }}
+                    />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCloseDialog}>Cancel</Button>
@@ -365,35 +388,58 @@ const ManageAgencies = () => {
                 </DialogActions>
             </Dialog>
 
-            {/* Assign User Dialog */}
-            <Dialog open={openAssignDialog} onClose={() => setOpenAssignDialog(false)}>
-                <DialogTitle>Assign User to Agency</DialogTitle>
+            {/* Staff Management Dialog */}
+            <Dialog open={openStaffDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
+                <DialogTitle>
+                    Manage Staff - {selectedAgency?.name}
+                </DialogTitle>
                 <DialogContent>
-                    <TextField
-                        select
-                        fullWidth
-                        label="Select User"
-                        value={selectedUser}
-                        onChange={(e) => setSelectedUser(e.target.value)}
-                        sx={{ mt: 2 }}
-                    >
-                        {users.map((user) => (
-                            <MenuItem key={user.id} value={user.id}>
-                                {user.firstName} {user.lastName} ({user.email})
-                            </MenuItem>
+                    <Typography variant="h6" sx={{ mb: 2 }}>Current Staff</Typography>
+                    <List>
+                        {agencyStaff.map((staff) => (
+                            <ListItem key={staff.id}>
+                                <ListItemText
+                                    primary={`${staff.firstName} ${staff.lastName}`}
+                                    secondary={staff.email}
+                                />
+                                <ListItemSecondaryAction>
+                                    <Button
+                                        variant="outlined"
+                                        color="error"
+                                        onClick={() => handleRemoveStaff(staff.id)}
+                                    >
+                                        Remove
+                                    </Button>
+                                </ListItemSecondaryAction>
+                            </ListItem>
                         ))}
-                    </TextField>
+                    </List>
+
+                    <Typography variant="h6" sx={{ mt: 4, mb: 2 }}>Available Users</Typography>
+                    <List>
+                        {users
+                            .filter(user => !agencyStaff.some(staff => staff.id === user.id))
+                            .map((user) => (
+                                <ListItem key={user.id}>
+                                    <ListItemText
+                                        primary={`${user.firstName} ${user.lastName}`}
+                                        secondary={user.email}
+                                    />
+                                    <ListItemSecondaryAction>
+                                        <Button
+                                            variant="outlined"
+                                            color="primary"
+                                            onClick={() => handleAssignStaff(user.id)}
+                                        >
+                                            Assign
+                                        </Button>
+                                    </ListItemSecondaryAction>
+                                </ListItem>
+                            ))}
+                    </List>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setOpenAssignDialog(false)}>Cancel</Button>
-                    <Button
-                        onClick={handleAssignUser}
-                        variant="contained"
-                        color="primary"
-                        disabled={!selectedUser}
-                    >
-                        Assign
-                    </Button>
+                    <Button onClick={handleCloseDialog}>Close</Button>
                 </DialogActions>
             </Dialog>
         </Container>
