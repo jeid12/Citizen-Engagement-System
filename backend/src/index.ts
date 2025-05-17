@@ -8,6 +8,9 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes";
 import complaintRoutes from "./routes/complaintRoutes";
 import userRoutes from "./routes/userRoutes";
+import agencyRoutes from "./routes/agencyRoutes";
+import categoryRoutes from "./routes/categoryRoutes";
+import profileRoutes from "./routes/profileRoutes";
 
 // Load environment variables
 dotenv.config();
@@ -25,6 +28,11 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/complaints", complaintRoutes);
 app.use("/api/users", userRoutes);
+
+
+app.use("/api/categories", categoryRoutes);
+app.use("/api/agencies", agencyRoutes);
+app.use("/api/profile", profileRoutes);
 
 // Health check route
 app.get("/health", (req: Request, res: Response) => {

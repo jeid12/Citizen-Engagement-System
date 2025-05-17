@@ -14,6 +14,9 @@ import {
     useTheme,
     useMediaQuery,
     Divider,
+    Avatar,
+    ListItemIcon,
+    ListItemText,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -53,6 +56,24 @@ const Navbar = () => {
 
     const menuItems = isAuthenticated ? (
         <>
+            {isAuthenticated && (
+                <Box sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                    {user?.profilePhoto ? (
+                        <Avatar 
+                            src={user.profilePhoto}
+                            alt={`${user.firstName} ${user.lastName}`}
+                            sx={{ width: 40, height: 40 }}
+                        />
+                    ) : (
+                        <AccountCircleIcon sx={{ width: 40, height: 40 }} />
+                    )}
+                    <Box>
+                        <Typography variant="subtitle1">{`${user?.firstName} ${user?.lastName}`}</Typography>
+                        <Typography variant="caption" color="text.secondary">{user?.email}</Typography>
+                    </Box>
+                </Box>
+            )}
+            <Divider />
             <MenuItem onClick={() => { navigate('/dashboard'); handleClose(); }}>
                 Dashboard
             </MenuItem>
@@ -136,6 +157,9 @@ const Navbar = () => {
                             anchorEl={mobileMenuAnchor}
                             open={Boolean(mobileMenuAnchor)}
                             onClose={handleClose}
+                            PaperProps={{
+                                sx: { width: '100%', maxWidth: 320 }
+                            }}
                         >
                             {menuItems}
                         </Menu>
@@ -193,31 +217,34 @@ const Navbar = () => {
                                     onClick={handleMenu}
                                     sx={{ ml: 1 }}
                                 >
-                                    <AccountCircleIcon />
+                                    {user?.profilePhoto ? (
+                                        <Avatar 
+                                            src={user.profilePhoto}
+                                            alt={`${user.firstName} ${user.lastName}`}
+                                            sx={{ 
+                                                width: 32, 
+                                                height: 32,
+                                                border: '2px solid white' 
+                                            }}
+                                        />
+                                    ) : (
+                                        <AccountCircleIcon />
+                                    )}
                                 </IconButton>
                                 <Menu
                                     anchorEl={anchorEl}
                                     open={Boolean(anchorEl)}
                                     onClose={handleClose}
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'right',
+                                    }}
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
                                 >
-                                    <MenuItem onClick={() => { navigate('/profile'); handleClose(); }}>
-                                        Profile
-                                    </MenuItem>
-                                    {isAdmin && (
-                                        <>
-                                            <MenuItem onClick={() => { navigate('/admin/users'); handleClose(); }}>
-                                                Manage Users
-                                            </MenuItem>
-                                            <MenuItem onClick={() => { navigate('/admin/complaints'); handleClose(); }}>
-                                                All Complaints
-                                            </MenuItem>
-                                            <MenuItem onClick={() => { navigate('/admin/agencies'); handleClose(); }}>
-                                                Manage Agencies
-                                            </MenuItem>
-                                            <Divider />
-                                        </>
-                                    )}
-                                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                                    {menuItems}
                                 </Menu>
                             </>
                         ) : (

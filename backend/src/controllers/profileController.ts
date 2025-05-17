@@ -1,10 +1,17 @@
 import { Request, Response } from "express";
 import { AppDataSource } from "../data-source";
 import { User } from "../entity/User";
-import cloudinary from "../config/cloudinary";
+import { v2 as cloudinary } from 'cloudinary';
 import { UploadApiResponse } from "cloudinary";
 
 const userRepository = AppDataSource.getRepository(User);
+
+// Configure Cloudinary directly
+cloudinary.config({
+    cloud_name: 'dxufhhhbl',
+    api_key: '656287143733291',
+    api_secret: '5MUejExUbvXOvC41-PPSiHR_T1s'
+});
 
 export class ProfileController {
     static getProfile = async (req: Request, res: Response) => {
