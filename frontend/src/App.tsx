@@ -19,6 +19,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminComplaints from './pages/AdminComplaints';
 import AgencyDashboard from './pages/AgencyDashboard';
 import ManageUsers from './pages/ManageUsers';
+import ManageAgencies from './pages/ManageAgencies';
 import SubmitComplaint from './pages/SubmitComplaint';
 import TrackComplaints from './pages/TrackComplaints';
 import OTPVerification from './pages/OTPVerification';
@@ -96,6 +97,14 @@ function App() {
                   element={
                     <ProtectedRoute adminOnly>
                       <ManageUsers />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/agencies"
+                  element={
+                    <ProtectedRoute adminOnly>
+                      <ManageAgencies />
                     </ProtectedRoute>
                   }
                 />

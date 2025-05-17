@@ -95,6 +95,33 @@ export const categoryAPI = {
 
 export const agencyAPI = {
     getAll: () => api.get('/agencies'),
+    getById: (id: string) => api.get(`/agencies/${id}`),
+    create: (data: {
+        name: string;
+        description: string;
+        contactEmail?: string;
+        contactPhone?: string;
+        address?: string;
+        website?: string;
+        jurisdiction?: string;
+        operatingHours?: string;
+    }) => api.post('/agencies', data),
+    update: (id: string, data: {
+        name?: string;
+        description?: string;
+        contactEmail?: string;
+        contactPhone?: string;
+        address?: string;
+        website?: string;
+        jurisdiction?: string;
+        operatingHours?: string;
+    }) => api.patch(`/agencies/${id}`, data),
+    delete: (id: string) => api.delete(`/agencies/${id}`),
+    getStaff: (id: string) => api.get(`/agencies/${id}/staff`),
+    assignUser: (agencyId: string, userId: string) => 
+        api.post(`/agencies/${agencyId}/assign/${userId}`),
+    removeUser: (agencyId: string, userId: string) => 
+        api.delete(`/agencies/${agencyId}/remove/${userId}`),
 };
 
 export const profileAPI = {

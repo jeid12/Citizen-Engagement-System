@@ -25,6 +25,15 @@ export class Agency {
     @Column({ default: true })
     isActive!: boolean;
 
+    @Column({ nullable: true })
+    website?: string;
+
+    @Column({ nullable: true })
+    jurisdiction?: string;
+
+    @Column({ type: "text", nullable: true })
+    operatingHours?: string;
+
     @OneToMany(() => Complaint, complaint => complaint.agency)
     complaints!: Complaint[];
 

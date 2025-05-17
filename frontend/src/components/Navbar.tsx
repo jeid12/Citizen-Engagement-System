@@ -68,6 +68,9 @@ const Navbar = () => {
                     <MenuItem onClick={() => { navigate('/admin/users'); handleClose(); }}>
                         Manage Users
                     </MenuItem>
+                    <MenuItem onClick={() => { navigate('/admin/agencies'); handleClose(); }}>
+                        Manage Agencies
+                    </MenuItem>
                 </>
             ) : isAgencyStaff ? (
                 <>
@@ -207,6 +210,9 @@ const Navbar = () => {
                                             </MenuItem>
                                             <MenuItem onClick={() => { navigate('/admin/complaints'); handleClose(); }}>
                                                 All Complaints
+                                            </MenuItem>
+                                            <MenuItem onClick={() => { navigate('/admin/agencies'); handleClose(); }}>
+                                                Manage Agencies
                                             </MenuItem>
                                             <Divider />
                                         </>
