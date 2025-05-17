@@ -242,5 +242,21 @@
   },
   "common": {
     "loading": "Chargement..."
+  },
+  "reviews": {
+    "title": "Ce que disent nos utilisateurs",
+    "form": {
+      "name": "Votre nom",
+      "comment": "Votre commentaire",
+      "rating": "Note",
+      "submit": "Soumettre l'avis"
+    },
+    "errors": {
+      "allFieldsRequired": "Veuillez remplir tous les champs",
+      "submitError": "Erreur lors de la soumission de l'avis. Veuillez réessayer."
+    },
+    "messages": {
+      "submitSuccess": "Merci pour votre avis !"
+    }
   }
 } 

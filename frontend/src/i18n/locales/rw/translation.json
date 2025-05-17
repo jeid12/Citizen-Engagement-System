@@ -246,5 +246,21 @@
   },
   "common": {
     "loading": "Biratunganywa..."
+  },
+  "reviews": {
+    "title": "Ibyo Abakoresha Bavuga",
+    "form": {
+      "name": "Izina Ryawe",
+      "comment": "Igitekerezo Cyawe",
+      "rating": "Amanota",
+      "submit": "Ohereza Igitekerezo"
+    },
+    "errors": {
+      "allFieldsRequired": "Nyamuneka uzuza ibisabwa byose",
+      "submitError": "Hari ikibazo mu kohereza igitekerezo. Nyamuneka ongera ugerageze."
+    },
+    "messages": {
+      "submitSuccess": "Urakoze ku gitekerezo cyawe!"
+    }
   }
 } 

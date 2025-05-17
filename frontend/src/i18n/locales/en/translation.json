@@ -239,5 +239,21 @@
   },
   "common": {
     "loading": "Loading..."
+  },
+  "reviews": {
+    "title": "What Our Users Say",
+    "form": {
+      "name": "Your Name",
+      "comment": "Your Comment",
+      "rating": "Rating",
+      "submit": "Submit Review"
+    },
+    "errors": {
+      "allFieldsRequired": "Please fill in all fields",
+      "submitError": "Error submitting review. Please try again."
+    },
+    "messages": {
+      "submitSuccess": "Thank you for your review!"
+    }
   }
 } 
