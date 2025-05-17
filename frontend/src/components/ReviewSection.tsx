@@ -10,7 +10,8 @@ import {
     Card,
     CardContent,
     Alert,
-    Stack
+    Stack,
+    alpha
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
@@ -78,9 +79,7 @@ const ReviewSection = () => {
         }
     };
 
-    return (
-        <Box sx={{ py: 6, backgroundColor: '#f5f5f5' }}>
-            <Typography
+    return (        <Box sx={{             py: 6,             backgroundColor: alpha(RWANDA_COLORS.blue, 0.05),            borderTop: `4px solid ${RWANDA_COLORS.blue}`        }}>            <Typography
                 variant="h2"
                 align="center"
                 gutterBottom
@@ -90,19 +89,12 @@ const ReviewSection = () => {
             </Typography>
 
             {/* Submit Review Form */}
-            <Paper elevation={3} sx={{ maxWidth: 600, mx: 'auto', p: 3, mb: 6 }}>
-                <form onSubmit={handleSubmit}>
+                        <Paper                 elevation={3}                 sx={{                     maxWidth: 600,                     mx: 'auto',                     p: 4,                     mb: 6,                    backgroundColor: 'white',                    border: `1px solid ${alpha(RWANDA_COLORS.blue, 0.1)}`,                    '&:hover': {                        borderColor: alpha(RWANDA_COLORS.blue, 0.2)                    }                }}            >                <form onSubmit={handleSubmit}>
                     <Stack spacing={3}>
                         {error && <Alert severity="error">{error}</Alert>}
                         {success && <Alert severity="success">{success}</Alert>}
 
-                        <TextField
-                            fullWidth
-                            label={t('reviews.form.name')}
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            required
-                        />
+                                                    <TextField                                fullWidth                                label={t('reviews.form.name')}                                value={name}                                onChange={(e) => setName(e.target.value)}                                required                                sx={{                                    '& .MuiOutlinedInput-root': {                                        '&.Mui-focused fieldset': {                                            borderColor: RWANDA_COLORS.blue                                        }                                    },                                    '& .MuiInputLabel-root.Mui-focused': {                                        color: RWANDA_COLORS.blue                                    }                                }}                            />
 
                         <TextField
                             fullWidth
@@ -116,23 +108,10 @@ const ReviewSection = () => {
 
                         <Box>
                             <Typography component="legend">{t('reviews.form.rating')}</Typography>
-                            <Rating
-                                value={rating}
-                                onChange={(_, newValue) => setRating(newValue)}
-                                size="large"
-                            />
+                                                        <Rating                                value={rating}                                onChange={(_, newValue) => setRating(newValue)}                                size="large"                                sx={{                                    '& .MuiRating-iconFilled': {                                        color: RWANDA_COLORS.yellow                                    },                                    '& .MuiRating-iconHover': {                                        color: alpha(RWANDA_COLORS.yellow, 0.7)                                    }                                }}                            />
                         </Box>
 
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            sx={{
-                                backgroundColor: RWANDA_COLORS.green,
-                                '&:hover': {
-                                    backgroundColor: RWANDA_COLORS.green + 'dd'
-                                }
-                            }}
-                        >
+                                                    <Button                                type="submit"                                variant="contained"                                sx={{                                    backgroundColor: RWANDA_COLORS.green,                                    '&:hover': {                                        backgroundColor: alpha(RWANDA_COLORS.green, 0.9)                                    },                                    transition: 'background-color 0.3s ease'                                }}                            >
                             {t('reviews.form.submit')}
                         </Button>
                     </Stack>
@@ -143,19 +122,7 @@ const ReviewSection = () => {
             <Grid container spacing={3} sx={{ px: 3 }}>
                 {reviews.map((review) => (
                     <Grid item xs={12} md={6} lg={4} key={review.id}>
-                        <Card>
-                            <CardContent>
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                                    <Typography variant="h6" component="div">
-                                        {review.name}
-                                    </Typography>
-                                    <Rating value={review.rating} readOnly />
-                                </Box>
-                                <Typography variant="body1" color="text.secondary" paragraph>
-                                    {review.comment}
-                                </Typography>
-                                <Typography variant="caption" color="text.secondary">
-                                    {new Date(review.createdAt).toLocaleDateString()}
+                                                <Card sx={{                             height: '100%',                            display: 'flex',                            flexDirection: 'column',                            backgroundColor: 'white',                            transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',                            '&:hover': {                                transform: 'translateY(-4px)',                                boxShadow: `0 6px 12px ${alpha(RWANDA_COLORS.blue, 0.1)}`                            }                        }}>                            <CardContent>                                <Box sx={{                                     display: 'flex',                                     justifyContent: 'space-between',                                     mb: 2,                                    pb: 2,                                    borderBottom: `2px solid ${alpha(RWANDA_COLORS.yellow, 0.3)}`                                }}>                                    <Typography                                         variant="h6"                                         component="div"                                        sx={{ color: RWANDA_COLORS.blue }}                                    >                                        {review.name}                                    </Typography>                                    <Rating                                         value={review.rating}                                         readOnly                                         sx={{                                            '& .MuiRating-iconFilled': {                                                color: RWANDA_COLORS.yellow                                            }                                        }}                                    />                                </Box>                                <Typography                                     variant="body1"                                     sx={{                                         color: 'text.secondary',                                        mb: 2                                    }}                                >                                    {review.comment}                                </Typography>                                <Typography                                     variant="caption"                                     sx={{                                         color: alpha(RWANDA_COLORS.blue, 0.6),                                        display: 'block',                                        textAlign: 'right'                                    }}                                >                                    {new Date(review.createdAt).toLocaleDateString()}
                                 </Typography>
                             </CardContent>
                         </Card>
