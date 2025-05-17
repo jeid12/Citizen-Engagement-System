@@ -23,11 +23,24 @@ import {
     Alert,
     Card,
     CardContent,
+    Stack,
+    IconButton,
+    Tooltip,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
 import { complaintAPI } from '../services/api';
 import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
+import {
+    Assignment as AssignmentIcon,
+    CheckCircle as CheckCircleIcon,
+    Pending as PendingIcon,
+    Error as ErrorIcon,
+    Timeline as TimelineIcon,
+    Search as SearchIcon,
+    FilterList as FilterListIcon,
+} from '@mui/icons-material';
 
 interface Complaint {
     id: string;
@@ -66,6 +79,7 @@ interface Statistics {
 }
 
 const AgencyDashboard = () => {
+    const { t } = useTranslation();
     const theme = useTheme();
     const [complaints, setComplaints] = useState<Complaint[]>([]);
     const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(null);
@@ -74,6 +88,7 @@ const AgencyDashboard = () => {
     const [openDialog, setOpenDialog] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
     const [filterStatus, setFilterStatus] = useState<string>('all');
     const [searchTerm, setSearchTerm] = useState('');
     const [statistics, setStatistics] = useState<Statistics>({
@@ -112,27 +127,9 @@ const AgencyDashboard = () => {
             setStatistics(stats);
         } catch (error: any) {
             console.error('Error fetching complaints:', error);
-            setError(error.response?.data?.message || 'Error fetching complaints');
+            setError(error.response?.data?.message || t('errors.fetchingComplaints'));
         } finally {
             setLoading(false);
-        }
-    };
-
-    const handleResponse = async () => {
-        if (!selectedComplaint) return;
-
-        try {
-            await complaintAPI.respond(selectedComplaint.id, {
-                response: responseText,
-                status: newStatus || selectedComplaint.status,
-            });
-            setOpenDialog(false);
-            setResponseText('');
-            setNewStatus('');
-            fetchComplaints();
-        } catch (error: any) {
-            console.error('Error responding to complaint:', error);
-            setError(error.response?.data?.message || 'Error responding to complaint');
         }
     };
 
@@ -143,10 +140,26 @@ const AgencyDashboard = () => {
     };
 
     const handleCloseDialog = () => {
+        setOpenDialog(false);
         setSelectedComplaint(null);
         setResponseText('');
         setNewStatus('');
-        setOpenDialog(false);
+    };
+
+    const handleSubmitResponse = async () => {
+        if (!selectedComplaint || !responseText.trim() || !newStatus) return;
+
+        try {
+            await complaintAPI.respond(selectedComplaint.id, {
+                response: responseText.trim(),
+                status: newStatus,
+            });
+            setSuccess(t('messages.responseSubmitted'));
+            fetchComplaints();
+            handleCloseDialog();
+        } catch (error: any) {
+            setError(error.response?.data?.message || t('errors.failedToSubmitResponse'));
+        }
     };
 
     const getStatusColor = (status: string) => {
@@ -161,6 +174,21 @@ const AgencyDashboard = () => {
                 return theme.palette.error.main;
             default:
                 return theme.palette.grey[500];
+        }
+    };
+
+    const getStatusIcon = (status: string) => {
+        switch (status) {
+            case 'pending':
+                return <PendingIcon />;
+            case 'in_progress':
+                return <TimelineIcon />;
+            case 'resolved':
+                return <CheckCircleIcon />;
+            case 'rejected':
+                return <ErrorIcon />;
+            default:
+                return <AssignmentIcon />;
         }
     };
 
@@ -179,73 +207,119 @@ const AgencyDashboard = () => {
         return (
             <Container maxWidth="xl" sx={{ py: 4 }}>
                 <Alert severity="error">
-                    You do not have permission to access this page.
+                    {t('errors.noPermission')}
                 </Alert>
+            </Container>
+        );
+    }
+
+    if (loading) {
+        return (
+            <Container maxWidth="xl" sx={{ py: 4, textAlign: 'center' }}>
+                <CircularProgress />
             </Container>
         );
     }
 
     return (
         <Container maxWidth="xl" sx={{ py: 4 }}>
-            <Typography variant="h4" gutterBottom color="primary">
-                Agency Dashboard
+            <Typography variant="h4" component="h1" gutterBottom>
+                {t('dashboard.agencyDashboard')}
             </Typography>
 
-            {error && (
-                <Alert severity="error" sx={{ mb: 3 }}>
-                    {error}
-                </Alert>
-            )}
+            {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+            {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
 
-            {/* Statistics Cards */}
-            <Grid container spacing={2} sx={{ mb: 4 }}>
-                <Grid item xs={12} sm={6} md={2.4}>
-                    <Card>
+            {/* Quick Actions */}
+            <Grid container spacing={3} sx={{ mb: 4 }}>
+                <Grid item xs={12} md={3}>
+                    <Card 
+                        sx={{ 
+                            cursor: 'pointer',
+                            '&:hover': { transform: 'translateY(-4px)', transition: 'transform 0.2s' },
+                            bgcolor: theme.palette.warning.light,
+                        }}
+                        onClick={() => setFilterStatus('pending')}
+                    >
                         <CardContent>
-                            <Typography color="textSecondary" gutterBottom>
-                                Total Complaints
-                            </Typography>
-                            <Typography variant="h4">{statistics.total}</Typography>
+                            <Stack direction="row" spacing={2} alignItems="center">
+                                <PendingIcon fontSize="large" color="warning" />
+                                <Box>
+                                    <Typography variant="h6">{t('status.pending')}</Typography>
+                                    <Typography variant="h4" color="warning.dark">
+                                        {statistics.pending}
+                                    </Typography>
+                                </Box>
+                            </Stack>
                         </CardContent>
                     </Card>
                 </Grid>
-                <Grid item xs={12} sm={6} md={2.4}>
-                    <Card sx={{ bgcolor: theme.palette.warning.light }}>
+
+                <Grid item xs={12} md={3}>
+                    <Card 
+                        sx={{ 
+                            cursor: 'pointer',
+                            '&:hover': { transform: 'translateY(-4px)', transition: 'transform 0.2s' },
+                            bgcolor: theme.palette.info.light,
+                        }}
+                        onClick={() => setFilterStatus('in_progress')}
+                    >
                         <CardContent>
-                            <Typography color="textSecondary" gutterBottom>
-                                Pending
-                            </Typography>
-                            <Typography variant="h4">{statistics.pending}</Typography>
+                            <Stack direction="row" spacing={2} alignItems="center">
+                                <TimelineIcon fontSize="large" color="info" />
+                                <Box>
+                                    <Typography variant="h6">{t('status.inProgress')}</Typography>
+                                    <Typography variant="h4" color="info.dark">
+                                        {statistics.in_progress}
+                                    </Typography>
+                                </Box>
+                            </Stack>
                         </CardContent>
                     </Card>
                 </Grid>
-                <Grid item xs={12} sm={6} md={2.4}>
-                    <Card sx={{ bgcolor: theme.palette.info.light }}>
+
+                <Grid item xs={12} md={3}>
+                    <Card 
+                        sx={{ 
+                            cursor: 'pointer',
+                            '&:hover': { transform: 'translateY(-4px)', transition: 'transform 0.2s' },
+                            bgcolor: theme.palette.success.light,
+                        }}
+                        onClick={() => setFilterStatus('resolved')}
+                    >
                         <CardContent>
-                            <Typography color="textSecondary" gutterBottom>
-                                In Progress
-                            </Typography>
-                            <Typography variant="h4">{statistics.in_progress}</Typography>
+                            <Stack direction="row" spacing={2} alignItems="center">
+                                <CheckCircleIcon fontSize="large" color="success" />
+                                <Box>
+                                    <Typography variant="h6">{t('status.resolved')}</Typography>
+                                    <Typography variant="h4" color="success.dark">
+                                        {statistics.resolved}
+                                    </Typography>
+                                </Box>
+                            </Stack>
                         </CardContent>
                     </Card>
                 </Grid>
-                <Grid item xs={12} sm={6} md={2.4}>
-                    <Card sx={{ bgcolor: theme.palette.success.light }}>
+
+                <Grid item xs={12} md={3}>
+                    <Card 
+                        sx={{ 
+                            cursor: 'pointer',
+                            '&:hover': { transform: 'translateY(-4px)', transition: 'transform 0.2s' },
+                            bgcolor: theme.palette.error.light,
+                        }}
+                        onClick={() => setFilterStatus('rejected')}
+                    >
                         <CardContent>
-                            <Typography color="textSecondary" gutterBottom>
-                                Resolved
-                            </Typography>
-                            <Typography variant="h4">{statistics.resolved}</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} sm={6} md={2.4}>
-                    <Card sx={{ bgcolor: theme.palette.error.light }}>
-                        <CardContent>
-                            <Typography color="textSecondary" gutterBottom>
-                                Rejected
-                            </Typography>
-                            <Typography variant="h4">{statistics.rejected}</Typography>
+                            <Stack direction="row" spacing={2} alignItems="center">
+                                <ErrorIcon fontSize="large" color="error" />
+                                <Box>
+                                    <Typography variant="h6">{t('status.rejected')}</Typography>
+                                    <Typography variant="h4" color="error.dark">
+                                        {statistics.rejected}
+                                    </Typography>
+                                </Box>
+                            </Stack>
                         </CardContent>
                     </Card>
                 </Grid>
@@ -256,183 +330,157 @@ const AgencyDashboard = () => {
                 <Grid item xs={12} sm={6}>
                     <TextField
                         fullWidth
-                        label="Search Complaints"
+                        label={t('search.searchComplaints')}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="Search by title, description, category, or user"
+                        placeholder={t('search.searchPlaceholder')}
+                        InputProps={{
+                            startAdornment: <SearchIcon color="action" sx={{ mr: 1 }} />,
+                        }}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     <TextField
                         fullWidth
                         select
-                        label="Filter by Status"
+                        label={t('filter.filterByStatus')}
                         value={filterStatus}
                         onChange={(e) => setFilterStatus(e.target.value)}
+                        InputProps={{
+                            startAdornment: <FilterListIcon color="action" sx={{ mr: 1 }} />,
+                        }}
                     >
-                        <MenuItem value="all">All Status</MenuItem>
-                        <MenuItem value="pending">Pending</MenuItem>
-                        <MenuItem value="in_progress">In Progress</MenuItem>
-                        <MenuItem value="resolved">Resolved</MenuItem>
-                        <MenuItem value="rejected">Rejected</MenuItem>
+                        <MenuItem value="all">{t('filter.allStatus')}</MenuItem>
+                        <MenuItem value="pending">{t('status.pending')}</MenuItem>
+                        <MenuItem value="in_progress">{t('status.inProgress')}</MenuItem>
+                        <MenuItem value="resolved">{t('status.resolved')}</MenuItem>
+                        <MenuItem value="rejected">{t('status.rejected')}</MenuItem>
                     </TextField>
                 </Grid>
             </Grid>
 
             {/* Complaints Table */}
-            {loading ? (
-                <Box display="flex" justifyContent="center" my={4}>
-                    <CircularProgress />
-                </Box>
-            ) : filteredComplaints.length === 0 ? (
-                <Paper sx={{ p: 4, textAlign: 'center' }}>
-                    <Typography variant="h6" color="text.secondary" gutterBottom>
-                        No Complaints Found
-                    </Typography>
-                    <Typography color="text.secondary">
-                        There are currently no complaints matching your filters.
-                    </Typography>
-                </Paper>
-            ) : (
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Title</TableCell>
-                                <TableCell>Category</TableCell>
-                                <TableCell>Submitted By</TableCell>
-                                <TableCell>Date</TableCell>
-                                <TableCell>Status</TableCell>
-                                <TableCell>Action</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {filteredComplaints.map((complaint) => (
-                                <TableRow key={complaint.id}>
-                                    <TableCell>{complaint.title}</TableCell>
-                                    <TableCell>{complaint.category.name}</TableCell>
-                                    <TableCell>
-                                        {`${complaint.user.firstName} ${complaint.user.lastName}`}
-                                        <Typography variant="caption" display="block" color="text.secondary">
-                                            {complaint.user.email}
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell>
-                                        {format(new Date(complaint.createdAt), 'MMM dd, yyyy')}
-                                    </TableCell>
-                                    <TableCell>
-                                        <Chip
-                                            label={complaint.status.replace('_', ' ')}
-                                            sx={{
-                                                bgcolor: getStatusColor(complaint.status),
-                                                color: 'white',
-                                            }}
-                                        />
-                                    </TableCell>
-                                    <TableCell>
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>{t('table.title')}</TableCell>
+                            <TableCell>{t('table.category')}</TableCell>
+                            <TableCell>{t('table.citizen')}</TableCell>
+                            <TableCell>{t('table.dateSubmitted')}</TableCell>
+                            <TableCell>{t('table.status')}</TableCell>
+                            <TableCell>{t('table.actions')}</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {filteredComplaints.map((complaint) => (
+                            <TableRow key={complaint.id}>
+                                <TableCell>{complaint.title}</TableCell>
+                                <TableCell>{complaint.category.name}</TableCell>
+                                <TableCell>
+                                    {`${complaint.user.firstName} ${complaint.user.lastName}`}
+                                    <Typography variant="caption" display="block" color="text.secondary">
+                                        {complaint.user.email}
+                                    </Typography>
+                                </TableCell>
+                                <TableCell>
+                                    {format(new Date(complaint.createdAt), 'MMM dd, yyyy')}
+                                </TableCell>
+                                <TableCell>
+                                    <Chip
+                                        icon={getStatusIcon(complaint.status)}
+                                        label={t(`status.${complaint.status}`)}
+                                        sx={{
+                                            bgcolor: getStatusColor(complaint.status),
+                                            color: 'white',
+                                        }}
+                                    />
+                                </TableCell>
+                                <TableCell>
+                                    <Tooltip title={t('actions.manage')}>
                                         <Button
                                             variant="outlined"
                                             size="small"
                                             onClick={() => handleViewDetails(complaint)}
+                                            startIcon={getStatusIcon(complaint.status)}
                                         >
-                                            Manage
+                                            {t('actions.manage')}
                                         </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            )}
+                                    </Tooltip>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
 
             {/* Complaint Management Dialog */}
-            <Dialog
-                open={openDialog}
-                onClose={handleCloseDialog}
-                maxWidth="md"
-                fullWidth
-            >
+            <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
                 {selectedComplaint && (
                     <>
                         <DialogTitle>
-                            Manage Complaint: {selectedComplaint.title}
+                            {t('dialog.manageComplaint')}
                         </DialogTitle>
                         <DialogContent>
-                            <Box sx={{ mb: 3 }}>
-                                <Typography variant="subtitle1" gutterBottom>
-                                    Description:
-                                </Typography>
-                                <Typography variant="body1" paragraph>
-                                    {selectedComplaint.description}
-                                </Typography>
+                            <Stack spacing={2} sx={{ mt: 2 }}>
+                                <Typography variant="h6">{selectedComplaint.title}</Typography>
+                                <Typography variant="body1">{selectedComplaint.description}</Typography>
                                 
-                                <Grid container spacing={2}>
-                                    <Grid item xs={12}>
-                                        <Typography variant="subtitle2">
-                                            Category: {selectedComplaint.category.name}
-                                        </Typography>
-                                    </Grid>
-                                </Grid>
-                            </Box>
-
-                            <Box sx={{ mb: 3 }}>
-                                <Typography variant="subtitle1" gutterBottom>
-                                    Previous Responses:
+                                <Typography variant="subtitle2" color="textSecondary">
+                                    {t('dialog.previousResponses')}
                                 </Typography>
-                                {selectedComplaint.responses && selectedComplaint.responses.length > 0 ? (
+                                {selectedComplaint.responses.length > 0 ? (
                                     selectedComplaint.responses.map((response, index) => (
-                                        <Paper key={index} sx={{ p: 2, mb: 2 }}>
-                                            <Typography variant="body1">
-                                                {response.response}
-                                            </Typography>
-                                            <Typography variant="caption" color="text.secondary">
-                                                By {response.respondedBy.firstName} {response.respondedBy.lastName} on{' '}
-                                                {format(new Date(response.createdAt), 'MMM dd, yyyy HH:mm')}
+                                        <Paper key={index} sx={{ p: 2 }} variant="outlined">
+                                            <Typography variant="body2">{response.response}</Typography>
+                                            <Typography variant="caption" color="textSecondary">
+                                                {t('dialog.respondedBy', {
+                                                    name: `${response.respondedBy.firstName} ${response.respondedBy.lastName}`,
+                                                    date: format(new Date(response.createdAt), 'MMM dd, yyyy HH:mm')
+                                                })}
                                             </Typography>
                                         </Paper>
                                     ))
                                 ) : (
-                                    <Typography variant="body2" color="text.secondary">
-                                        No responses yet
+                                    <Typography variant="body2" color="textSecondary">
+                                        {t('dialog.noResponses')}
                                     </Typography>
                                 )}
-                            </Box>
 
-                            <TextField
-                                select
-                                fullWidth
-                                label="Update Status"
-                                value={newStatus}
-                                onChange={(e) => setNewStatus(e.target.value)}
-                                sx={{ mb: 2 }}
-                            >
-                                <MenuItem value="pending">Pending</MenuItem>
-                                <MenuItem value="in_progress">In Progress</MenuItem>
-                                <MenuItem value="resolved">Resolved</MenuItem>
-                                <MenuItem value="rejected">Rejected</MenuItem>
-                            </TextField>
+                                <TextField
+                                    select
+                                    fullWidth
+                                    label={t('dialog.updateStatus')}
+                                    value={newStatus}
+                                    onChange={(e) => setNewStatus(e.target.value)}
+                                >
+                                    <MenuItem value="pending">{t('status.pending')}</MenuItem>
+                                    <MenuItem value="in_progress">{t('status.inProgress')}</MenuItem>
+                                    <MenuItem value="resolved">{t('status.resolved')}</MenuItem>
+                                    <MenuItem value="rejected">{t('status.rejected')}</MenuItem>
+                                </TextField>
 
-                            <TextField
-                                fullWidth
-                                multiline
-                                rows={4}
-                                label="Response"
-                                value={responseText}
-                                onChange={(e) => setResponseText(e.target.value)}
-                                placeholder="Enter your response to the complaint..."
-                            />
+                                <TextField
+                                    fullWidth
+                                    multiline
+                                    rows={4}
+                                    label={t('dialog.addResponse')}
+                                    value={responseText}
+                                    onChange={(e) => setResponseText(e.target.value)}
+                                />
+                            </Stack>
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={handleCloseDialog}>
-                                Cancel
+                                {t('actions.cancel')}
                             </Button>
                             <Button
-                                onClick={handleResponse}
+                                onClick={handleSubmitResponse}
                                 variant="contained"
                                 color="primary"
-                                disabled={!responseText.trim()}
+                                disabled={!responseText.trim() || !newStatus}
                             >
-                                Submit Response
+                                {t('actions.submitResponse')}
                             </Button>
                         </DialogActions>
                     </>

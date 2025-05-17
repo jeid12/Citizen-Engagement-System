@@ -18,8 +18,24 @@
     "title": "Your Activity",
     "total": "Total",
     "pending": "Pending",
+    "in_progress": "In Progress",
     "resolved": "Resolved",
+    "rejected": "Rejected",
     "responseRate": "Response Rate"
+  },
+  "status": {
+    "pending": "Pending",
+    "in_progress": "In Progress",
+    "resolved": "Resolved",
+    "rejected": "Rejected"
+  },
+  "table": {
+    "title": "Title",
+    "category": "Category",
+    "citizen": "Citizen",
+    "dateSubmitted": "Date Submitted",
+    "status": "Status",
+    "actions": "Actions"
   },
   "recentComplaints": {
     "title": "Recent Complaints",
@@ -42,5 +58,78 @@
     "manageAgencies": "Manage Agencies",
     "allComplaints": "All Complaints",
     "openSettings": "Open settings"
+  },
+  "dashboard": {
+    "adminDashboard": "Admin Dashboard",
+    "agencyDashboard": "Agency Dashboard",
+    "overview": "Overview",
+    "systemOverview": "System Overview",
+    "recentComplaints": "Recent Complaints",
+    "manageUsersDesc": "Manage system users and roles",
+    "manageAgenciesDesc": "Manage government agencies",
+    "manageComplaintsDesc": "View and manage all complaints"
+  },
+  "search": {
+    "searchComplaints": "Search Complaints",
+    "searchPlaceholder": "Search by title, description, category, or citizen"
+  },
+  "filter": {
+    "filterByStatus": "Filter by Status",
+    "allStatus": "All Status"
+  },
+  "actions": {
+    "viewAll": "View All",
+    "manage": "Manage",
+    "cancel": "Cancel",
+    "submitResponse": "Submit Response"
+  },
+  "dialog": {
+    "manageComplaint": "Manage Complaint",
+    "previousResponses": "Previous Responses",
+    "noResponses": "No responses yet",
+    "respondedBy": "Responded by {{name}} on {{date}}",
+    "updateStatus": "Update Status",
+    "addResponse": "Add Response"
+  },
+  "errors": {
+    "noPermission": "You don't have permission to access this page",
+    "fetchingComplaints": "Error fetching complaints",
+    "failedToSubmitResponse": "Failed to submit response",
+    "invalidEmail": "Invalid email address",
+    "emailRequired": "Email is required",
+    "passwordRequired": "Password is required",
+    "loginError": "An error occurred during login"
+  },
+  "messages": {
+    "responseSubmitted": "Response submitted successfully"
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Password",
+      "button": "Login",
+      "buttonLoading": "Logging in...",
+      "noAccount": "Don't have an account? Sign up"
+    },
+    "register": {
+      "title": "Register",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "button": "Register",
+      "buttonLoading": "Registering...",
+      "haveAccount": "Already have an account? Login"
+    },
+    "verification": {
+      "title": "Verify Email",
+      "message": "Please enter the verification code sent to your email",
+      "code": "Verification Code",
+      "button": "Verify",
+      "buttonLoading": "Verifying...",
+      "resend": "Resend Code"
+    }
   }
 } 

@@ -170,13 +170,33 @@ const Navbar = () => {
                                     </Button>
 
                                     {isAdmin && (
-                                        <IconButton
-                                            color="inherit"
-                                            onClick={() => navigate('/admin')}
-                                            title={t('navigation.adminDashboard')}
-                                        >
-                                            <AdminPanelSettingsIcon />
-                                        </IconButton>
+                                        <>
+                                            <Button
+                                                color="inherit"
+                                                onClick={() => navigate('/admin')}
+                                                startIcon={<AdminPanelSettingsIcon />}
+                                            >
+                                                {t('navigation.adminDashboard')}
+                                            </Button>
+                                            <Button
+                                                color="inherit"
+                                                onClick={() => navigate('/admin/complaints')}
+                                            >
+                                                {t('navigation.allComplaints')}
+                                            </Button>
+                                            <Button
+                                                color="inherit"
+                                                onClick={() => navigate('/admin/users')}
+                                            >
+                                                {t('navigation.manageUsers')}
+                                            </Button>
+                                            <Button
+                                                color="inherit"
+                                                onClick={() => navigate('/admin/agencies')}
+                                            >
+                                                {t('navigation.manageAgencies')}
+                                            </Button>
+                                        </>
                                     )}
 
                                     {isAgencyStaff && (

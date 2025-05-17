@@ -1,30 +1,46 @@
 {
   "welcome": {
     "greeting": "Murakaza neza",
-    "message": "Murakaza neza kuri Sisitemu y'Ubufatanye bw'Abaturage. Hamwe, twubaka u Rwanda rurusha ubusanzwe kuba rwiza binyuze mu bufatanye n'itumanaho risobanutse."
+    "message": "Murakaza neza kuri Sisitemu y'Ubufatanye bw'Abaturage. Hamwe, twubaka u Rwanda rwiza binyuze mu bufatanye n'itumanaho risobanutse."
   },
   "quickActions": {
-    "title": "Ibikorwa Byihuse",
+    "title": "Ibikorwa By'Ako Kanya",
     "submitComplaint": {
       "title": "Tanga Ikibazo Gishya",
       "button": "Tanga Ikibazo"
     },
     "trackComplaints": {
-      "title": "Gukurikirana Ibirego",
-      "button": "Gukurikirana Ibirego Byawe"
+      "title": "Kurikirana Ibibazo",
+      "button": "Kurikirana Ibibazo Byawe"
     }
   },
   "statistics": {
-    "title": "Imibare Yawe",
+    "title": "Ibikorwa Byawe",
     "total": "Igiteranyo",
     "pending": "Bitegerejwe",
+    "in_progress": "Birigukora",
     "resolved": "Byakemutse",
+    "rejected": "Byanzwe",
     "responseRate": "Igipimo cy'Ibisubizo"
   },
+  "status": {
+    "pending": "Gitegerejwe",
+    "in_progress": "Kirigukora",
+    "resolved": "Cyakemutse",
+    "rejected": "Cyanzwe"
+  },
+  "table": {
+    "title": "Umutwe",
+    "category": "Icyiciro",
+    "citizen": "Umuturage",
+    "dateSubmitted": "Itariki Yatangiweho",
+    "status": "Imiterere",
+    "actions": "Ibikorwa"
+  },
   "recentComplaints": {
-    "title": "Ibirego Bishya",
-    "noComplaints": "Nta birego byatanzwe",
-    "viewAll": "Reba Ibirego Byose"
+    "title": "Ibibazo Bishya",
+    "noComplaints": "Nta bibazo byatanzwe",
+    "viewAll": "Reba Ibibazo Byose"
   },
   "navigation": {
     "home": "Ahabanza",
@@ -34,13 +50,86 @@
     "login": "Injira",
     "register": "Iyandikishe",
     "dashboard": "Ikibaho",
-    "adminDashboard": "Ikibaho ry'Umuyobozi",
-    "agencyDashboard": "Ikibaho ry'Ikigo",
+    "adminDashboard": "Ikibaho cy'Umuyobozi",
+    "agencyDashboard": "Ikibaho cy'Ikigo",
     "submitComplaint": "Tanga Ikibazo",
-    "trackComplaints": "Gukurikirana Ibirego",
+    "trackComplaints": "Kurikirana Ibibazo",
     "manageUsers": "Gucunga Abakoresha",
     "manageAgencies": "Gucunga Ibigo",
-    "allComplaints": "Ibirego Byose",
+    "allComplaints": "Ibibazo Byose",
     "openSettings": "Fungura Igenamiterere"
+  },
+  "dashboard": {
+    "adminDashboard": "Ikibaho cy'Umuyobozi",
+    "agencyDashboard": "Ikibaho cy'Ikigo",
+    "overview": "Incamake",
+    "systemOverview": "Incamake ya Sisitemu",
+    "recentComplaints": "Ibibazo Bishya",
+    "manageUsersDesc": "Gucunga abakoresha na role zabo",
+    "manageAgenciesDesc": "Gucunga ibigo bya leta",
+    "manageComplaintsDesc": "Kureba no gucunga ibibazo byose"
+  },
+  "search": {
+    "searchComplaints": "Shakisha Ibibazo",
+    "searchPlaceholder": "Shakisha ukurikije umutwe, ibisobanuro, icyiciro, cyangwa umuturage"
+  },
+  "filter": {
+    "filterByStatus": "Shungura ukurikije Imiterere",
+    "allStatus": "Imiterere Yose"
+  },
+  "actions": {
+    "viewAll": "Reba Byose",
+    "manage": "Gucunga",
+    "cancel": "Hagarika",
+    "submitResponse": "Ohereza Igisubizo"
+  },
+  "dialog": {
+    "manageComplaint": "Gucunga Ikibazo",
+    "previousResponses": "Ibisubizo Byabanje",
+    "noResponses": "Nta bisubizo biriho",
+    "respondedBy": "Cyasubijwe na {{name}} ku wa {{date}}",
+    "updateStatus": "Kuvugurura Imiterere",
+    "addResponse": "Ongeraho Igisubizo"
+  },
+  "errors": {
+    "noPermission": "Ntabwo wemerewe kugera kuri iyi paje",
+    "fetchingComplaints": "Hari ikibazo mu kuzana ibibazo",
+    "failedToSubmitResponse": "Ntibishoboye kohereza igisubizo",
+    "invalidEmail": "Imeri itemewe",
+    "emailRequired": "Imeri irakenewe",
+    "passwordRequired": "Ijambo ryibanga rirakenewe",
+    "loginError": "Hari ikibazo cyabaye mu gihe cyo kwinjira"
+  },
+  "messages": {
+    "responseSubmitted": "Igisubizo cyoherejwe neza"
+  },
+  "auth": {
+    "login": {
+      "title": "Injira",
+      "email": "Imeri",
+      "password": "Ijambo ryibanga",
+      "button": "Injira",
+      "buttonLoading": "Urimo kwinjira...",
+      "noAccount": "Nta konti ufite? Iyandikishe"
+    },
+    "register": {
+      "title": "Iyandikishe",
+      "firstName": "Izina",
+      "lastName": "Izina ry'umuryango",
+      "email": "Imeri",
+      "password": "Ijambo ryibanga",
+      "confirmPassword": "Emeza ijambo ryibanga",
+      "button": "Iyandikishe",
+      "buttonLoading": "Urimo kwiyandikisha...",
+      "haveAccount": "Usanzwe ufite konti? Injira"
+    },
+    "verification": {
+      "title": "Emeza Imeri",
+      "message": "Nyamuneka andika kode yemeza yoherejwe kuri imeri yawe",
+      "code": "Kode yo kwemeza",
+      "button": "Emeza",
+      "buttonLoading": "Urimo kwemeza...",
+      "resend": "Rongera wohereze kode"
+    }
   }
 } 

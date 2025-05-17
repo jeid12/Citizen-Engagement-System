@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     Container,
     Paper,
@@ -23,10 +24,18 @@ import {
     CardContent,
     CircularProgress,
     Alert,
+    Stack,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
 import { complaintAPI } from '../services/api';
+import { useTranslation } from 'react-i18next';
+import {
+    People as PeopleIcon,
+    Business as BusinessIcon,
+    Report as ReportIcon,
+    Dashboard as DashboardIcon,
+} from '@mui/icons-material';
 
 interface Complaint {
     id: string;
@@ -45,7 +54,9 @@ interface Complaint {
 }
 
 const AdminDashboard = () => {
+    const { t } = useTranslation();
     const theme = useTheme();
+    const navigate = useNavigate();
     const [complaints, setComplaints] = useState<Complaint[]>([]);
     const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(null);
     const [responseText, setResponseText] = useState('');
@@ -92,19 +103,7 @@ const AdminDashboard = () => {
             setStatistics(stats);
         } catch (error: any) {
             console.error('Error fetching complaints:', error);
-            // Set empty data instead of showing error
-            setComplaints([]);
-            setStatistics({
-                total: 0,
-                pending: 0,
-                in_progress: 0,
-                resolved: 0,
-                rejected: 0,
-            });
-            // Only set error if it's not a 404 (no complaints found)
-            if (error.response?.status !== 404) {
-                setError(error.response?.data?.message || 'Error fetching complaints');
-            }
+            setError(error.response?.data?.message || t('errors.fetchingComplaints'));
         } finally {
             setLoading(false);
         }
@@ -146,7 +145,7 @@ const AdminDashboard = () => {
         return (
             <Container maxWidth="xl" sx={{ py: 4 }}>
                 <Alert severity="error">
-                    You do not have permission to access this page.
+                    {t('errors.noPermission')}
                 </Alert>
             </Container>
         );
@@ -162,187 +161,219 @@ const AdminDashboard = () => {
         );
     }
 
-    if (error) {
-        return (
-            <Container maxWidth="xl" sx={{ py: 4 }}>
+    return (
+        <Container maxWidth="xl" sx={{ py: 4 }}>
+            <Typography variant="h4" component="h1" gutterBottom>
+                {t('dashboard.adminDashboard')}
+            </Typography>
+
+            {error && (
                 <Alert severity="error" sx={{ mb: 3 }}>
                     {error}
                 </Alert>
-                <Button variant="contained" onClick={fetchComplaints}>
-                    Retry
-                </Button>
-            </Container>
-        );
-    }
+            )}
 
-    return (
-        <Container maxWidth="xl" sx={{ py: 4 }}>
-            <Typography variant="h4" gutterBottom color="primary">
-                Admin Dashboard
-            </Typography>
-
-            {/* Statistics Cards */}
+            {/* Quick Actions */}
             <Grid container spacing={3} sx={{ mb: 4 }}>
-                <Grid item xs={12} sm={6} md={2.4}>
+                <Grid item xs={12} md={3}>
+                    <Card 
+                        sx={{ 
+                            cursor: 'pointer',
+                            '&:hover': { transform: 'translateY(-4px)', transition: 'transform 0.2s' }
+                        }}
+                        onClick={() => navigate('/admin/users')}
+                    >
+                        <CardContent>
+                            <Stack direction="row" spacing={2} alignItems="center">
+                                <PeopleIcon fontSize="large" color="primary" />
+                                <Box>
+                                    <Typography variant="h6">{t('navigation.manageUsers')}</Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {t('dashboard.manageUsersDesc')}
+                                    </Typography>
+                                </Box>
+                            </Stack>
+                        </CardContent>
+                    </Card>
+                </Grid>
+
+                <Grid item xs={12} md={3}>
+                    <Card 
+                        sx={{ 
+                            cursor: 'pointer',
+                            '&:hover': { transform: 'translateY(-4px)', transition: 'transform 0.2s' }
+                        }}
+                        onClick={() => navigate('/admin/agencies')}
+                    >
+                        <CardContent>
+                            <Stack direction="row" spacing={2} alignItems="center">
+                                <BusinessIcon fontSize="large" color="primary" />
+                                <Box>
+                                    <Typography variant="h6">{t('navigation.manageAgencies')}</Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {t('dashboard.manageAgenciesDesc')}
+                                    </Typography>
+                                </Box>
+                            </Stack>
+                        </CardContent>
+                    </Card>
+                </Grid>
+
+                <Grid item xs={12} md={3}>
+                    <Card 
+                        sx={{ 
+                            cursor: 'pointer',
+                            '&:hover': { transform: 'translateY(-4px)', transition: 'transform 0.2s' }
+                        }}
+                        onClick={() => navigate('/admin/complaints')}
+                    >
+                        <CardContent>
+                            <Stack direction="row" spacing={2} alignItems="center">
+                                <ReportIcon fontSize="large" color="primary" />
+                                <Box>
+                                    <Typography variant="h6">{t('navigation.allComplaints')}</Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {t('dashboard.manageComplaintsDesc')}
+                                    </Typography>
+                                </Box>
+                            </Stack>
+                        </CardContent>
+                    </Card>
+                </Grid>
+
+                <Grid item xs={12} md={3}>
                     <Card>
                         <CardContent>
-                            <Typography color="textSecondary" gutterBottom>
-                                Total Complaints
-                            </Typography>
-                            <Typography variant="h4">{statistics.total}</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} sm={6} md={2.4}>
-                    <Card sx={{ bgcolor: theme.palette.warning.light }}>
-                        <CardContent>
-                            <Typography color="textSecondary" gutterBottom>
-                                Pending
-                            </Typography>
-                            <Typography variant="h4">{statistics.pending}</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} sm={6} md={2.4}>
-                    <Card sx={{ bgcolor: theme.palette.primary.light }}>
-                        <CardContent>
-                            <Typography color="textSecondary" gutterBottom>
-                                In Progress
-                            </Typography>
-                            <Typography variant="h4">{statistics.in_progress}</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} sm={6} md={2.4}>
-                    <Card sx={{ bgcolor: theme.palette.success.light }}>
-                        <CardContent>
-                            <Typography color="textSecondary" gutterBottom>
-                                Resolved
-                            </Typography>
-                            <Typography variant="h4">{statistics.resolved}</Typography>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} sm={6} md={2.4}>
-                    <Card sx={{ bgcolor: theme.palette.error.light }}>
-                        <CardContent>
-                            <Typography color="textSecondary" gutterBottom>
-                                Rejected
-                            </Typography>
-                            <Typography variant="h4">{statistics.rejected}</Typography>
+                            <Stack direction="row" spacing={2} alignItems="center">
+                                <DashboardIcon fontSize="large" color="primary" />
+                                <Box>
+                                    <Typography variant="h6">{t('dashboard.overview')}</Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {t('dashboard.systemOverview')}
+                                    </Typography>
+                                </Box>
+                            </Stack>
                         </CardContent>
                     </Card>
                 </Grid>
             </Grid>
 
-            {/* Complaints Table */}
-            {complaints.length === 0 ? (
-                <Paper sx={{ p: 4, textAlign: 'center', mt: 4 }}>
-                    <Typography variant="h6" color="text.secondary" gutterBottom>
-                        No Complaints Found
-                    </Typography>
-                    <Typography color="text.secondary">
-                        There are currently no complaints in the system.
-                    </Typography>
-                </Paper>
-            ) : (
-                <TableContainer component={Paper} sx={{ mt: 4 }}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Title</TableCell>
-                                <TableCell>Category</TableCell>
-                                <TableCell>Submitted By</TableCell>
-                                <TableCell>Date</TableCell>
-                                <TableCell>Status</TableCell>
-                                <TableCell>Action</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {complaints.map((complaint) => (
-                                <TableRow key={complaint.id}>
-                                    <TableCell>{complaint.title}</TableCell>
-                                    <TableCell>{complaint.category.name}</TableCell>
-                                    <TableCell>
-                                        {`${complaint.user.firstName} ${complaint.user.lastName}`}
-                                        <Typography variant="caption" display="block" color="textSecondary">
-                                            {complaint.user.email}
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell>
-                                        {new Date(complaint.createdAt).toLocaleDateString()}
-                                    </TableCell>
-                                    <TableCell>
-                                        <Chip
-                                            label={complaint.status.replace('_', ' ')}
-                                            sx={{
-                                                bgcolor: getStatusColor(complaint.status),
-                                                color: 'white',
-                                            }}
-                                        />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Button
-                                            variant="contained"
-                                            size="small"
-                                            onClick={() => {
-                                                setSelectedComplaint(complaint);
-                                                setOpenDialog(true);
-                                            }}
-                                        >
-                                            Respond
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            )}
+            {/* Statistics */}
+            <Grid container spacing={2} sx={{ mb: 4 }}>
+                <Grid item xs={12} md={2.4}>
+                    <Card>
+                        <CardContent>
+                            <Typography color="textSecondary" gutterBottom>
+                                {t('statistics.total')}
+                            </Typography>
+                            <Typography variant="h4">{statistics.total}</Typography>
+                        </CardContent>
+                    </Card>
+                </Grid>
+                <Grid item xs={12} md={2.4}>
+                    <Card>
+                        <CardContent>
+                            <Typography color="textSecondary" gutterBottom>
+                                {t('statistics.pending')}
+                            </Typography>
+                            <Typography variant="h4" color="warning.main">
+                                {statistics.pending}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                </Grid>
+                <Grid item xs={12} md={2.4}>
+                    <Card>
+                        <CardContent>
+                            <Typography color="textSecondary" gutterBottom>
+                                {t('statistics.inProgress')}
+                            </Typography>
+                            <Typography variant="h4" color="info.main">
+                                {statistics.in_progress}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                </Grid>
+                <Grid item xs={12} md={2.4}>
+                    <Card>
+                        <CardContent>
+                            <Typography color="textSecondary" gutterBottom>
+                                {t('statistics.resolved')}
+                            </Typography>
+                            <Typography variant="h4" color="success.main">
+                                {statistics.resolved}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                </Grid>
+                <Grid item xs={12} md={2.4}>
+                    <Card>
+                        <CardContent>
+                            <Typography color="textSecondary" gutterBottom>
+                                {t('statistics.rejected')}
+                            </Typography>
+                            <Typography variant="h4" color="error.main">
+                                {statistics.rejected}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                </Grid>
+            </Grid>
 
-            {/* Response Dialog */}
-            <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="md" fullWidth>
-                <DialogTitle>Respond to Complaint</DialogTitle>
-                <DialogContent>
-                    <Box sx={{ p: 2 }}>
-                        {selectedComplaint && (
-                            <>
-                                <Typography variant="h6">{selectedComplaint.title}</Typography>
-                                <Typography color="textSecondary" paragraph>
-                                    {selectedComplaint.description}
-                                </Typography>
-                            </>
-                        )}
-                        <TextField
-                            select
-                            fullWidth
-                            label="Status"
-                            value={selectedComplaint?.status || ''}
-                            onChange={(e) => setSelectedComplaint(prev => prev ? {...prev, status: e.target.value as any} : null)}
-                            sx={{ mb: 2 }}
-                        >
-                            <MenuItem value="pending">Pending</MenuItem>
-                            <MenuItem value="in_progress">In Progress</MenuItem>
-                            <MenuItem value="resolved">Resolved</MenuItem>
-                            <MenuItem value="rejected">Rejected</MenuItem>
-                        </TextField>
-                        <TextField
-                            fullWidth
-                            multiline
-                            rows={4}
-                            label="Response"
-                            value={responseText}
-                            onChange={(e) => setResponseText(e.target.value)}
-                        />
-                    </Box>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
-                    <Button onClick={handleResponse} variant="contained" color="primary">
-                        Submit Response
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            {/* Recent Complaints Table */}
+            <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Typography variant="h5" component="h2">
+                    {t('dashboard.recentComplaints')}
+                </Typography>
+                <Button 
+                    variant="contained" 
+                    color="primary"
+                    onClick={() => navigate('/admin/complaints')}
+                >
+                    {t('actions.viewAll')}
+                </Button>
+            </Box>
+
+            <TableContainer component={Paper}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>{t('table.title')}</TableCell>
+                            <TableCell>{t('table.category')}</TableCell>
+                            <TableCell>{t('table.citizen')}</TableCell>
+                            <TableCell>{t('table.dateSubmitted')}</TableCell>
+                            <TableCell>{t('table.status')}</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {complaints.slice(0, 5).map((complaint) => (
+                            <TableRow key={complaint.id}>
+                                <TableCell>{complaint.title}</TableCell>
+                                <TableCell>{complaint.category.name}</TableCell>
+                                <TableCell>
+                                    {`${complaint.user.firstName} ${complaint.user.lastName}`}
+                                    <Typography variant="caption" display="block" color="text.secondary">
+                                        {complaint.user.email}
+                                    </Typography>
+                                </TableCell>
+                                <TableCell>
+                                    {new Date(complaint.createdAt).toLocaleDateString()}
+                                </TableCell>
+                                <TableCell>
+                                    <Chip
+                                        label={t(`status.${complaint.status}`)}
+                                        color={
+                                            complaint.status === 'resolved' ? 'success' :
+                                            complaint.status === 'in_progress' ? 'info' :
+                                            complaint.status === 'pending' ? 'warning' : 'error'
+                                        }
+                                    />
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </Container>
     );
 };

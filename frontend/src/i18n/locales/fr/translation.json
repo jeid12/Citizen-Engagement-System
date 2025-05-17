@@ -18,8 +18,24 @@
     "title": "Votre Activité",
     "total": "Total",
     "pending": "En Attente",
+    "in_progress": "En Cours",
     "resolved": "Résolu",
+    "rejected": "Rejeté",
     "responseRate": "Taux de Réponse"
+  },
+  "status": {
+    "pending": "En Attente",
+    "in_progress": "En Cours",
+    "resolved": "Résolu",
+    "rejected": "Rejeté"
+  },
+  "table": {
+    "title": "Titre",
+    "category": "Catégorie",
+    "citizen": "Citoyen",
+    "dateSubmitted": "Date de Soumission",
+    "status": "Statut",
+    "actions": "Actions"
   },
   "recentComplaints": {
     "title": "Plaintes Récentes",
@@ -42,5 +58,78 @@
     "manageAgencies": "Gérer les Agences",
     "allComplaints": "Toutes les Plaintes",
     "openSettings": "Ouvrir les paramètres"
+  },
+  "dashboard": {
+    "adminDashboard": "Tableau de Bord Administrateur",
+    "agencyDashboard": "Tableau de Bord de l'Agence",
+    "overview": "Aperçu",
+    "systemOverview": "Aperçu du Système",
+    "recentComplaints": "Plaintes Récentes",
+    "manageUsersDesc": "Gérer les utilisateurs et les rôles du système",
+    "manageAgenciesDesc": "Gérer les agences gouvernementales",
+    "manageComplaintsDesc": "Voir et gérer toutes les plaintes"
+  },
+  "search": {
+    "searchComplaints": "Rechercher des Plaintes",
+    "searchPlaceholder": "Rechercher par titre, description, catégorie ou citoyen"
+  },
+  "filter": {
+    "filterByStatus": "Filtrer par Statut",
+    "allStatus": "Tous les Statuts"
+  },
+  "actions": {
+    "viewAll": "Voir Tout",
+    "manage": "Gérer",
+    "cancel": "Annuler",
+    "submitResponse": "Soumettre la Réponse"
+  },
+  "dialog": {
+    "manageComplaint": "Gérer la Plainte",
+    "previousResponses": "Réponses Précédentes",
+    "noResponses": "Aucune réponse pour le moment",
+    "respondedBy": "Répondu par {{name}} le {{date}}",
+    "updateStatus": "Mettre à jour le Statut",
+    "addResponse": "Ajouter une Réponse"
+  },
+  "errors": {
+    "noPermission": "Vous n'avez pas la permission d'accéder à cette page",
+    "fetchingComplaints": "Erreur lors de la récupération des plaintes",
+    "failedToSubmitResponse": "Échec de la soumission de la réponse",
+    "invalidEmail": "Adresse e-mail invalide",
+    "emailRequired": "L'e-mail est requis",
+    "passwordRequired": "Le mot de passe est requis",
+    "loginError": "Une erreur s'est produite lors de la connexion"
+  },
+  "messages": {
+    "responseSubmitted": "Réponse soumise avec succès"
+  },
+  "auth": {
+    "login": {
+      "title": "Connexion",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "button": "Se connecter",
+      "buttonLoading": "Connexion en cours...",
+      "noAccount": "Vous n'avez pas de compte ? Inscrivez-vous"
+    },
+    "register": {
+      "title": "Inscription",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "button": "S'inscrire",
+      "buttonLoading": "Inscription en cours...",
+      "haveAccount": "Vous avez déjà un compte ? Connectez-vous"
+    },
+    "verification": {
+      "title": "Vérifier l'e-mail",
+      "message": "Veuillez entrer le code de vérification envoyé à votre e-mail",
+      "code": "Code de vérification",
+      "button": "Vérifier",
+      "buttonLoading": "Vérification en cours...",
+      "resend": "Renvoyer le code"
+    }
   }
 } 

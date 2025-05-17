@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Formik, Form as FormikForm, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
+import { useTranslation } from 'react-i18next';
 import {
     Container,
     Box,
@@ -21,18 +22,19 @@ interface LoginValues {
     password: string;
 }
 
-const validationSchema = Yup.object({
-    email: Yup.string()
-        .email('Invalid email address')
-        .required('Email is required'),
-    password: Yup.string()
-        .required('Password is required'),
-});
-
 const Login: React.FC = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [error, setError] = useState<string | null>(null);
+    const { t } = useTranslation();
+
+    const validationSchema = Yup.object({
+        email: Yup.string()
+            .email(t('errors.invalidEmail'))
+            .required(t('errors.emailRequired')),
+        password: Yup.string()
+            .required(t('errors.passwordRequired')),
+    });
 
     const handleSubmit = async (values: LoginValues, { setSubmitting }: FormikHelpers<LoginValues>) => {
         try {
@@ -47,7 +49,7 @@ const Login: React.FC = () => {
                 navigate('/verify-otp', { state: { email: values.email } });
             }
         } catch (err: any) {
-            const errorMessage = err.response?.data?.message || 'An error occurred during login';
+            const errorMessage = err.response?.data?.message || t('errors.loginError');
             dispatch(loginFailure(errorMessage));
             setError(errorMessage);
         } finally {
@@ -60,7 +62,7 @@ const Login: React.FC = () => {
             <Box sx={{ mt: 8, mb: 4 }}>
                 <Paper elevation={3} sx={{ p: 4 }}>
                     <Typography component="h1" variant="h4" align="center" gutterBottom>
-                        Login
+                        {t('auth.login.title')}
                     </Typography>
 
                     {error && (
@@ -83,7 +85,7 @@ const Login: React.FC = () => {
                                     fullWidth
                                     id="email"
                                     name="email"
-                                    label="Email"
+                                    label={t('auth.login.email')}
                                     value={values.email}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -96,7 +98,7 @@ const Login: React.FC = () => {
                                     fullWidth
                                     id="password"
                                     name="password"
-                                    label="Password"
+                                    label={t('auth.login.password')}
                                     type="password"
                                     value={values.password}
                                     onChange={handleChange}
@@ -115,7 +117,7 @@ const Login: React.FC = () => {
                                     disabled={isSubmitting}
                                     sx={{ mt: 3, mb: 2 }}
                                 >
-                                    {isSubmitting ? 'Logging in...' : 'Login'}
+                                    {isSubmitting ? t('auth.login.buttonLoading') : t('auth.login.button')}
                                 </Button>
                             </FormikForm>
                         )}
@@ -123,7 +125,7 @@ const Login: React.FC = () => {
 
                     <Box sx={{ mt: 2, textAlign: 'center' }}>
                         <Link href="/register" variant="body2">
-                            Don't have an account? Sign up
+                            {t('auth.login.noAccount')}
                         </Link>
                     </Box>
                 </Paper>
