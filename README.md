@@ -81,6 +81,7 @@ Many complaints in Rwanda are currently submitted through fragmented and manual 
 
 ## 📁 Project Structure
 
+````
 citizen-engagement-system/
 ├── frontend/
 │ ├── src/
@@ -101,7 +102,7 @@ citizen-engagement-system/
 │ ├── services/ # Business logic
 │ └── index.ts
 └── package.json
-
+````
 
 ---
 
@@ -134,13 +135,13 @@ citizen-engagement-system/
 
 <!-- Replace below with actual image file paths inside a `screenshots/` folder -->
 ### 📌 Complaint Submission Page  
-![Complaint Submission](screenshots/complaint-form.png)
+![Complaint Submission](screenshots/7.png)
 
 ### 🗃️ User Dashboard  
-![User Dashboard](screenshots/user-dashboard.png)
+![User Dashboard](screenshots/8.png)
 
 ### 🏢 Agency Dashboard  
-![Agency Dashboard](screenshots/agency-dashboard.png)
+![Agency Dashboard](screenshots/9.png)
 
 ---
 
