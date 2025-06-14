@@ -1,0 +1,11 @@
+runtime: nodejs18
+
+instance_class: F1  # Free tier
+
+env_variables:
+  DATABASE_URL: "postgres://postgres:Niyokwizera1$@34.60.94.48:5432/db"
+  NODE_ENV: "production"
+
+handlers:
+  - url: /.*
+    script: auto

@@ -12,7 +12,7 @@ dotenv.config();
 
 export const AppDataSource = new DataSource({
     type: "postgres",
-    url: process.env.url || "postgresql://asm_8k0j_user:NcJkdjdVdfRRJif31Z3rW8JcFKxWgufk@dpg-d0ipqk6uk2gs73alo2ug-a.oregon-postgres.render.com/asm_8k0j",
+    url: "postgres://postgres:Niyokwizera1$@34.60.94.48:5432/db",
     ssl: {
         rejectUnauthorized: false
     },
