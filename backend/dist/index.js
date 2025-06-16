@@ -54,7 +54,7 @@ app.get("/", (req, res) => {
     res.json({ message: "Welcome to Citizen Engagement System API" });
 });
 // Start server
-const PORT = 5000;
+const PORT = 8080;
 data_source_1.AppDataSource.initialize().then(() => {
     console.log("Data Source has been initialized!");
     app.listen(PORT, () => {
