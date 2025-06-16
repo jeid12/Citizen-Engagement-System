@@ -60,7 +60,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 // Start server
-const PORT = 5000;
+const PORT = process.env.PORT || 8080;
 
 AppDataSource.initialize().then(() => {
     console.log("Data Source has been initialized!");
