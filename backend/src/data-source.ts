@@ -19,6 +19,6 @@ export const AppDataSource = new DataSource({
     synchronize: process.env.NODE_ENV !== "production",
     logging: process.env.NODE_ENV !== "production",
     entities: [User, Complaint, Category, Agency, ComplaintResponse, Review],
-    migrations: ["src/migration/**/*.ts"],
-    subscribers: ["src/subscriber/**/*.ts"],
+    migrations: ["dist/migration/**/*.js"],
+    subscribers: ["dist/subscriber/**/*.js"],
 }); 
