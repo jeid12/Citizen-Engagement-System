@@ -44,7 +44,7 @@ const OTPVerification = () => {
             setIsLoading(true);
             setError(null);
             const response = await axios.post(
-                `http://localhost:5000/api/auth/verify-otp`,
+                `https://citizen-engagement-system-3.onrender.com/api/auth/verify-otp`,
                 {
                     email,
                     otp: values.otp,
@@ -70,7 +70,7 @@ const OTPVerification = () => {
         try {
             setIsLoading(true);
             setError(null);
-            await axios.post(`http://localhost:5000/api/auth/resend-otp`, { email });
+            await axios.post(`https://citizen-engagement-system-3.onrender.com/api/auth/resend-otp`, { email });
             setSuccess('New OTP has been sent to your email');
         } catch (err: any) {
             const errorMessage = err.response?.data?.message || 'Error resending OTP';

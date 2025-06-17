@@ -28,7 +28,7 @@ const VerifyEmail = () => {
 
             try {
                 const response = await axios.get(
-                    `${process.env.REACT_APP_API_URL}/api/auth/verify-email/${token}`
+                    `https://citizen-engagement-system-3.onrender.com/api/auth/verify-email/${token}`
                 );
                 setStatus('success');
                 setMessage('Email verified successfully! You can now log in.');
