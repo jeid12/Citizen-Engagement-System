@@ -54,11 +54,11 @@ app.get("/", (req, res) => {
     res.json({ message: "Welcome to Citizen Engagement System API" });
 });
 // Start server
-const PORT = process.env.PORT || 8080;
+const PORT1 = process.env.PORT1 || 8080;
 data_source_1.AppDataSource.initialize().then(() => {
     console.log("Data Source has been initialized!");
-    app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
+    app.listen(PORT1, () => {
+        console.log(`Server is running on port ${PORT1}`);
     });
 }).catch(error => {
     console.error("Error during Data Source initialization:", error);

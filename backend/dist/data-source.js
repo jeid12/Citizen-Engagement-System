@@ -16,14 +16,14 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 exports.AppDataSource = new typeorm_1.DataSource({
     type: "postgres",
-    url: "postgres://postgres:Niyokwizera1$@34.60.94.48:5432/db",
+    url: "postgresql://postgres.xfrtxnbwgkaofydvmeiv:Niyokwizera1$@aws-0-us-west-1.pooler.supabase.com:6543/postgres?pgbouncer=true",
     ssl: {
-        rejectUnauthorized: false
+        rejectUnauthorized: false,
     },
     synchronize: process.env.NODE_ENV !== "production",
     logging: process.env.NODE_ENV !== "production",
     entities: [User_1.User, Complaint_1.Complaint, Category_1.Category, Agency_1.Agency, ComplaintResponse_1.ComplaintResponse, Review_1.Review],
-    migrations: ["dist/migration/**/*.ts"],
-    subscribers: ["dist/subscriber/**/*.ts"],
+    migrations: ["dist/migration/**/*.js"],
+    subscribers: ["dist/subscriber/**/*.js"],
 });
 //# sourceMappingURL=data-source.js.map
