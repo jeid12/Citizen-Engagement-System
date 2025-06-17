@@ -45,7 +45,7 @@ const ReviewSection = () => {
 
     const fetchReviews = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/reviews');
+            const response = await axios.get('https://citizen-engagement-system-3.onrender.com/api/reviews');
             setReviews(response.data);
         } catch (error) {
             console.error('Error fetching reviews:', error);
@@ -63,7 +63,7 @@ const ReviewSection = () => {
         }
 
         try {
-            await axios.post('http://localhost:5000/api/reviews/submit', {
+            await axios.post('https://citizen-engagement-system-3.onrender.com/api/reviews/submit', {
                 name,
                 comment,
                 rating
