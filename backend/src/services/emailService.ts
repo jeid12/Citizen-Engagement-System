@@ -44,8 +44,8 @@ class EmailService {
             port: 587,
             secure: false,
             auth: {
-                user: process.env.EMAIL_USER || "niyokwizerajd123@gmail.com",
-                pass: process.env.EMAIL_PASS || "ptup lswr dccy xdat",
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASSWORD,
             },
         });
     }
@@ -54,7 +54,7 @@ class EmailService {
         const verificationUrl = `http://localhost:5000/verify-email/${token}`;
 
         await this.transporter.sendMail({
-            from: "niyokwizerajd123@gmail.com",
+            from: process.env.EMAIL_USER,
             to: user.email,
             subject: "Verify your email address",
             html: `
